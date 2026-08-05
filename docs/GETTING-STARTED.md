@@ -82,7 +82,7 @@ Gradle commands run from `DNLibrary/` — that is the Gradle root, where `gradle
 ```sh
 cd DNLibrary
 ./gradlew :sharedLogic:check                # all checks + tests, both platforms
-./gradlew :sharedLogic:testDebugUnitTest    # Android host tests
+./gradlew :sharedLogic:testAndroidHostTest  # Android host tests (Robolectric)
 ./gradlew :sharedLogic:iosSimulatorArm64Test
 ./gradlew :sharedLogic:assemble             # Android library + iOS XCFramework
 ```

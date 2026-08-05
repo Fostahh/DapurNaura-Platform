@@ -2,7 +2,7 @@
 id: DN-004
 type: technical
 title: Delete the leftover scaffolding DTO and endpoint from DNLibrary
-status: todo
+status: in-review
 source: —
 branch: ticket/DN-004-remove-scaffolding-dtos
 layer: data
@@ -71,11 +71,20 @@ now: no consumer exists. `ios/DapurNaura` has no dependency on the library.
 There is nothing to unit-test in a deletion. The check that matters is that the module still
 compiles for both targets with no endpoints and no DTOs, and that `explicitApi()` still passes.
 
+## Implementation notes (2026-08-06)
+
+- Landed stacked on `ticket/DN-002-…` (ascending execution order, same files).
+- The "empty data layer" intermediate state was brief by instruction: the owner requested the
+  first real endpoint mid-session, ticketed as DN-008 on top of DN-006.
+- The bare-`Exception` known-violations row was re-pointed at the storage actuals — deleting the
+  scaffolding removed the RemoteDataSource rethrow, but the same pattern still exists in
+  `SecureStorage.*.kt` / `PreferenceStorage.*.kt` until typed errors land.
+
 ## Done when
 
-- [ ] Scaffolding DTO and its fetch method deleted; no references remain
-- [ ] `./gradlew :sharedLogic:check` green
-- [ ] `CODEBASE-STANDARD.md` known-violations table updated
-- [ ] No markdown in the workspace names the deleted types
-- [ ] Committed on `ticket/DN-004-remove-scaffolding-dtos`, not merged
+- [x] Scaffolding DTO and its fetch method deleted; no references remain
+- [x] `./gradlew :sharedLogic:check` green
+- [x] `CODEBASE-STANDARD.md` known-violations table updated
+- [x] No markdown in the workspace names the deleted types (verified by grep)
+- [x] Committed on `ticket/DN-004-remove-scaffolding-dtos` (`81c0df5`), not merged
 - [ ] PR merged, ticket marked `done` by the human

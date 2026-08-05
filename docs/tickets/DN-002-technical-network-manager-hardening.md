@@ -2,7 +2,7 @@
 id: DN-002
 type: technical
 title: Harden DNNetworkManager — timeouts, strict JSON, hide internals
-status: todo
+status: in-review
 source: —
 branch: ticket/DN-002-network-manager-hardening
 layer: data
@@ -109,12 +109,27 @@ and cheap, which is a reason to do it now rather than after `1.0.0`.
 Tests 3–5 need a controllable client. If the engine seam does not exist yet, note in the ticket
 which cases had to be deferred rather than silently skipping them.
 
+## Implementation notes (2026-08-06)
+
+- Ordering resolved as the human directed: tickets executed ascending, so this landed **before**
+  the engine seam, stacked on `ticket/DN-001-…` (same repo, overlapping files — the branches build
+  on each other and merge in order).
+- **Deferred as the test plan allows:** cases 3–5 (malformed JSON fails, unknown keys ignored,
+  timeout fires) need a controllable engine and are implemented in **DN-006** with the seam.
+  Cases 1–2 plus a key-redaction test run on both platforms in `commonTest`.
+- Also enabled `explicitApi()` — `CODEBASE-STANDARD.md` claimed it was on, but it was not wired in
+  `build.gradle.kts`. All public declarations now carry explicit visibility. This is the
+  enforcement mechanism for exactly this ticket's "hide internals" goal.
+- `DNNetworkManagerConfig.toString()` now redacts the key — a data class would otherwise print it
+  into any log line that formats the config (§9).
+
 ## Done when
 
-- [ ] Timeouts configured; `isLenient` and `prettyPrint` removed; `config` and `httpClient` internal
-- [ ] Non-HTTPS base URL rejected at config time
-- [ ] Confirmed `ios/DapurNaura` does not reference `config` or `httpClient`
-- [ ] Unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
-- [ ] `CODEBASE-STANDARD.md` known-violations table updated
-- [ ] Committed on `ticket/DN-002-network-manager-hardening`, not merged
+- [x] Timeouts configured; `isLenient` and `prettyPrint` removed; `config` and `httpClient` internal
+- [x] Non-HTTPS base URL rejected at config time
+- [x] Confirmed `ios/DapurNaura` does not reference `config` or `httpClient` (the app has no
+      DNLibrary dependency at all)
+- [x] Unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
+- [x] `CODEBASE-STANDARD.md` known-violations table updated
+- [x] Committed on `ticket/DN-002-network-manager-hardening` (`86c05ce`), not merged
 - [ ] PR merged, ticket marked `done` by the human

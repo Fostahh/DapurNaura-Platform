@@ -2,7 +2,7 @@
 id: DN-007
 type: technical
 title: Enforce the DN-XXX commit-message convention with a commit-msg hook
-status: todo
+status: in-review
 source: —
 branch: ticket/DN-007-commit-msg-hook
 layer: tooling
@@ -57,10 +57,20 @@ Tooling Definition of Done — behaviour demonstrated, including the failure pat
 3. A merge commit and a `Release 1.2.3 …` message are accepted
 4. Re-running `bootstrap.sh` neither duplicates nor breaks the installation
 
+## Implementation notes (2026-08-06)
+
+- **Decision to veto if unwanted:** `docs: ` was added to the exempt prefixes alongside
+  `Merge `/`Revert `/`Release `, following the doc-housekeeping precedent already in DNLibrary's
+  history. Without it, fixing a typo in a project repo's CLAUDE.md would require a ticket.
+- `ios/SPMDNLibrary`'s clone had no `.git/hooks/` directory at all — bootstrap now creates it
+  before installing. Found because the first install run failed exactly there.
+- Umbrella-repo enforcement remains out of scope as planned; its own commits stay `docs: …` /
+  `DN-XXX: …` by convention.
+
 ## Done when
 
-- [ ] Hook implemented; installed in `DNLibrary`, `ios/DapurNaura`, `ios/SPMDNLibrary`
-- [ ] `bootstrap.sh` installs it for fresh clones and is still safe to re-run
-- [ ] All four cases above demonstrated
-- [ ] Committed on `ticket/DN-007-commit-msg-hook`, not merged
+- [x] Hook implemented; installed in `DNLibrary`, `ios/DapurNaura`, `ios/SPMDNLibrary`
+- [x] `bootstrap.sh` installs it for fresh clones and is still safe to re-run (run twice)
+- [x] All four cases above demonstrated (rejection message states the convention)
+- [x] Committed on `ticket/DN-007-commit-msg-hook` (`acddc92`), not merged
 - [ ] PR merged, ticket marked `done` by the human

@@ -413,35 +413,24 @@ subcommand. See the ticket for the six verified cases.
 
 ## 8. Architecture constraints
 
-### 8.1 Testability is a blocker, not a nice-to-have
+### 8.1 Testability — resolved (DN-006, in-review)
 
-No meaningful unit test can be written against the current network layer:
+`DNNetworkManager` takes an `HttpClientEngine` through an `internal` constructor (tests use Ktor's
+`MockEngine`), and the singleton is gone — instances are constructed at the platform edge and are
+fully independent. The suite (20 tests, both platforms) runs via `./gradlew :sharedLogic:check`.
+The constraint going forward: **do not reintroduce a singleton** — CODEBASE-STANDARD §6.
 
-- `DNNetworkManager` constructs `HttpClient { }` in the class body with no engine parameter, so it
-  always picks the platform default. **There is no seam for Ktor's `MockEngine`.**
-- The constructor is private and `initialize()` silently returns the *existing* instance if one is
-  set — so tests cannot get a fresh instance, and test #2 inherits test #1's config.
-- `RemoteDataSource` depends on the concrete `DNNetworkManager`, not an abstraction.
+### 8.2 Don't publish DTOs as the public API — pattern established (DN-004/DN-008)
 
-Since the DoD requires unit tests, **the first substantive ticket must make this injectable** or
-every test-bearing ticket after it is blocked. Ticketed as **DN-006**.
+The nullable-everything scaffolding DTO was deleted (DN-004), and the first real slice (DN-008)
+set the pattern to repeat: DTOs `internal` with nullability matching the contract, domain models
+public, mappers between them, `explicitApi()` enforcing it all. Every next endpoint follows it.
 
-### 8.2 Don't publish DTOs as the public API
+### 8.3 Typed errors — done on the network path (DN-008)
 
-A wire DTO with every field nullable is currently the public API of the XCFramework, which forced
-`?? "…"` on every field access in the consuming app.
-
-For a binary-distributed library this is the wrong contract: an upstream JSON field rename breaks
-Swift compilation, and consumers null-check fields the server always sends.
-
-**Target:** DTOs internal, domain models public, mappers between them. Doing this before `1.0.0`
-costs nothing; doing it after is a breaking change.
-
-### 8.3 Typed errors
-
-`RemoteDataSource` rethrows a generic `Exception`, so Swift receives an untyped `KotlinException`
-carrying a string. A sealed error type gives exhaustive `switch` in Swift with no default case —
-the single highest-leverage thing SKIE offers, and unused today.
+The repository maps every exception into sealed `DNError` cases; nothing throws past it, and Swift
+gets an exhaustive `switch` — SKIE's highest-leverage feature, now in use. Still pending: the
+storage classes rethrow bare `Exception`; align them when they gain real consumers.
 
 ### 8.4 DI shape is already decided by the code
 
@@ -454,8 +443,8 @@ This is not a choice to be made later; it is already true.
 
 ### 8.5 Smaller shape issues
 
-- `baseUrl` actually holds a *full endpoint path*, concatenated with `?key=` at call time. That
-  only works while exactly one endpoint exists; the second one breaks the shape.
+- ~~`baseUrl` actually holds a *full endpoint path*~~ **Resolved (DN-008).** It is now a genuine
+  base URL; each endpoint appends its own path.
 - Android target parity is compiler-enforced: `androidLibrary` is a declared target, so an
   `expect` without an `androidMain` actual will not compile. Library-level Android parity is not
   optional — only the Android *app* is deferred.
@@ -486,9 +475,9 @@ created for the app repo.
    history, and configuration now comes from gitignored `Config/Secrets.xcconfig` via Info.plist
    substitution. ⚠️ Anything in Info.plist still ships readable inside the `.ipa` — gitignoring
    keeps keys out of git, it does not make them secret.
-6. **Zero tests.** `commonTest` is declared in `sharedLogic/build.gradle.kts` with `kotlin-test`
-   wired up, but no test source directory exists. Blocked on the engine seam — ticketed as
-   **DN-006**, whose test plan creates the first test sources.
+6. ~~**Zero tests.**~~ **Resolved (DN-001/002/006/008).** 20 tests across `commonTest`,
+   `androidHostTest` and `iosTest`; `./gradlew :sharedLogic:check` green on both platforms. The
+   Keychain cases are `@Ignore`d — the hostless iOS test process has no keychain.
 7. **No link between a DNLibrary commit and an SPM tag** — for the *existing* tags. **DN-005**
    (in-review) fixes this going forward: every new release stamps its source commit SHA into the
    release notes. The historical tags `1.0.0`–`1.4.0` stay unlinked and are already slated for

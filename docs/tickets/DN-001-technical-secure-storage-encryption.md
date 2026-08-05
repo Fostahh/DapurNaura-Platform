@@ -2,7 +2,7 @@
 id: DN-001
 type: technical
 title: SecureStorage stores plaintext on Android
-status: todo
+status: in-review
 source: —
 branch: ticket/DN-001-secure-storage-encryption
 layer: data
@@ -102,11 +102,27 @@ Keychain actual is unaffected.
 
 Gate: `./gradlew :sharedLogic:check`.
 
+## Implementation notes (2026-08-06)
+
+- Option 1 taken: AES-GCM with an Android Keystore key, IV prepended, Base64 into the existing
+  DataStore. No new runtime dependency; test-only additions are Robolectric, androidx.test:core
+  and kotlinx-coroutines-test.
+- Robolectric has no Android Keystore, so the cipher and the DataStore are an **internal
+  constructor seam** — host tests inject a locally generated AES key and a per-test backing file.
+  The Keystore path itself runs only on a device.
+- Test 5 was run against the old implementation first and failed with "plaintext value found in
+  the backing file", then passed after the change.
+- **Deviation from the test plan:** the iOS round-trip cases are written but `@Ignore`d — the
+  hostless simulator test process has no keychain (`errSecNotAvailable`, −25291). The Keychain
+  actual is untouched by this ticket; its verification stays manual on a device.
+- The documented Android host-test task `testDebugUnitTest` does not exist; the real task is
+  `testAndroidHostTest`. Docs corrected.
+
 ## Done when
 
-- [ ] Android `SecureStorage` encrypts values at rest
-- [ ] Unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
-- [ ] Test 5 above demonstrably fails against the current implementation and passes after
-- [ ] `CODEBASE-STANDARD.md` known-violations table updated
-- [ ] Committed on `ticket/DN-001-secure-storage-encryption`, not merged
+- [x] Android `SecureStorage` encrypts values at rest
+- [x] Unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
+- [x] Test 5 above demonstrably fails against the current implementation and passes after
+- [x] `CODEBASE-STANDARD.md` known-violations table updated
+- [x] Committed on `ticket/DN-001-secure-storage-encryption` (`f263523`), not merged
 - [ ] PR merged, ticket marked `done` by the human

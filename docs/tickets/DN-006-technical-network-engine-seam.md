@@ -2,7 +2,7 @@
 id: DN-006
 type: technical
 title: Make DNNetworkManager testable — engine seam, resettable instance
-status: todo
+status: in-review
 source: —
 branch: ticket/DN-006-network-engine-seam
 layer: data
@@ -68,12 +68,21 @@ validation are DN-002's scope, even though the same file is touched.
 
 ## Public API contract
 
-Intended: **no new public surface.** Consumers keep initialising the library the same way; the seam
-is internal. If keeping that true proves impossible (e.g. the initialisation shape must change),
-record the actual before/after here before review.
+**As implemented (2026-08-06): breaking.** The singleton was removed outright — the preferred
+option, since `initialize()` silently ignoring a second configuration was itself a defect:
 
-**Version bump implied:** patch if the public surface is untouched; major if `initialize` changes
-shape. Settle at implementation and record it here.
+| Symbol | Before | After |
+|---|---|---|
+| `DNNetworkManager.Companion.initialize(config)` | public | **removed** |
+| `DNNetworkManager.Companion.getInstance()` | public | **removed** |
+| `DNNetworkManager(config)` constructor | private | **public** |
+| `DNNetworkManager(config, engine)` constructor | — | `internal` (the test seam) |
+
+`RemoteDataSource` already took the manager by constructor; with the seam, a MockEngine-backed
+manager *is* the test double, so no extra abstraction interface was introduced — ceremony with no
+test value today.
+
+**Version bump implied:** major under `0.x` — public symbols removed. Zero consumers exist.
 
 ## Out of scope
 
@@ -96,11 +105,23 @@ These are the **first tests in the repository** — creating the missing test so
 3. `RemoteDataSource` (or its post-DN-004 successor) can be constructed against the mock-backed
    manager with no global state.
 
+## Implementation notes (2026-08-06)
+
+- The first tests actually arrived earlier than planned — DN-001 (storage) and DN-002 (config
+  validation) landed before this ticket in the ascending execution order, creating
+  `androidHostTest` and `commonTest`. This ticket added the network tests the seam exists for,
+  including DN-002's three deferred cases (malformed JSON, unknown keys, timeout).
+- Test infrastructure note: `runTest`'s virtual clock races Ktor's `HttpTimeout` killer against
+  MockEngine responses arriving on real dispatcher threads — the tests run their bodies on
+  `Dispatchers.Default` to keep every delay real (see `runNetworkTest` in the test file).
+- Test-only dependency added: `ktor-client-mock` (justified: it is the engine this seam exists
+  for).
+
 ## Done when
 
-- [ ] Engine injectable; a test can obtain a fresh, independently configured instance
-- [ ] No singleton in any tested path (`CODEBASE-STANDARD.md` §6)
-- [ ] First unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
-- [ ] `CODEBASE-STANDARD.md` known-violations table updated (engine-seam row, zero-tests row)
-- [ ] Committed on `ticket/DN-006-network-engine-seam`, not merged
+- [x] Engine injectable; a test can obtain a fresh, independently configured instance
+- [x] No singleton in any tested path (`CODEBASE-STANDARD.md` §6)
+- [x] Network unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
+- [x] `CODEBASE-STANDARD.md` known-violations table updated (engine-seam row, zero-tests row)
+- [x] Committed on `ticket/DN-006-network-engine-seam` (`4e1b223`), not merged
 - [ ] PR merged, ticket marked `done` by the human

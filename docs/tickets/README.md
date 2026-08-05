@@ -54,24 +54,29 @@ which matters, because that id is the only thing linking work across the separat
 
 ### Product
 
-_None yet — `docs/requirements/` is empty, so the product path has not been exercised._
+| Id | Title | Status | Layer |
+|---|---|---|---|
+| [DN-008](DN-008-product-cooking-class-list.md) | Data layer — fetch the list of cooking classes | `in-review` | data |
+
+DN-008 traces to a **verbal** instruction from the owner (2026-08-06) — the requirement document
+is deliberately deferred and should be backfilled when the requirements path is exercised.
 
 ### Technical
 
 | Id | Title | Status | Layer |
 |---|---|---|---|
-| [DN-001](DN-001-technical-secure-storage-encryption.md) | SecureStorage stores plaintext on Android | `todo` | data |
-| [DN-002](DN-002-technical-network-manager-hardening.md) | Harden DNNetworkManager — timeouts, strict JSON, hide internals | `todo` | data |
+| [DN-001](DN-001-technical-secure-storage-encryption.md) | SecureStorage stores plaintext on Android | `in-review` | data |
+| [DN-002](DN-002-technical-network-manager-hardening.md) | Harden DNNetworkManager — timeouts, strict JSON, hide internals | `in-review` | data |
 | [DN-003](DN-003-technical-ios-build-variants.md) | iOS build variants — Development / Alpha / Beta / Release via xcconfig | `in-review` | ios |
-| [DN-004](DN-004-technical-remove-scaffolding-dtos.md) | Delete the leftover scaffolding DTO and endpoint from DNLibrary | `todo` | data |
+| [DN-004](DN-004-technical-remove-scaffolding-dtos.md) | Delete the leftover scaffolding DTO and endpoint from DNLibrary | `in-review` | data |
 | [DN-005](DN-005-technical-publish-preflight-provenance.md) | publish-spm.sh — validate the source repo and record release provenance | `in-review` | tooling |
-| [DN-006](DN-006-technical-network-engine-seam.md) | Make DNNetworkManager testable — engine seam, resettable instance | `todo` | data |
-| [DN-007](DN-007-technical-commit-msg-hook.md) | Enforce the DN-XXX commit-message convention with a commit-msg hook | `todo` | tooling |
+| [DN-006](DN-006-technical-network-engine-seam.md) | Make DNNetworkManager testable — engine seam, no singleton | `in-review` | data |
+| [DN-007](DN-007-technical-commit-msg-hook.md) | Enforce the DN-XXX commit-message convention with a commit-msg hook | `in-review` | tooling |
 
-Every `todo` ticket was filed by the agent and none is scheduled — the agent must not start one
-until told to. Suggested data-layer order: DN-004 (pure deletion, smallest diff) → DN-006 (unblocks
-all testing) → DN-002 (same file as DN-006 — decide whether to fold them before starting) → domain
-modelling against `docs/contracts/`. DN-001 is independent and can be scheduled any time.
+**The DNLibrary branches are stacked**, executed ascending on 2026-08-06 by the owner's
+instruction: `DN-001 → DN-002 → DN-004 → DN-006 → DN-008`, each branch built on the previous
+(they touch the same files). **Merge their PRs in that order.** DN-007 lives on its own branch in
+the umbrella repo; DN-003 in `ios/DapurNaura`.
 
 ### Done
 

@@ -129,7 +129,7 @@ Gradle commands run from `DNLibrary/` — that is the Gradle root, `gradlew` liv
 ```sh
 cd DNLibrary
 ./gradlew :sharedLogic:check                # all checks + tests, both platforms — the gate
-./gradlew :sharedLogic:testDebugUnitTest    # Android host tests
+./gradlew :sharedLogic:testAndroidHostTest  # Android host tests (Robolectric)
 ./gradlew :sharedLogic:iosSimulatorArm64Test
 ./gradlew :sharedLogic:assemble             # Android library + iOS XCFramework
 ```
@@ -165,12 +165,13 @@ API is unstable; what changed in a version goes in the release notes, not the nu
 
 ## Current known blockers
 
-- **The data layer cannot be unit-tested yet.** `DNNetworkManager` builds its `HttpClient` inline
-  with no engine seam, and `initialize()` returns the existing singleton. Fixing this is a
-  prerequisite for any test-bearing ticket — ticketed as DN-006.
-- **DTOs are the public API.** A wire DTO with every field nullable is what Swift sees, which is
-  why consuming code needs `?? "…"` everywhere. Domain models + mappers are the target.
-- **Leftover scaffolding is still in the data layer.** An earlier throwaway DTO and its endpoint
-  remain in `DNLibrary` and must be deleted before the domain is modelled — see DN-004.
 - **`ios/DapurNaura` has no data layer.** No package dependency, no networking. It is a SwiftUI
-  shell with four build variants. Do not add DNLibrary wiring until a ticket asks for it.
+  shell with four build variants. The library now offers `DNDataLayer` → `GetCookingClassesUseCase`
+  (DN-008); wiring the app against it is the next ticket — do not add it until asked.
+- **The DNLibrary ticket branches are stacked and unmerged** — DN-001 → DN-002 → DN-004 → DN-006 →
+  DN-008, each built on the previous. Merge their PRs in that order.
+- **The `main`/`development` renames are local-only.** Until pushed, GitHub still defaults to
+  `master` and a fresh `bootstrap.sh` clone gets a different world than this machine.
+
+Previous blockers — no engine seam, singleton, DTOs-as-public-API, leftover scaffolding, zero
+tests — were resolved on 2026-08-06 by DN-001/002/004/006/008 (all `in-review`).
