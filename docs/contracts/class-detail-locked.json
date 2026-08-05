@@ -1,0 +1,21 @@
+{
+  "id": "3",
+  "name": "Jajanan Pasar",
+  "description": "Aneka jajanan pasar klasik dengan takaran yang sudah teruji.",
+  "imageUrl": "https://placehold.co/600x400/png?text=Jajanan+Pasar",
+  "price": 125000,
+  "currency": "IDR",
+  "purchaseStatus": "NOT_PURCHASED",
+  "recipes": [
+    {
+      "id": "31",
+      "name": "Klepon",
+      "imageUrl": "https://placehold.co/600x400/png?text=Klepon"
+    },
+    {
+      "id": "32",
+      "name": "Risoles",
+      "imageUrl": "https://placehold.co/600x400/png?text=Risoles"
+    }
+  ]
+}

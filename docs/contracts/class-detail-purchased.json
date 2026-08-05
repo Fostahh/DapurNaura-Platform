@@ -1,0 +1,25 @@
+{
+  "id": "1",
+  "name": "Makanan Kekinian",
+  "description": "Kelas membuat aneka makanan kekinian yang sedang tren dan mudah dijual kembali.",
+  "imageUrl": "https://placehold.co/600x400/png?text=Makanan+Kekinian",
+  "price": 150000,
+  "currency": "IDR",
+  "purchaseStatus": "PURCHASED",
+  "recipes": [
+    {
+      "id": "11",
+      "name": "Brownies",
+      "imageUrl": "https://placehold.co/600x400/png?text=Brownies",
+      "portions": "20 pcs",
+      "loyang": "20x20 cm"
+    },
+    {
+      "id": "12",
+      "name": "Cheese Cake",
+      "imageUrl": "https://placehold.co/600x400/png?text=Cheese+Cake",
+      "portions": "12 pcs",
+      "loyang": "18x18 cm"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "classes": [
+    {
+      "id": "1",
+      "name": "Makanan Kekinian",
+      "description": "Kelas membuat aneka makanan kekinian yang sedang tren dan mudah dijual kembali.",
+      "imageUrl": "https://placehold.co/600x400/png?text=Makanan+Kekinian",
+      "price": 150000,
+      "currency": "IDR",
+      "recipeCount": 6,
+      "purchaseStatus": "PURCHASED"
+    },
+    {
+      "id": "2",
+      "name": "Pastry Dasar",
+      "description": "Dasar-dasar pastry untuk pemula, dari adonan hingga hasil akhir.",
+      "imageUrl": "https://placehold.co/600x400/png?text=Pastry+Dasar",
+      "price": 200000,
+      "currency": "IDR",
+      "recipeCount": 4,
+      "purchaseStatus": "PENDING_VERIFICATION"
+    },
+    {
+      "id": "3",
+      "name": "Jajanan Pasar",
+      "description": "Aneka jajanan pasar klasik dengan takaran yang sudah teruji.",
+      "imageUrl": "https://placehold.co/600x400/png?text=Jajanan+Pasar",
+      "price": 125000,
+      "currency": "IDR",
+      "recipeCount": 8,
+      "purchaseStatus": "NOT_PURCHASED"
+    }
+  ]
+}

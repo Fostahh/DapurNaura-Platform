@@ -1,0 +1,26 @@
+{
+  "id": "11",
+  "classId": "1",
+  "name": "Brownies",
+  "images": [
+    "https://placehold.co/800x600/png?text=Brownies+1",
+    "https://placehold.co/800x600/png?text=Brownies+2"
+  ],
+  "portions": "20 pcs",
+  "loyang": "20x20 cm",
+  "videoUrl": "https://placehold.co/video/brownies.mp4",
+  "ingredients": [
+    { "group": "Bahan A", "name": "Telur",          "quantity": "4 butir" },
+    { "group": "Bahan A", "name": "Gula pasir",     "quantity": "200 gr" },
+    { "group": "Bahan B", "name": "Tepung terigu",  "quantity": "150 gr" },
+    { "group": "Bahan B", "name": "Coklat bubuk",   "quantity": "50 gr" },
+    { "group": null,      "name": "Dark chocolate", "quantity": "200 gr" }
+  ],
+  "steps": [
+    { "text": "Lelehkan dark chocolate bersama margarin, sisihkan hingga hangat.", "videoTimestampSeconds": 0 },
+    { "text": "Kocok telur dan gula pasir hingga mengembang dan pucat.",           "videoTimestampSeconds": 45 },
+    { "text": "Masukkan campuran tepung terigu dan coklat bubuk, aduk balik.",     "videoTimestampSeconds": 120 },
+    { "text": "Tuang ke loyang, panggang 30 menit pada suhu 170 derajat.",         "videoTimestampSeconds": 210 },
+    { "text": "Dinginkan sebelum dipotong agar tidak hancur.",                     "videoTimestampSeconds": null }
+  ]
+}
