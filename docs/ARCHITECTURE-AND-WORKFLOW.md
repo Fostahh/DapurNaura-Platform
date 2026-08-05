@@ -1,6 +1,6 @@
 # Dapur Naura — Architecture & Workflow
 
-**Status:** revised 2026-08-05. Reflects decisions taken in design discussion; the workflow has
+**Status:** revised 2026-08-06. Reflects decisions taken in design discussion; the workflow has
 not yet been run end to end on a real ticket.
 
 The reference document for how this platform is built. Items are tagged **[DECIDED]** or
@@ -38,8 +38,8 @@ income — the ingredient notes say things like *"sesuaikan dengan harga jual"*.
 
 ### What actually exists
 
-**Almost nothing of this domain.** The data layer has no domain model and no JSON contract; what
-remains is early scaffolding — one throwaway DTO and the endpoint that fed it — scheduled for
+**Almost nothing of this domain.** The data layer has no domain model — though the JSON contract
+to build it against is now approved, see below; what remains is early scaffolding — one throwaway DTO and the endpoint that fed it — scheduled for
 deletion in DN-004. The iOS app is a SwiftUI shell with four build variants and **no data layer at
 all**. Android has not been created.
 
@@ -49,8 +49,10 @@ Treat this document as the design to build toward, not a description of code tha
 Objective-C's `Class` in the generated header. Indonesian domain terms are kept where translation
 loses meaning (`loyang`).
 
-**[OPEN]** The JSON contract is agreed in discussion but **not yet written to files**. Until it is,
-the DTOs have nothing authoritative to be built against.
+**[DECIDED] The JSON contract is written and approved** (v1, 2026-08-06) — see
+[contracts/](contracts/). Approved is not frozen: contracts may still be revised deliberately while
+the UI takes shape, which is why they live in `docs/contracts/` rather than the immutable
+`docs/requirements/`. DTOs and domain models are built against those files.
 
 ---
 
@@ -86,8 +88,8 @@ A ticket lives in the umbrella; the commits satisfying it live in the project re
 links them except the `DN-XXX` id in the commit message.** That convention is therefore
 load-bearing, not cosmetic.
 
-**[OPEN]** A `commit-msg` hook in each project repo would enforce it (~5 lines). Currently
-unenforced, so it can be silently forgotten.
+**[OPEN]** Enforcement is now ticketed as **DN-007** — a `commit-msg` hook installed by
+`bootstrap.sh`. Until it lands, the convention is unenforced and can be silently forgotten.
 
 ---
 
@@ -98,6 +100,7 @@ unenforced, so it can be silently forgotten.
 ```
 docs/requirements/   ← human writes. INPUT.  IMMUTABLE.
 docs/tickets/        ← agent writes. OUTPUT. Mutable.
+docs/contracts/      ← agreed wire shape. Approved ≠ frozen — revisions are deliberate and noted.
 ```
 
 ### Two entry points **[DECIDED]**
@@ -396,14 +399,15 @@ versions increment **per release, not per ticket** — several tickets batch int
 That keeps version numbers meaningful and stops them burning through `0.9.0` in a fortnight. It
 also means a ticket can be `done` before its code is ever published. Needs explicit confirmation.
 
-### Publish preflight — a known defect **[OPEN]**
+### Publish preflight — fixed by DN-005 **[RESOLVED]**
 
-`publish-spm.sh` validates only **SPMDNLibrary's** working tree. It never checks DNLibrary's tree
-or branch. So a release binary can be built from uncommitted code on any branch, tagged, and
-published — with nothing recording where it came from.
+`publish-spm.sh` used to validate only **SPMDNLibrary's** working tree — a release binary could be
+built from uncommitted DNLibrary code on any branch, tagged and published, with nothing recording
+where it came from.
 
-Fix, not yet applied: refuse a dirty or non-`main` DNLibrary tree, and stamp the DNLibrary source
-commit SHA into the GitHub release notes.
+**DN-005** (in-review) fixed it: publishing now refuses a dirty, non-release-branch or unpushed
+DNLibrary tree, stamps the source commit SHA into the release notes, and adds a `preflight`
+subcommand. See the ticket for the six verified cases.
 
 ---
 
@@ -420,7 +424,7 @@ No meaningful unit test can be written against the current network layer:
 - `RemoteDataSource` depends on the concrete `DNNetworkManager`, not an abstraction.
 
 Since the DoD requires unit tests, **the first substantive ticket must make this injectable** or
-every test-bearing ticket after it is blocked.
+every test-bearing ticket after it is blocked. Ticketed as **DN-006**.
 
 ### 8.2 Don't publish DTOs as the public API
 
@@ -463,8 +467,9 @@ This is not a choice to be made later; it is already true.
 Observed and verified. Recorded so it isn't rediscovered.
 
 **These are candidate technical tickets.** As a list in a document, nothing acts on them; as
-tickets they become schedulable work with a `## Rationale` each. Items 2, 3, 4 and 8 in particular
-should be cleared before the first product ticket, so its diff contains only that ticket's work.
+tickets they become schedulable work with a `## Rationale` each. Items 1–5 and 8 are resolved;
+6 is ticketed (DN-006), 7 is addressed going forward by DN-005, and 9 waits on a remote being
+created for the app repo.
 
 1. ~~**DapurNaura is wired to the local package.**~~ **Resolved (DN-003).** The app now has **no
    package dependency at all** — `packageReferences` and every `packageProductDependencies` list
@@ -482,11 +487,14 @@ should be cleared before the first product ticket, so its diff contains only tha
    substitution. ⚠️ Anything in Info.plist still ships readable inside the `.ipa` — gitignoring
    keeps keys out of git, it does not make them secret.
 6. **Zero tests.** `commonTest` is declared in `sharedLogic/build.gradle.kts` with `kotlin-test`
-   wired up, but no test source directory exists.
-7. **No link between a DNLibrary commit and an SPM tag.** Two repos, two histories; given the
-   `1.4.0` zip there is no recorded path back to the source commit. See the preflight defect in §7.
-8. **SPMDNLibrary tracks a `.DS_Store`**, currently modified — it will fail the publish preflight's
-   clean-tree check until untracked.
+   wired up, but no test source directory exists. Blocked on the engine seam — ticketed as
+   **DN-006**, whose test plan creates the first test sources.
+7. **No link between a DNLibrary commit and an SPM tag** — for the *existing* tags. **DN-005**
+   (in-review) fixes this going forward: every new release stamps its source commit SHA into the
+   release notes. The historical tags `1.0.0`–`1.4.0` stay unlinked and are already slated for
+   deletion (§7).
+8. ~~**SPMDNLibrary tracks a `.DS_Store`**~~ **Resolved (DN-005).** Untracked in `e6c6dec`, so the
+   publish preflight's clean-tree check can now pass.
 9. **`DapurNaura` has no git remote**, so the push/PR half of the release flow cannot run for the
    app yet. A repo is planned.
 
@@ -494,15 +502,16 @@ should be cleared before the first product ticket, so its diff contains only tha
 
 ## 10. Recommended next moves
 
-1. **Settle the JSON contract for `CookingClass` and `Recipe`.** Everything in the data layer is
-   blocked on it — DN-004 can delete the scaffolding without it, but nothing can replace it.
-   This needs the owner, not an agent.
+1. ~~**Settle the JSON contract for `CookingClass` and `Recipe`.**~~ **Done.** Approved v1 lives
+   in [contracts/](contracts/) as of 2026-08-06.
 2. **DN-004 — delete the scaffolding DTO and endpoint.** Cheapest it will ever be: no consumer
    exists, so it breaks nothing.
-3. **Then testability + public API shape** (§8.1–8.3). Every test-bearing ticket is blocked behind
-   the engine seam, and the API shape is cheap to change now and expensive later.
+3. **DN-006 — the engine seam.** Every test-bearing ticket is blocked behind it. Then DN-002
+   (same file — decide whether to fold the two), then model the domain against the contract
+   (§8.2–8.3: DTOs internal, domain models public, typed errors).
 4. **Run the loop once, deliberately small.** The process in this document has never been executed
    end to end — no ticket has yet gone requirement → branch → test → publish → bump. A tiny first
    ticket will answer more than further design will.
 5. **Write the first requirement document.** `docs/requirements/` is still empty, so the `product`
-   ticket path has never been exercised; only `technical` tickets exist (DN-001…DN-004).
+   ticket path has never been exercised; only `technical` tickets exist (DN-001…DN-007). The owner
+   has deliberately deferred this — it happens when UI work is scheduled, not before.

@@ -25,7 +25,10 @@ For a binary-distributed library this is the highest-consequence gap in the tool
 is visible to consumers and expensive to withdraw.
 
 **Filed retroactively.** The work was done before the ticket system covered tooling; the ticket
-exists so the commit has a traceable id, as the platform rule requires.
+exists so the commit has a traceable id, as the platform rule requires. For the same reason the
+commit sits directly on `development` rather than on a ticket branch with a PR — a one-off
+consequence of the retrofit, **not a precedent**. Tooling work from here on follows the standard
+`ticket/DN-XXX-slug` → PR flow.
 
 ## Technical approach
 
@@ -65,5 +68,5 @@ exists to separate those two outcomes.
 
 - [x] Source-repo validation, provenance capture and `preflight` implemented
 - [x] All six cases verified manually
-- [ ] Committed on `development`
+- [x] Committed on `development` (`90ecd2e` in DNLibrary, `e6c6dec` in SPMDNLibrary)
 - [ ] PR merged, ticket marked `done` by the human

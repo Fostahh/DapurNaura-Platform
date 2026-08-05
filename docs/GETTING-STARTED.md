@@ -133,6 +133,7 @@ There is no Jira. Requirements and tickets are markdown in this repo.
 ```
 docs/requirements/   ← you write these.   INPUT.  Immutable.
 docs/tickets/        ← the agent writes these.  OUTPUT.
+docs/contracts/      ← the agreed JSON wire shape. Approved, but not frozen like a requirement.
 ```
 
 The loop:
@@ -184,6 +185,7 @@ What changed in a version goes in the **release notes**, not in the number.
 |---|---|
 | Understand the architecture and the full workflow | [ARCHITECTURE-AND-WORKFLOW.md](ARCHITECTURE-AND-WORKFLOW.md) |
 | See what work is open, or write a ticket | [tickets/README.md](tickets/README.md) |
+| See the agreed JSON wire shape | [contracts/README.md](contracts/README.md) |
 | Write a new requirement | [requirements/README.md](requirements/README.md) |
 | Work on the data layer | `DNLibrary/CLAUDE.md` |
 | Work on the iOS app | `ios/DapurNaura/CLAUDE.md` |

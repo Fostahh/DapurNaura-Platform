@@ -89,6 +89,6 @@ leaves an empty-string override, which is still an override — select the **row
 
 ## Done when
 
-- [ ] Committed on `ticket/DN-003-ios-build-variants`, not merged
+- [x] Committed on `ticket/DN-003-ios-build-variants`, not merged
 - [ ] Human verifies the running app
 - [ ] PR merged, ticket marked `done` by the human

@@ -37,6 +37,7 @@ DapurNaura-Platform/          umbrella repo — tracks docs/ + config ONLY
   docs/
     requirements/             human-authored. INPUT. Never edit these.
     tickets/                  agent-authored. OUTPUT. One file per ticket.
+    contracts/                approved JSON wire shape (v1) — source of truth for DTOs + backend.
   bootstrap.sh                clones the project repos into place
 DNLibrary/                    git repo → github.com/Fostahh/DNLibrary
                               KMP data layer. Ships as XCFramework (iOS) + AAR (Android).
@@ -166,7 +167,7 @@ API is unstable; what changed in a version goes in the release notes, not the nu
 
 - **The data layer cannot be unit-tested yet.** `DNNetworkManager` builds its `HttpClient` inline
   with no engine seam, and `initialize()` returns the existing singleton. Fixing this is a
-  prerequisite for any test-bearing ticket.
+  prerequisite for any test-bearing ticket — ticketed as DN-006.
 - **DTOs are the public API.** A wire DTO with every field nullable is what Swift sees, which is
   why consuming code needs `?? "…"` everywhere. Domain models + mappers are the target.
 - **Leftover scaffolding is still in the data layer.** An earlier throwaway DTO and its endpoint
