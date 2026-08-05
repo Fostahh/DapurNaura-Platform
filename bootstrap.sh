@@ -68,6 +68,23 @@ for entry in "${NO_REMOTE_YET[@]}"; do
   fi
 done
 
+# ---------------------------------------------------------------------------
+# Install the commit-msg hook (DN-007) into every project repo present.
+# The DN-XXX commit convention is the only cross-repo link between a commit
+# and its ticket. Hooks live in .git/hooks/ (per-clone, never committed), so
+# installation happens here and is safe to repeat.
+# ---------------------------------------------------------------------------
+HOOK_SRC="$ROOT/hooks/commit-msg"
+echo
+for entry in "${REPOS[@]}" "${NO_REMOTE_YET[@]}"; do
+  path="${entry%%|*}"
+  if [[ -d "$path/.git" ]]; then
+    mkdir -p "$path/.git/hooks"
+    install -m 0755 "$HOOK_SRC" "$path/.git/hooks/commit-msg"
+    echo "✓ $path — commit-msg hook installed"
+  fi
+done
+
 cat <<'EOF'
 
 Done.

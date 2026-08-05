@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#
+# commit-msg — every commit in a Dapur Naura project repo must reference its ticket.
+#
+# The DN-XXX id is the only thread linking a commit to its ticket across the separate
+# repositories — see DapurNaura-Platform/docs/ARCHITECTURE-AND-WORKFLOW.md §2.
+# Installed into each project repo's .git/hooks/ by the umbrella's bootstrap.sh (DN-007).
+
+first_line="$(head -n1 "$1")"
+
+# Plumbing that legitimately carries no ticket id:
+#   Merge/Revert — written by git itself
+#   Release      — written by publish-spm.sh at release time
+#   docs:        — doc housekeeping, following existing precedent in the repos
+case "$first_line" in
+  Merge\ *|Revert\ *|Release\ *|docs:\ *) exit 0 ;;
+esac
+
+if printf '%s' "$first_line" | grep -qE '^DN-[0-9]+: '; then
+  exit 0
+fi
+
+cat >&2 <<EOF
+✗ Commit rejected: the message must start with its ticket id — "DN-123: <subject>"
+
+  Got: "$first_line"
+
+The DN-XXX id is the only link between this commit and its ticket in the umbrella
+repo (docs/tickets/). Exempt prefixes: "Merge ", "Revert ", "Release ", "docs: ".
+This hook is installed by DapurNaura-Platform/bootstrap.sh (ticket DN-007).
+EOF
+exit 1
