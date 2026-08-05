@@ -1,254 +1,508 @@
 # Dapur Naura — Architecture & Workflow
 
-**Status:** discussion summary, 2026-08-05. Nothing here has been implemented yet.
+**Status:** revised 2026-08-05. Reflects decisions taken in design discussion; the workflow has
+not yet been run end to end on a real ticket.
 
-This captures the target architecture and the Document Driven Development workflow for the
-Dapur Naura platform (KMP data layer + iOS app + future Android app). Items are tagged
-**[DECIDED]**, **[PROPOSED]** (recommendation, not yet accepted), or **[OPEN]** (needs a call).
-
----
-
-## 1. Goal
-
-Build **DNLibrary** as a Kotlin Multiplatform library that ships the entire data layer to both
-platforms:
-
-- **iOS** — XCFramework, wrapped in a Swift package (`SPMDNLibrary`) with semver tags.
-- **Android** — AAR, consumed by a native Android app built later.
-
-The iOS app (**DapurNaura**) is currently a proof-of-concept with no real UI design. Focus for
-now is the **data layer in DNLibrary**, not the UI.
+The reference document for how this platform is built. Items are tagged **[DECIDED]** or
+**[OPEN]** (still needs a call). For onboarding, read
+[GETTING-STARTED.md](GETTING-STARTED.md) first — this document is the deep reference.
 
 ---
 
-## 2. The four moving pieces (verified current state)
+## 1. Goal and scope
 
-| Piece | Location | Git | Role |
+**Dapur Naura** is a cooking app, built to help the owner's family digitalise their cooking
+products. The audience is people learning to cook.
+
+The shape of the domain, as confirmed against real content:
+
+```
+CookingClass  ──sections[]──>  Recipe  ──components[]──>  ingredients[] + steps[]
+"Makanan Kekinian"             "Brownies Red Velvet"      "Brownis"
+"Jajanan 1"                     images[], video           "Toping creamcheese"
+                                description, difficulty
+                                prepTime, portions, loyang
+```
+
+**A *kelas* is a cooking class, not a category.** It bundles recipes taught together — the source
+documents are titled "COOKING CLASS". A class has ordered **sections** (the main curriculum, plus
+"Bonus Resep"), and each recipe has ordered **components**, each with its own ingredients and
+method. Both levels needed sections because a real recipe is not one ingredient list and one
+method — the brownies recipe has two of each.
+
+**These classes are sold.** Payment (Midtrans) is planned but **deliberately deferred** — adding an
+entitlement field later is an additive change, so nothing needs preparing now.
+
+Content is **Bahasa Indonesia only**. The audience is home cooks, many learning to produce food for
+income — the ingredient notes say things like *"sesuaikan dengan harga jual"*.
+
+### What actually exists
+
+**Almost nothing of this domain.** The data layer has no domain model and no JSON contract; what
+remains is early scaffolding — one throwaway DTO and the endpoint that fed it — scheduled for
+deletion in DN-004. The iOS app is a SwiftUI shell with four build variants and **no data layer at
+all**. Android has not been created.
+
+Treat this document as the design to build toward, not a description of code that exists.
+
+**[DECIDED] Naming.** `Recipe` and `CookingClass`. Never a type called `Class` — it collides with
+Objective-C's `Class` in the generated header. Indonesian domain terms are kept where translation
+loses meaning (`loyang`).
+
+**[OPEN]** The JSON contract is agreed in discussion but **not yet written to files**. Until it is,
+the DTOs have nothing authoritative to be built against.
+
+---
+
+## 2. The workspace
+
+**[DECIDED] Umbrella workspace, not a monorepo.**
+
+| Piece | Path | Git | Role |
 |---|---|---|---|
-| **DNLibrary** | `~/Desktop/AndroidStudioProjects/DNLibrary` | repo, `master` | KMP source. One `sharedLogic` module → XCFramework + Android library |
-| **SPMDNLibrary** | `~/Desktop/AndroidStudioProjects/SPMDNLibrary` | repo, tags `1.0.0`–`1.4.0` | Manifest-only Swift package. `Package.swift` points at a GitHub release zip + checksum |
-| **DapurNaura** | `~/Desktop/XcodeProjects/DapurNaura` | repo | SwiftUI POC app, consumes `import DNLibrary` |
-| **DNLibraryLocal** | `~/Desktop/XcodeProjects/DNLibraryLocal` | **not a repo** | Generated build artifact — a local SPM package for pre-release testing |
+| **Umbrella** | `DapurNaura-Platform/` | repo, `main` | Tracks `docs/` + config only |
+| **DNLibrary** | `DNLibrary/` | repo → `Fostahh/DNLibrary`, `main` + `development` | KMP source. One `sharedLogic` module → XCFramework + Android library |
+| **DapurNaura** | `ios/DapurNaura/` | repo, `main`, **no remote yet** | SwiftUI app |
+| **SPMDNLibrary** | `ios/SPMDNLibrary/` | repo → `Fostahh/SPMDNLibrary`, `main` + `development` | Manifest-only Swift package. `Package.swift` → GitHub release zip + checksum |
+| **DNLibraryLocal** | `ios/DNLibraryLocal/` | **not a repo** | Build artifact — local SPM package for development |
+| **Android** | `android/` | — | Not created yet |
 
-### DNLibrary today
+### Why separate repos
 
-Package `id.dn.fostah.dnlibrary.datasource.*`:
+DNLibrary is a library consumed by two independent apps, so it needs its own release cadence.
+Folding it into a monorepo fights that.
 
-- `remote/network/NetworkManager.kt` — `DNNetworkManager`, a singleton (`initialize` / `getInstance`)
-  wrapping a Ktor `HttpClient` with `ContentNegotiation` + kotlinx JSON.
-- `remote/RemoteDataSource.kt` — `IRemoteDataSource` / `RemoteDataSource`, suspend functions
-  against the RAWG API.
-- `remote/network/responses/VideoGameResponse.kt` — `@Serializable` DTOs, all fields nullable.
-- `local/PreferenceStorage.kt` — `expect class`, DataStore on Android / `NSUserDefaults` on iOS.
-- `local/SecureStorage.kt` — `expect class`, DataStore on Android / Keychain on iOS.
+`SPMDNLibrary` **cannot** be a subdirectory of anything: SPM resolves a git-URL dependency by
+cloning the repo and reading `Package.swift` **at the repo root** — no subdirectory support for
+remote dependencies. It also needs its own tag namespace so library versions don't collide with
+app versions.
 
-Build: static XCFramework (`iosArm64`, `iosSimulatorArm64`) + Android library, with **SKIE** for
-better generated Swift APIs. `commonTest` is wired up but **empty — there are zero tests**.
+The umbrella `.gitignore` makes git blind to every project folder — no submodules, no gitlinks,
+no double-tracking. `bootstrap.sh` clones them into place.
 
-### The release pipeline (`scripts/publish-spm.sh`)
+### The cost, and the mitigation
 
-Gradle only assembles the XCFramework; the script does everything else. Two modes:
+A ticket lives in the umbrella; the commits satisfying it live in the project repos. **Nothing
+links them except the `DN-XXX` id in the commit message.** That convention is therefore
+load-bearing, not cosmetic.
 
-- **`local`** — assemble → copy `.xcframework` to `DNLibraryLocal` → write a path-based
-  `Package.swift`. Xcode rewiring is manual and must be undone afterward.
-- **`publish`** — release build → `ditto` zip → `swift package compute-checksum` → rewrite
-  SPMDNLibrary's `Package.swift` with the release-asset URL → commit, tag, push,
-  `gh release create`. Dry-run is the default; preflight checks the tree is clean, the tag is
-  free, and origin really is SPMDNLibrary.
+**[OPEN]** A `commit-msg` hook in each project repo would enforce it (~5 lines). Currently
+unenforced, so it can be silently forgotten.
 
 ---
 
-## 3. Workflow: Document Driven Development
+## 3. Document Driven Development
 
-**[DECIDED]** No Jira. Requirements and tickets live in the repo as markdown.
+**[DECIDED]** No Jira. Requirements and tickets are markdown in the umbrella repo.
 
 ```
-docs/requirements/   ← human writes. Input. IMMUTABLE.
-docs/tickets/        ← agent writes. Output. Mutable.
+docs/requirements/   ← human writes. INPUT.  IMMUTABLE.
+docs/tickets/        ← agent writes. OUTPUT. Mutable.
 ```
+
+### Two entry points **[DECIDED]**
+
+Work reaches a ticket two ways, and tickets are typed accordingly:
+
+| | **Product ticket** | **Technical ticket** |
+|---|---|---|
+| Starts from | A requirement document | A problem observed in the code or tooling |
+| `source:` | Required | None — no document exists |
+| Carries its "why" in | The requirement document it quotes | Its own `## Rationale` section |
+
+Nobody writes a requirement saying "make the HTTP engine injectable" — so without the technical
+type, testability, architecture and tooling work cannot be ticketed at all. Both types share one
+`DN-XXX` number sequence; see [tickets/README.md](tickets/README.md) for the templates.
 
 ### The loop
 
-1. Human drops a user-requirement document into `docs/requirements/`.
-2. Agent consumes it and writes one or more tickets into `docs/tickets/`, with technical detail.
-3. Agent implements: KMP data layer changes for new API calls / data features, plus UI changes
-   where the requirement calls for them.
-4. Agent writes **and runs** unit tests.
-5. Human reviews the diff manually in a Git UI (Fork / SourceTree).
-
-**Requirements are never edited to match what was built.** That would destroy the audit trail.
-Corrections go into the ticket, not the requirement.
-
-### Ticket format — **[DECIDED]** one file per ticket
-
-Chosen over a single `TODO.md` because: status churn stays out of code diffs during Fork review;
-the agent reads only the ticket it needs instead of an ever-growing list; and concurrent ticket
-updates can't clobber each other.
-
-```markdown
----
-id: DN-004
-title: Menu catalogue repository
-status: todo | in-progress | in-review | done
-source: docs/requirements/2026-08-menu-catalogue.md
-branch: ticket/DN-004-menu-catalogue
----
-## Requirement (traced)
-> quoted lines from the source doc
-
-## Technical approach
-## Public API contract     ← what Swift / Kotlin callers actually see
-## Test plan
-## Done when
+```
+Human explains what they want     Problem noticed in code/tooling
+        ↓                         (by the human or the agent)
+Agent drafts the requirement                  │
+   (status: draft)                            │
+        ↓                                     │
+"Is this correct?" ──no──→ human corrects     │
+        │ yes          ↑         │            │
+        │              └─────────┘            │
+   status: approved — FROZEN                  │
+        │                                     │
+        └───────────────┬─────────────────────┘
+                        ↓
+Agent writes ticket(s) into docs/tickets/
+  · from a requirement → type: product
+  · from an observation → type: technical (agent may create, not start)
+        ↓
+   Data layer work needed?
+        │
+        ├── YES ──→ implement in DNLibrary
+        │              ↓
+        │           write / update unit tests
+        │              ↓
+        │           run tests ──failing──→ fix ──┐
+        │              ↓ passing                 │
+        │              ←──────────────────────────┘
+        │              ↓
+        │           publish-spm.sh local
+        │              ↓
+        │           implement UI against DNLibraryLocal, and RUN IT
+        │           on each platform that exists (iOS now, Android later)
+        │              ↓
+        └── NO ─────→ implement UI only
+                       ↓
+                  Human verifies the running app + reviews the diff
+                  (still on the local package — nothing committed yet)
+                       ↓
+                  ├── rejected → verbal feedback → back to implementation
+                       ↓ approved
+                  Human triggers commit — every repo, each on ticket/DN-XXX-slug
+                       ↓
+                  Push + PR (human opens the PR; no gh)
+                       ↓
+                  PR merged into `development`; human tells the agent
+                       ↓
+                  Release step (see §7) — human-triggered
+                       ↓
+                  Human marks the ticket done
 ```
 
-`source:` is the traceability link — "why does this code exist" is always one hop away.
-`docs/tickets/README.md` holds a regenerated at-a-glance index (derived, harmless if stale).
+**An approved requirement is never edited to match what was built.** That destroys the audit
+trail, which is the whole point. Corrections go in the ticket.
 
-### Definition of Done
+### Who writes the requirement **[DECIDED]**
 
-**[DECIDED]** A requirement is COMPLETE when the agent has implemented the code — data layer
-included — and has created and run unit tests. Human review in a Git UI follows.
+The content is always the human's decision; the typing is not. The human explains what they want —
+as a product owner or as a mobile developer describing behaviour — and the agent drafts it into
+`docs/requirements/` at `status: draft`, then asks whether it is correct. That loop repeats until
+the human approves, at which point `status: approved` freezes the document.
 
-**[PROPOSED]** additions, so the bar isn't ambiguous:
+**Drafts are mutable; approved documents are frozen.** The `status:` field marks exactly when.
 
-- **Which test task counts.** `./gradlew :sharedLogic:check`, or name both
-  `testDebugUnitTest` and `iosSimulatorArm64Test` explicitly.
-- **Branch, commit, stop.** Agent works on `ticket/DN-XXX-slug`, commits, and never merges.
-  The human merges after review.
-- **The failure path.** A rejected review appends a `## Review feedback` section to the ticket
-  and flips status back to `in-progress`. Otherwise rejections exist only in the reviewer's head.
+The agent's obligation while drafting: every statement must be traceable to something the human
+actually said. Anything the agent adds on its own initiative is marked `[ASSUMPTION]` inline, and
+anything undecided goes to `## Open questions` rather than being guessed. An unmarked invention
+that gets approved becomes a requirement nobody asked for — the single failure mode of drafting on
+the human's behalf.
 
----
+### Why one file per ticket **[DECIDED]**
 
-## 4. Repository layout — **[PROPOSED]**
+Chosen over a single `TODO.md`: status churn stays out of code diffs during review; the agent
+reads only the ticket it needs rather than an ever-growing list; and concurrent ticket updates
+can't clobber each other.
 
-### Hard constraint
-
-**SPMDNLibrary cannot become a subdirectory of a larger repo.** SPM resolves a git-URL dependency
-by cloning the repo and reading `Package.swift` **at the repo root** — there is no subdirectory
-support for remote package dependencies. It also needs its own tag namespace so `1.4.0` doesn't
-collide with app tags. It stays a standalone repo.
-
-`DNLibraryLocal` is a build artifact, not a project, and shouldn't sit beside source projects.
-
-### Proposed shape: true monorepo
-
-Putting `docs/requirements` at the top of an umbrella folder only works if that folder is a git
-repo — otherwise requirements and tickets aren't versioned alongside the code they produced, and
-the ticket→commit link disappears from Fork.
-
-```
-DapurNaura-Platform/                 ← one git repo
-├── docs/
-│   ├── requirements/
-│   └── tickets/
-├── DNLibrary/                       ← KMP data layer
-├── ios/DapurNaura/                  ← Xcode app
-├── android/                         ← later
-└── scripts/publish-spm.sh
-
-SPMDNLibrary/                        ← separate repo, next door
-```
-
-**Why:**
-
-- One ticket = one branch = one diff, spanning library and app. The DoD already spans both;
-  separate repos give two unlinked commits with nothing tying them together.
-- **The local SPM path becomes permanent.** Today `publish-spm.sh local` forces you to rip out
-  the remote dependency in Xcode, add a local one, then remember to switch back. With a fixed
-  relative path this stops being a manual dance, and SPMDNLibrary becomes purely a distribution
-  channel cut at release time rather than something the app fights with daily.
-- Requirements, tickets, and code share one history.
-
-**Cost:** use `git subtree add` rather than moving folders, or existing histories are lost. Paths
-in `settings.gradle.kts` change, and two things in the script follow the layout — `publish_local`
-hardcodes `$ios_project_dir/../DNLibraryLocal`, and `detect_spm_repo` scans `dirname(REPO_ROOT)`
-for a sibling repo.
+`docs/tickets/README.md` holds the template and a regenerated at-a-glance index (derived —
+if it drifts from the files, the files win).
 
 ---
 
-## 5. Architecture recommendations — **[PROPOSED]**
+## 4. Ticket lifecycle
 
-### 5.1 Testability is a blocker, not a nice-to-have
+**[DECIDED]** Four states. The `status:` field in the ticket front-matter is the source of truth.
+
+| State | Meaning | Who sets it |
+|---|---|---|
+| `todo` | Written from a requirement, not started | Agent, at creation |
+| `in-progress` | Being implemented | Agent |
+| `in-review` | Implemented, data-layer tests green, awaiting human review | Agent |
+| `done` | PR merged | **Human, manually** |
+
+### Rejection
+
+**[DECIDED]** Handled **verbally**. The agent flips the ticket back to `in-progress` and fixes.
+
+Known limitation, worth managing deliberately: an agent starts every session cold, so verbal
+feedback does not survive the session boundary. **If the same feedback is given twice, write it
+down** — into the ticket if it is ticket-specific, into the relevant `CLAUDE.md` if it is a
+standing preference. Once is fine to leave verbal.
+
+### Blocked
+
+If the agent cannot implement — the requirement is ambiguous, impossible, or contradicts existing
+code — it **stops**, appends a `## Blocked` section to the ticket describing the problem and the
+options it sees, and tells the human. Status stays `in-progress`. Improvising around a blocker is
+never correct.
+
+---
+
+## 5. Agent autonomy
+
+**[DECIDED]** The boundary, so it doesn't get renegotiated every session.
+
+### Without asking
+
+- Read anything in the workspace
+- Create and edit ticket files in `docs/tickets/`
+- **Create a technical ticket at `status: todo`** when it notices a problem — untestable code,
+  drift, a tooling defect. This is how an incidental finding becomes tracked work instead of
+  scope creep or a lost observation. It may **not start** one until the human schedules it.
+- Create the ticket branch `ticket/DN-XXX-slug`
+- Write and modify code on that branch, in any project repo
+- Write and run unit tests; run any Gradle task
+- Run `publish-spm.sh` in **`local`** mode
+- Move a ticket between `todo` → `in-progress` → `in-review`
+
+### Stop and wait for the human
+
+- **Starting** work on a technical ticket it created itself — filing is autonomous, scheduling is not
+- Committing, pushing, opening a PR
+- Merging anything
+- Running `publish-spm.sh` in **`publish`** mode
+- Any tag or GitHub-release operation
+- Marking a ticket `done`
+
+### Never
+
+- Edit a file in `docs/requirements/` — they are immutable
+- Force-push; delete a tag or a release
+- Commit the local package reference in `ios/DapurNaura` (§7)
+- `git add -A` or `git commit -a` in `ios/DapurNaura` — Xcode rewrites `project.pbxproj`
+  constantly, so a blanket add sweeps the local wiring into history
+
+**[OPEN]** `gh` is not installed, so the agent cannot open PRs or create releases even when
+told to. The human does both by hand. Revisit when the manual hand-off becomes tiresome.
+
+---
+
+## 6. Definition of Done
+
+**[DECIDED]** Per layer, because the two have different verification stories.
+
+### Data layer (DNLibrary)
+
+- Code implemented on `ticket/DN-XXX-slug`
+- Unit tests written **and run**; `./gradlew :sharedLogic:check` green (covers both platforms)
+- Committed, not merged
+
+### UI (DapurNaura)
+
+- Code implemented on `ticket/DN-XXX-slug`
+- **Verified manually by the human.** No automated gate — tests are data-layer only.
+
+**[OPEN]** UI testing on both platforms is wanted eventually; no date set.
+
+### Tooling (scripts, build config, CI)
+
+Neither layer applies — the `publish-spm.sh` preflight fix is the worked example. Done when:
+
+- The change is implemented
+- **Its behaviour is demonstrated**, including the failure paths it is supposed to catch
+- Committed, not merged
+
+### The ticket
+
+Done when the **PR is merged**, marked manually by the human.
+
+### Why tests are not optional in the data layer
+
+An agent cannot run the app and look at it. Unit tests are the only way it can tell whether what
+it wrote works — they are its feedback loop, not merely a quality gate. Until the testability
+blocker in §8 is fixed, data-layer work is unverifiable by the agent doing it, and verification
+falls entirely on the human review.
+
+---
+
+## 7. Release flow
+
+### Branches **[DECIDED]**
+
+| Branch | Role |
+|---|---|
+| `ticket/DN-XXX-slug` | One per ticket. Branched from `development`. Never merged by the agent. |
+| `development` | PR base. Integration. QA / CISO testing. Alpha / Beta / UAT variants. |
+| `main` | Protected. Receives release-ready code from `development`. No direct changes. |
+
+**[DECIDED] `main` is the standard name** across every repository — DNLibrary and SPMDNLibrary
+were renamed from `master`. `development` now exists in all three project repos.
+
+**[OPEN]** The renames and the new branches are **local only**. Until they are pushed, GitHub still
+shows `master` as the default branch for DNLibrary and SPMDNLibrary.
+
+### Versioning **[DECIDED]**
+
+Three independent numbers. **They are not related and must not be made to match.**
+
+| Number | Where | Read by |
+|---|---|---|
+| **Library version** | SPMDNLibrary git tags | The SPM resolver — a machine with semver semantics built in |
+| **App version** | `MARKETING_VERSION` | Humans, in the App Store |
+| **Build number** | `CURRENT_PROJECT_VERSION` | App Store Connect; must strictly increase |
+
+The library uses **plain semver, driven by the change** — additive API is a minor, a
+changed/removed public symbol is a major, a fix is a patch. `0.x` while the API is unstable, which
+it is; `1.0.0` is reserved for the deliberate moment the API is committed to.
+
+**What changed in a version belongs in the release notes, not in the number.**
+
+The agent proposes the bump from the ticket's *Public API contract* section; the human confirms
+at publish time.
+
+**[OPEN]** The existing tags `1.0.0`–`1.4.0` predate this workflow and mean nothing. Resetting to
+`0.x` requires deleting those 5 tags and their 5 GitHub releases. Safe — nothing consumes them,
+and `ios/DapurNaura` has no dependency at all — but the human will do it manually.
+
+### The iOS dependency **[DECIDED]**
+
+The app depends on SPMDNLibrary by **version range** (`.upToNextMajor`), **not** an exact pin.
+
+**Therefore `Package.resolved` must be committed.** With a range, it is the only thing that makes
+a build reproducible — without it, two people building the same commit can get different library
+versions, and a "frozen, ready to release" `main` is not actually frozen. It is currently deleted
+from the working tree (§9) and must be restored.
+
+### The local package rule **[DECIDED]**
+
+During development the app builds against `ios/DNLibraryLocal`. **That wiring is never committed.**
+The committed `project.pbxproj` and `Package.resolved` always name a remote version.
+
+Consequence, which is expected and not a bug: while a ticket is in flight, the committed app state
+**does not compile** — the Swift code calls APIs that only exist in the not-yet-published library
+version. It becomes valid again in a final commit that bumps to the new version after publishing.
+
+Both files go dirty when switching to local. Revert both before committing; stage explicitly.
+
+### Sequence **[DECIDED]**
+
+**Verify the whole slice locally before anything is committed.** The library change and the app
+change are proven together, against the local package, in one approval gate — rather than
+approving a diff, merging, publishing, and only then finding out the app doesn't work.
+
+| # | Step | Who |
+|---|---|---|
+| 1 | Implement in DNLibrary; `:sharedLogic:check` green | agent |
+| 2 | `publish-spm.sh local` → `ios/DNLibraryLocal` | agent |
+| 3 | Implement the UI against the local package and **run it** on every platform that exists | agent |
+| 4 | **Verify the running app**, review the diff — nothing is committed yet | **human** |
+| 5 | Rejected? verbal feedback, back to step 1 | human |
+| 6 | Approved → trigger commit in every repo, each on `ticket/DN-XXX-slug` | **human** |
+| 7 | Push; open the PR (no `gh`, so the human does this) | human |
+| 8 | PR merged into `development`; tell the agent | **human** |
+| 9 | Release cut: `development` → `main`, then `publish-spm.sh publish` from a clean `main` | human-triggered |
+| 10 | App switches from the local package to the published version; commit `Package.resolved` | agent |
+| 11 | Mark the ticket `done` | **human** |
+
+**Steps 1–4 are one loop with one gate.** Nothing merges, publishes, or waits in the middle. That
+is the point of the change — the human is asked to approve once, on something that demonstrably
+runs, not twice on partial state.
+
+**Step 10 cannot move earlier.** The tag does not exist until step 9, and the app cannot reference
+a version that has not been published. So the final version bump is always a separate, tiny commit
+after the release. It is two lines in `Package.resolved` and needs no second review.
+
+Until then the app's committed state names the *previous* version and does not compile — expected,
+and covered by the local package rule above.
+
+**[OPEN] Publish cadence.** Step 5 as written cuts tags from `main` only, which means library
+versions increment **per release, not per ticket** — several tickets batch into one version.
+That keeps version numbers meaningful and stops them burning through `0.9.0` in a fortnight. It
+also means a ticket can be `done` before its code is ever published. Needs explicit confirmation.
+
+### Publish preflight — a known defect **[OPEN]**
+
+`publish-spm.sh` validates only **SPMDNLibrary's** working tree. It never checks DNLibrary's tree
+or branch. So a release binary can be built from uncommitted code on any branch, tagged, and
+published — with nothing recording where it came from.
+
+Fix, not yet applied: refuse a dirty or non-`main` DNLibrary tree, and stamp the DNLibrary source
+commit SHA into the GitHub release notes.
+
+---
+
+## 8. Architecture constraints
+
+### 8.1 Testability is a blocker, not a nice-to-have
 
 No meaningful unit test can be written against the current network layer:
 
-- `DNNetworkManager` constructs `HttpClient { }` in the class body with no engine parameter, so
-  it always picks the platform default. **There is no seam for Ktor's `MockEngine`.**
-- The constructor is private and `initialize()` silently returns the *existing* instance if one
-  is set — so tests can't get a fresh instance, and test #2 inherits test #1's config.
+- `DNNetworkManager` constructs `HttpClient { }` in the class body with no engine parameter, so it
+  always picks the platform default. **There is no seam for Ktor's `MockEngine`.**
+- The constructor is private and `initialize()` silently returns the *existing* instance if one is
+  set — so tests cannot get a fresh instance, and test #2 inherits test #1's config.
 - `RemoteDataSource` depends on the concrete `DNNetworkManager`, not an abstraction.
 
-Since the DoD requires unit tests, **the first ticket must make this injectable** or every
-test-bearing ticket after it is blocked.
+Since the DoD requires unit tests, **the first substantive ticket must make this injectable** or
+every test-bearing ticket after it is blocked.
 
-### 5.2 Don't publish DTOs as the public API
+### 8.2 Don't publish DTOs as the public API
 
-`VideoGameResponse` — a wire DTO with every field nullable — is currently the public API of the
-XCFramework. `ContentView` imports it directly, which is why the app is full of `?? "NIL"`.
+A wire DTO with every field nullable is currently the public API of the XCFramework, which forced
+`?? "…"` on every field access in the consuming app.
 
 For a binary-distributed library this is the wrong contract: an upstream JSON field rename breaks
 Swift compilation, and consumers null-check fields the server always sends.
 
-**Target:** DTOs internal, domain models public, mappers between them.
+**Target:** DTOs internal, domain models public, mappers between them. Doing this before `1.0.0`
+costs nothing; doing it after is a breaking change.
 
-### 5.3 Typed errors
+### 8.3 Typed errors
 
 `RemoteDataSource` rethrows a generic `Exception`, so Swift receives an untyped `KotlinException`
-carrying a string. A sealed error type would give exhaustive `switch` in Swift with no default
-case — this is the single highest-leverage thing SKIE offers, and it's unused today.
+carrying a string. A sealed error type gives exhaustive `switch` in Swift with no default case —
+the single highest-leverage thing SKIE offers, and unused today.
 
-### 5.4 Smaller shape issues
+### 8.4 DI shape is already decided by the code
 
-- `baseUrl` is actually a *full endpoint* (`.../api/games`) concatenated with `?key=`. The second
-  endpoint added will break that shape.
-- `expect class PreferenceStorage` has different constructors per platform (Android needs
-  `Context`, iOS doesn't), so **commonMain can never construct one**. Any repository in commonMain
-  must take it as a constructor parameter injected from the platform edge. This decides the DI
-  shape whether or not it's planned.
+`expect class PreferenceStorage` has different constructors per platform — Android's actual takes
+a `Context`, iOS's takes nothing. **commonMain can therefore never construct one.** Any repository
+in commonMain must take it as a constructor parameter injected from the platform edge. Same for
+`SecureStorage`.
+
+This is not a choice to be made later; it is already true.
+
+### 8.5 Smaller shape issues
+
+- `baseUrl` actually holds a *full endpoint path*, concatenated with `?key=` at call time. That
+  only works while exactly one endpoint exists; the second one breaks the shape.
+- Android target parity is compiler-enforced: `androidLibrary` is a declared target, so an
+  `expect` without an `androidMain` actual will not compile. Library-level Android parity is not
+  optional — only the Android *app* is deferred.
 
 ---
 
-## 6. Known drift (observed, intentionally NOT fixed)
+## 9. Known drift
 
-Recorded so it isn't rediscovered later. The human explicitly deferred all of this.
+Observed and verified. Recorded so it isn't rediscovered.
 
-1. **DapurNaura is wired to the local package, not the remote.** `project.pbxproj` contains only
-   `XCLocalSwiftPackageReference "../DNLibraryLocal"`; there is no `Package.resolved`. The remote
-   reference was removed for local testing and never restored.
-2. **Three `DNLibrary` product dependencies on the app target** (`6297C70E`, `62415D6E`,
-   `6215B9EB`) and three matching Frameworks entries — two are orphans whose package references
-   no longer exist. This is the likely cause of past "Missing package product" errors; restarting
-   Xcode masked it rather than fixed it.
-3. **DapurNaura's `CLAUDE.md` claims the package tracks `master`.** It doesn't — SPMDNLibrary is
-   tag-versioned.
-4. **DNLibrary's `CLAUDE.md` predates the local data layer** — no mention of `PreferenceStorage`
-   or `SecureStorage`.
-5. **The RAWG API key is hardcoded and committed** in `DapurNauraApp.swift`.
-6. **Zero tests.** `commonTest` is declared in `sharedLogic/build.gradle.kts` but empty.
+**These are candidate technical tickets.** As a list in a document, nothing acts on them; as
+tickets they become schedulable work with a `## Rationale` each. Items 2, 3, 4 and 8 in particular
+should be cleared before the first product ticket, so its diff contains only that ticket's work.
+
+1. ~~**DapurNaura is wired to the local package.**~~ **Resolved (DN-003).** The app now has **no
+   package dependency at all** — `packageReferences` and every `packageProductDependencies` list
+   are empty, and the orphan product dependencies are gone. It builds standalone. Re-adding
+   DNLibrary is the first step of the next data-layer ticket, under the rule in §7.
+2. ~~**`Package.resolved` is deleted.**~~ **Moot.** There is no dependency to resolve. The file
+   returns with the remote dependency and must be committed then.
+3. ~~**Three `DNLibrary` product dependencies.**~~ **Resolved (DN-003).** All removed. If
+   `Missing package product 'DNLibrary'` reappears, the cause is a product dependency without a
+   matching package reference — Xcode adds a *new* one rather than reusing an existing one.
+4. ~~**`DapurNaura` has uncommitted changes.**~~ **Resolved.** Committed as `DN-003` on
+   `ticket/DN-003-ios-build-variants`.
+5. ~~**The API key is hardcoded and committed.**~~ **Resolved (DN-003).** The key was scrubbed from
+   history, and configuration now comes from gitignored `Config/Secrets.xcconfig` via Info.plist
+   substitution. ⚠️ Anything in Info.plist still ships readable inside the `.ipa` — gitignoring
+   keeps keys out of git, it does not make them secret.
+6. **Zero tests.** `commonTest` is declared in `sharedLogic/build.gradle.kts` with `kotlin-test`
+   wired up, but no test source directory exists.
 7. **No link between a DNLibrary commit and an SPM tag.** Two repos, two histories; given the
-   `1.4.0` zip there's no recorded path back to the source commit.
+   `1.4.0` zip there is no recorded path back to the source commit. See the preflight defect in §7.
+8. **SPMDNLibrary tracks a `.DS_Store`**, currently modified — it will fail the publish preflight's
+   clean-tree check until untracked.
+9. **`DapurNaura` has no git remote**, so the push/PR half of the release flow cannot run for the
+   app yet. A repo is planned.
 
 ---
 
-## 7. Open questions — **[OPEN]**
+## 10. Recommended next moves
 
-1. **Monorepo accepted?** It requires `git subtree` to preserve the three existing histories.
-2. **Is DapurNaura the only intended consumer of SPMDNLibrary?** If so, the versioned package repo
-   is ceremony — it earns its keep with a second consumer or a need for reproducible pinned
-   releases. A native Android app consuming the AAR is a separate distribution story.
-3. **Android timing.** The KMP module already builds an Android library target. Must tickets land
-   `androidMain` actuals at the same time, or is iOS-first with Android deliberately deferred
-   acceptable?
-4. **Does DoD extend to release?** Ticket ends at "merged into DNLibrary", or at "SPM tag cut and
-   DapurNaura building against it"?
-
----
-
-## 8. Recommended first moves
-
-1. Commit to the repository layout (§4) — everything else depends on where `docs/` lives.
-2. Make ticket #1 **"testability + public API shape"**: injectable HTTP engine, domain models
-   instead of DTOs, typed errors. Every feature ticket after it gets cheaper, and it avoids
-   publishing a binary API that has to be broken later.
+1. **Settle the JSON contract for `CookingClass` and `Recipe`.** Everything in the data layer is
+   blocked on it — DN-004 can delete the scaffolding without it, but nothing can replace it.
+   This needs the owner, not an agent.
+2. **DN-004 — delete the scaffolding DTO and endpoint.** Cheapest it will ever be: no consumer
+   exists, so it breaks nothing.
+3. **Then testability + public API shape** (§8.1–8.3). Every test-bearing ticket is blocked behind
+   the engine seam, and the API shape is cheap to change now and expensive later.
+4. **Run the loop once, deliberately small.** The process in this document has never been executed
+   end to end — no ticket has yet gone requirement → branch → test → publish → bump. A tiny first
+   ticket will answer more than further design will.
+5. **Write the first requirement document.** `docs/requirements/` is still empty, so the `product`
+   ticket path has never been exercised; only `technical` tickets exist (DN-001…DN-004).

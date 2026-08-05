@@ -6,15 +6,19 @@ Everything a newcomer needs to go from zero to a building workspace. Read this f
 
 ## 1. What this project is
 
-**Dapur Naura** is a cooking app — browse recipe categories (Pastry, Jajanan, …), open a
-category to see its recipes, open a recipe to get the ingredients, the step-by-step method, and
-a how-to video. The audience is people learning to cook.
+**Dapur Naura** is a cooking app, built to digitalise the paid cooking classes the owner's wife and
+mother-in-law teach. Browse **cooking classes** (*kelas*), open one to see its **recipes**, open a
+recipe for the ingredients (*bahan-bahan*), the step-by-step method, and a how-to video. Content is
+Bahasa Indonesia. The audience is people learning to cook.
+
+Classes are paid; a payment gateway (likely Midtrans) is planned but deliberately deferred.
 
 The data layer is shared between iOS and Android via **Kotlin Multiplatform**. The UI is native
 on each platform — SwiftUI on iOS, Jetpack Compose on Android.
 
-> **Note:** the data layer currently talks to the RAWG *video games* API. That is proof-of-concept
-> scaffolding to prove the KMP pipeline works end to end, not the real domain. It will be replaced.
+> **Almost none of this exists yet.** The data layer has no domain model and still carries
+> scaffolding awaiting deletion (DN-004). The iOS app is a SwiftUI shell with four build variants
+> and **no data layer at all**. Android has not been created. Expect to build, not to read.
 
 ---
 
@@ -87,13 +91,38 @@ cd DNLibrary
 
 Opened and run from `ios/DapurNaura` in Xcode. **Gradle alone cannot build it.**
 
-During development the app builds against a locally assembled framework in `ios/DNLibraryLocal`,
-which is a build artifact committed nowhere. Generate it before building the app:
+Schemes are **per build variant** — there is no scheme called plain `DapurNaura`:
+
+```sh
+cd ios/DapurNaura
+xcodebuild -list -project DapurNaura.xcodeproj      # "DapurNaura Dev" | Alpha | Beta | Release
+```
+
+> **The app currently has no DNLibrary dependency.** It was removed, and the app builds standalone.
+> Everything in the rest of this section describes how the dependency works **once a ticket
+> reinstates it** — it is inert today. Do not add it speculatively.
+
+The app gets DNLibrary as a **binary**, one of two ways:
+
+| | Source | Committed? |
+|---|---|---|
+| **Remote** | an `SPMDNLibrary` semver tag | ✅ always this |
+| **Local** | `ios/DNLibraryLocal` — a build artifact in no repo | ❌ **never** |
+
+On a released branch the remote version resolves and the app builds. During development you point
+Xcode at the local package instead, generating it with:
 
 ```sh
 cd DNLibrary
 ./scripts/publish-spm.sh          # interactive; choose `local` mode
 ```
+
+**That local wiring is never committed.** Switching to it dirties both `project.pbxproj` and
+`Package.resolved` — revert both before committing, and never `git add -A` in that repo.
+
+One consequence that looks like a bug but isn't: while a ticket is in flight, the *committed* app
+state does not compile, because the Swift code calls library APIs that aren't published yet. It
+becomes valid again once the library is released and a final commit bumps the version.
 
 ---
 
@@ -108,26 +137,53 @@ docs/tickets/        ← the agent writes these.  OUTPUT.
 
 The loop:
 
-1. A requirement document lands in [`requirements/`](requirements/).
-2. An agent translates it into one or more tickets in [`tickets/`](tickets/), one file per ticket,
-   each with a `source:` field pointing back at the requirement.
+1. A requirement document lands in [`requirements/`](requirements/) — **or** a problem is noticed
+   in the code or tooling. Those are the two ways work starts.
+2. An agent translates it into one or more tickets in [`tickets/`](tickets/), one file per ticket:
+   - **product** — from a requirement, with a `source:` field pointing back at it
+   - **technical** — from an observation, with a `## Rationale` section instead, because no
+     requirement document exists for work like "make the HTTP engine testable"
 3. The agent implements it — data layer in `DNLibrary/`, UI in `ios/DapurNaura/`.
 4. The agent writes **and runs** unit tests. Tests are required for the **data layer**; UI is
    verified manually for now.
-5. The agent stops. A human reviews the diff in a Git UI (Fork / SourceTree).
+5. The agent builds the library into the local package and **runs the app against it**, so the
+   library change and the app change are proven together before anything is committed.
+6. The agent stops. A human verifies the running app and reviews the diff in a Git UI
+   (Fork / SourceTree) — **nothing is committed at this point**.
+7. On approval the human triggers commit → push → PR. Once merged, the human triggers the release,
+   and the app is then bumped from the local package to the published version.
 
 **Requirement documents are never edited to match what was built.** Corrections belong in the
-ticket. See [ARCHITECTURE-AND-WORKFLOW.md](ARCHITECTURE-AND-WORKFLOW.md) for the full rationale,
-the ticket template, and the release flow.
+ticket.
+
+### What the agent decides for itself
+
+Briefly, because it matters when you hand work to one: it may read anything, write tickets, create
+the ticket branch, write code and tests, and run the local build freely. It **stops and asks**
+before committing, pushing, opening a PR, merging, publishing a release, or marking a ticket done.
+It never edits a requirement document. Full boundary in
+[ARCHITECTURE-AND-WORKFLOW.md §5](ARCHITECTURE-AND-WORKFLOW.md).
 
 ---
 
-## 6. Where to look next
+## 6. Versioning, briefly
+
+Three numbers, deliberately unrelated:
+
+- **Library** (`SPMDNLibrary` tags) — plain semver, driven by API change. `0.x` while unstable.
+- **App** (`MARKETING_VERSION`) — the product number users see. Independent of the library.
+- **Build** (`CURRENT_PROJECT_VERSION`) — just has to increase.
+
+What changed in a version goes in the **release notes**, not in the number.
+
+---
+
+## 7. Where to look next
 
 | I want to… | Read |
 |---|---|
 | Understand the architecture and the full workflow | [ARCHITECTURE-AND-WORKFLOW.md](ARCHITECTURE-AND-WORKFLOW.md) |
-| See what work is open | [tickets/README.md](tickets/README.md) |
+| See what work is open, or write a ticket | [tickets/README.md](tickets/README.md) |
 | Write a new requirement | [requirements/README.md](requirements/README.md) |
 | Work on the data layer | `DNLibrary/CLAUDE.md` |
 | Work on the iOS app | `ios/DapurNaura/CLAUDE.md` |
