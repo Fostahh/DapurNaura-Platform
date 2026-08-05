@@ -183,6 +183,7 @@ What changed in a version goes in the **release notes**, not in the number.
 
 | I want to… | Read |
 |---|---|
+| Work (or point an agent at work) to the house standard | [AGENT-PLAYBOOK.md](AGENT-PLAYBOOK.md) |
 | Understand the architecture and the full workflow | [ARCHITECTURE-AND-WORKFLOW.md](ARCHITECTURE-AND-WORKFLOW.md) |
 | See what work is open, or write a ticket | [tickets/README.md](tickets/README.md) |
 | See the agreed JSON wire shape | [contracts/README.md](contracts/README.md) |

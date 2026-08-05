@@ -4,6 +4,9 @@ Guidance for Claude Code working in the Dapur Naura platform workspace.
 
 Full rationale, ticket lifecycle and release flow: [`docs/ARCHITECTURE-AND-WORKFLOW.md`](docs/ARCHITECTURE-AND-WORKFLOW.md).
 Onboarding: [`docs/GETTING-STARTED.md`](docs/GETTING-STARTED.md).
+**How to execute — the working standard every agent follows, literally:
+[`docs/AGENT-PLAYBOOK.md`](docs/AGENT-PLAYBOOK.md).** This file defines what is allowed; the
+playbook defines how to do it well. Read both before starting any ticket.
 
 ## What this app is
 

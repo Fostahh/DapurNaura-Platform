@@ -57,9 +57,12 @@ which matters, because that id is the only thing linking work across the separat
 | Id | Title | Status | Layer |
 |---|---|---|---|
 | [DN-008](DN-008-product-cooking-class-list.md) | Data layer — fetch the list of cooking classes | `in-review` | data |
+| [DN-009](DN-009-product-cooking-class-list-ui.md) | iOS — cooking-class list screen (SwiftUI + MVVM) on GET /classes | `in-review` | both |
 
-DN-008 traces to a **verbal** instruction from the owner (2026-08-06) — the requirement document
-is deliberately deferred and should be backfilled when the requirements path is exercised.
+DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
+documents are deliberately deferred and should be backfilled when the requirements path is
+exercised. DN-009's UI was verified by the owner on the running app before its commit, per the
+platform's UI gate.
 
 ### Technical
 
@@ -74,9 +77,10 @@ is deliberately deferred and should be backfilled when the requirements path is 
 | [DN-007](DN-007-technical-commit-msg-hook.md) | Enforce the DN-XXX commit-message convention with a commit-msg hook | `in-review` | tooling |
 
 **The DNLibrary branches are stacked**, executed ascending on 2026-08-06 by the owner's
-instruction: `DN-001 → DN-002 → DN-004 → DN-006 → DN-008`, each branch built on the previous
-(they touch the same files). **Merge their PRs in that order.** DN-007 lives on its own branch in
-the umbrella repo; DN-003 in `ios/DapurNaura`.
+instruction: `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009`, each branch built on the
+previous (they touch the same files). **Merge their PRs in that order.** DN-007 lives on its own
+branch in the umbrella repo; DN-003 and DN-009's iOS half in `ios/DapurNaura` (DN-009 stacked on
+DN-003).
 
 ### Done
 
