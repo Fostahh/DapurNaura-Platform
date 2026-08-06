@@ -85,15 +85,24 @@ ordered: **DN-011 must land before DN-012**, which needs its use case and its st
 | [DN-007](DN-007-technical-commit-msg-hook.md) | Enforce the DN-XXX commit-message convention with a commit-msg hook | `in-review` | tooling |
 | [DN-010](DN-010-technical-bilingual-prompt-protocol.md) | Bilingual prompt protocol — English docs, confirm-before-work gate | `in-review` | docs |
 | [DN-013](DN-013-technical-lower-deployment-target.md) | Lower IPHONEOS_DEPLOYMENT_TARGET from 26.2 to 17.0 everywhere | `in-review` | ios |
+| [DN-014](DN-014-technical-ios-codebase-architecture.md) | Decide and document the iOS codebase architecture — CODEBASE-ARCHITECTURE.md | `in-review` | docs |
+| [DN-015](DN-015-technical-apply-architecture-to-screens.md) | Bring the two existing screens up to CODEBASE-ARCHITECTURE | `todo` | ui |
+| [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `todo` | both |
+| [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `in-review` | docs |
 
 **Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**:
 
 | Repo | Stack |
 |---|---|
-| **DNLibrary** | `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009 → DN-011` |
-| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013 → DN-012` |
-| **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013` (DN-007 sits on its own branch off `main`) |
+| **DNLibrary** | `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009 → DN-011 → DN-017` |
+| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013 → DN-012 → DN-014` |
+| **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013 → DN-014` (DN-007 sits on its own branch off `main`) |
+
+**DN-015 and DN-016 are `todo` and unscheduled** — they carry the follow-up work DN-014 deliberately
+excluded. DN-015 fixes the two navigation defects and the swallowed `catch`; DN-016 moves the
+formatters into DNLibrary and is the first ticket to exercise the full publish-and-bump release path.
+Order matters: **DN-015 before DN-016**, so the structural churn lands before the cross-repo move.
 
 The umbrella stack exists because the ticket index and the rulebooks are shared files that every
 one of those tickets touches; branching them independently would have produced four conflicting
