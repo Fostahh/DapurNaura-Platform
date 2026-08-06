@@ -122,6 +122,9 @@ type, testability, architecture and tooling work cannot be ticketed at all. Both
 ```
 Human explains what they want     Problem noticed in code/tooling
         ↓                         (by the human or the agent)
+Agent restates it — human confirms            │
+   (no assumptions, either language)          │
+        ↓                                     │
 Agent drafts the requirement                  │
    (status: draft)                            │
         ↓                                     │
@@ -171,6 +174,39 @@ Agent writes ticket(s) into docs/tickets/
 
 **An approved requirement is never edited to match what was built.** That destroys the audit
 trail, which is the whole point. Corrections go in the ticket.
+
+### Language, and the confirm gate **[DECIDED]** — DN-010
+
+**The owner prompts in Bahasa Indonesia or English. The repository is always English.** Requirement
+documents, tickets, `docs/`, code, comments, branch names and commit messages, without exception.
+
+An Indonesian instruction is recorded as the agent's **English translation**, attributed as
+translated and dated; the original is not stored. This narrows the "quote the human verbatim" rule
+in [AGENT-PLAYBOOK.md](AGENT-PLAYBOOK.md) §1, and the owner decided it that way on 2026-08-06. What
+replaces `verbatim` is a stricter obligation on the agent: the translation is transcription, never
+interpretation, and any wording whose meaning the translation could plausibly change goes to the
+ticket's `## Open questions` rather than being resolved silently.
+
+**App content is never translated.** `kelas`, `bahan-bahan`, `loyang`, class and recipe names and
+every user-facing string stay Bahasa Indonesia — §1 says there is no English localisation and none
+is planned. The rule governs what the owner says *to the agent*, not what the app says *to its
+users*. Agent replies in chat match the owner's language; that changes nothing in the repository.
+
+**Before acting on a request, the agent restates it and waits for confirmation.** Every request,
+either language. Assumptions are named, or their absence is stated — and "no assumptions" is a
+claim that must be true. Ambiguity is asked about, never chosen. Confirmation is per-request, like
+commit authority is per-batch.
+
+The gate is additive. It sits *before* work starts and replaces nothing downstream: the human still
+verifies the running app at step 4 of §7, and still triggers every commit. It does not apply to
+problems the agent notices on its own — filing a technical ticket at `todo` stays autonomous,
+because there is no instruction there to misread.
+
+Why it exists: every other gate in this workflow sits *after* work exists, so a misread request was
+previously only caught once it had been built — by which point the ticket describing it has also
+become the permanent record of why the code exists. Translation raises that risk rather than
+lowering it, since a misread instruction and a confident English ticket are indistinguishable to
+the next agent that reads the ticket.
 
 ### Who writes the requirement **[DECIDED]**
 
@@ -246,6 +282,7 @@ never correct.
 
 ### Stop and wait for the human
 
+- **Acting on a request before the human has confirmed the agent's restatement of it** — §3, DN-010
 - **Starting** work on a technical ticket it created itself — filing is autonomous, scheduling is not
 - Committing, pushing, opening a PR
 - Merging anything
@@ -501,6 +538,9 @@ created for the app repo.
 4. **Run the loop once, deliberately small.** The process in this document has never been executed
    end to end — no ticket has yet gone requirement → branch → test → publish → bump. A tiny first
    ticket will answer more than further design will.
-5. **Write the first requirement document.** `docs/requirements/` is still empty, so the `product`
-   ticket path has never been exercised; only `technical` tickets exist (DN-001…DN-007). The owner
-   has deliberately deferred this — it happens when UI work is scheduled, not before.
+5. ~~**Write the first requirement document.**~~ **Done (2026-08-06).**
+   [`requirements/2026-08-06-cooking-class-detail.md`](requirements/2026-08-06-cooking-class-detail.md)
+   was drafted from the owner's verbal description, revised across four rounds of questions, and
+   approved — the first document to exercise the `product` path end to end. **DN-011** (data) and
+   **DN-012** (iOS) are the first tickets whose `source:` is a real link rather than a flagged
+   deviation. The still-open piece is backfilling documents for DN-008 and DN-009.

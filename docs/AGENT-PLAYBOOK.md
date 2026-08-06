@@ -8,7 +8,8 @@ so that any agent — regardless of capability — produces the same quality. Wh
 
 The single principle behind every rule here: **never trust a claim you have not verified — not the
 docs', not the tools', not your own.** Everything else is that principle applied to a specific
-moment in the workflow.
+moment in the workflow — including §1, which applies it to your own reading of what you were asked
+for.
 
 ---
 
@@ -25,7 +26,23 @@ An agent starts every session cold. Before any work:
 4. When a doc contradicts reality, **fixing the doc is part of the job** — in the commit where the
    fact changes, or a `docs:` commit if it was already stale.
 
-## 1. Every request becomes a ticket before it becomes code
+## 1. Every request is confirmed, then becomes a ticket, then becomes code
+
+**Confirm before you act — DN-010.** Restate what you understood the request to be, name your
+assumptions or state plainly that there are none, and **wait**. Every request, either language.
+Anything ambiguous is asked about, not chosen. Confirmation is per-request, exactly like commit
+authority is per-batch: confirming one does not pre-authorise the next.
+
+Two things this gate is not. It is not a replacement for the later gates — the human still verifies
+the running app and still triggers every commit. And it does not apply to problems *you* noticed:
+filing a technical ticket at `status: todo` stays autonomous, because there is no instruction there
+to misread. The gate exists because every other gate in this workflow sits *after* work exists, so
+without it a misread request is only caught once it has already been built — and by then it is also
+the permanent record of why the code exists.
+
+"No assumptions" is a claim. Only make it when it is true.
+
+Then:
 
 - No code without a ticket in `docs/tickets/`. Filing is autonomous; **starting** a ticket you
   filed yourself needs the human's go — see the autonomy table in `CLAUDE.md`.
@@ -34,6 +51,14 @@ An agent starts every session cold. Before any work:
 - **A verbal instruction from the human is a requirement.** Quote it *verbatim* in
   `## Requirement (traced)`, date it, and flag the missing requirement document as a recorded
   deviation. Never paraphrase it into what you think they meant without marking your additions.
+- **The repository is English; the owner is not always.** When the instruction was Bahasa
+  Indonesia, what goes in the ticket is **your English translation** — attributed as translated and
+  dated. This is the one narrowing of *verbatim* above, decided by the owner in DN-010, and it
+  raises the bar rather than lowering it: the translation must be transcription, never
+  interpretation. Any wording whose meaning your translation could plausibly change goes to
+  `## Open questions` instead of being quietly resolved. **Never translate app content** — `kelas`,
+  `bahan-bahan`, `loyang`, recipe names, every user-facing string stays Indonesian. The rule covers
+  what the owner says to you, not what the app says to its users.
 - Anything the human did not say but you need to assume: mark `[ASSUMPTION]` inline. Anything
   genuinely undecided: `## Open questions`, or ask — never silently guess.
 - The ticket's `## Out of scope` is written **before** implementing, and it is binding. Scope you
@@ -111,6 +136,8 @@ the trail is the point.
 
 ## 7. Stop conditions — non-negotiable
 
+- A request you have not yet confirmed → restate it, **stop**, wait for the human's confirmation
+  (§1). This is the earliest stop condition and the cheapest one to honour.
 - Requirement ambiguous, impossible, or contradicting code → append `## Blocked` to the ticket
   with the options you see, **stop**, tell the human. Never improvise around a blocker.
 - UI work → build it, run it, then **stop for the human's verification before any commit**.

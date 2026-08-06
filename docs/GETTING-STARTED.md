@@ -138,6 +138,10 @@ docs/contracts/      ← the agreed JSON wire shape. Approved, but not frozen li
 
 The loop:
 
+0. **Before anything else:** whatever you ask for, the agent first restates what it understood and
+   waits for you to confirm — naming its assumptions, or saying there are none. Ask in Bahasa
+   Indonesia or English; it replies in the language you used, and writes the repository in English
+   either way. It never translates the app's own content, which stays Indonesian.
 1. A requirement document lands in [`requirements/`](requirements/) — **or** a problem is noticed
    in the code or tooling. Those are the two ways work starts.
 2. An agent translates it into one or more tickets in [`tickets/`](tickets/), one file per ticket:
@@ -161,9 +165,9 @@ ticket.
 
 Briefly, because it matters when you hand work to one: it may read anything, write tickets, create
 the ticket branch, write code and tests, and run the local build freely. It **stops and asks**
-before committing, pushing, opening a PR, merging, publishing a release, or marking a ticket done.
-It never edits a requirement document. Full boundary in
-[ARCHITECTURE-AND-WORKFLOW.md §5](ARCHITECTURE-AND-WORKFLOW.md).
+before acting on a request you have not yet confirmed, and before committing, pushing, opening a
+PR, merging, publishing a release, or marking a ticket done. It never edits a requirement document.
+Full boundary in [ARCHITECTURE-AND-WORKFLOW.md §5](ARCHITECTURE-AND-WORKFLOW.md).
 
 ---
 

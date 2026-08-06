@@ -63,6 +63,32 @@ together across repos, and the reviewer depends on it.
 cloning the repo and reading `Package.swift` at the repo root — there is no subdirectory support.
 It also needs its own tag namespace.
 
+## Language, and confirming before you start
+
+Added by DN-010 (2026-08-06). Two rules that apply to every session.
+
+**The owner prompts in Bahasa Indonesia or English. The repository is always English.** Requirement
+documents, tickets, `docs/`, code, comments, branch names and commit messages are English without
+exception. An Indonesian instruction is recorded as **your English translation** — attributed as
+translated and dated, not stored in the original. This deliberately narrows the playbook's *quote
+verbatim* rule; what replaces it is that the translation must be a faithful transcription and never
+an interpretation. Mark anything you added `[ASSUMPTION]`, and send any wording whose meaning your
+translation could plausibly change to `## Open questions` rather than resolving it quietly.
+
+**Never translate app content.** `kelas`, `bahan-bahan`, `loyang`, class and recipe names, every
+user-facing string — all stay Bahasa Indonesia. There is no English localisation and none is
+planned. The rule covers what the owner says *to you*, never what the app says *to its users*.
+
+Reply to the owner in whichever language they used. That changes nothing about the repository.
+
+**Confirm what was asked before you act on it.** Restate your understanding, name your assumptions
+or state that there are none, and wait. Every request, either language. Ambiguity is asked about,
+not chosen. Confirmation is per-request — like commit authority, it does not carry to the next one.
+The gate is additive: the owner still verifies the running app and still triggers every commit.
+
+It does not apply to problems you notice yourself — filing a technical ticket at `status: todo`
+stays autonomous, because there is no instruction there to misread.
+
 ## Autonomy — what to do without asking, what to stop for
 
 **Do without asking** — read anything; create and edit ticket files; **file a technical ticket at
@@ -70,8 +96,9 @@ It also needs its own tag namespace.
 branch; run Gradle tasks; run `publish-spm.sh` in `local` mode; move a ticket between `todo` →
 `in-progress` → `in-review`.
 
-**Stop and wait for the human** — **starting** a technical ticket you filed yourself (filing is
-autonomous, scheduling is not); committing; pushing; opening a PR; merging anything; running
+**Stop and wait for the human** — **acting on a request before the owner has confirmed your
+restatement of it** (see Language above); **starting** a technical ticket you filed yourself (filing
+is autonomous, scheduling is not); committing; pushing; opening a PR; merging anything; running
 `publish-spm.sh` in `publish` mode; any tag or GitHub-release operation; marking a ticket `done`.
 
 **Never** — edit a requirement document once it is `status: approved`; force-push; delete a tag or
@@ -82,7 +109,8 @@ release; commit the local package reference in `ios/DapurNaura` (see below); run
 `docs/requirements/` at `status: draft` and ask whether it is correct, revising until they approve.
 Drafts are mutable, approved documents are frozen. Every statement must trace to something the
 human actually said — mark anything you added yourself `[ASSUMPTION]` inline, and put anything
-undecided in `## Open questions` rather than guessing.
+undecided in `## Open questions` rather than guessing. If they said it in Bahasa Indonesia, what you
+draft is your English translation of it — see Language above.
 
 If you hit something that blocks implementation — the requirement is ambiguous, impossible, or
 contradicts existing code — **stop**. Add a `## Blocked` section to the ticket stating the
@@ -168,9 +196,11 @@ API is unstable; what changed in a version goes in the release notes, not the nu
 
 ## Current known blockers
 
-- **`ios/DapurNaura` has no data layer.** No package dependency, no networking. It is a SwiftUI
-  shell with four build variants. The library now offers `DNDataLayer` → `GetCookingClassesUseCase`
-  (DN-008); wiring the app against it is the next ticket — do not add it until asked.
+- **`ios/DapurNaura`'s data layer exists only on an unmerged branch.** DN-009 wired the app to
+  `DNDataLayer` → `GetCookingClassesUseCase` and built the class-list screen, but that lives on
+  `ticket/DN-009-cooking-class-list-ui` and is not merged; on `main` the app is still a SwiftUI
+  shell with four build variants and no dependency. The detail screen (**DN-012**) stacks on top of
+  it, and needs **DN-011** first — both `todo` and unscheduled.
 - **The DNLibrary ticket branches are stacked and unmerged** — DN-001 → DN-002 → DN-004 → DN-006 →
   DN-008, each built on the previous. Merge their PRs in that order.
 - **The `main`/`development` renames are local-only.** Until pushed, GitHub still defaults to
