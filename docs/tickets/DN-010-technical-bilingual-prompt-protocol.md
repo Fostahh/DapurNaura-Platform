@@ -159,8 +159,8 @@ Docs work:
 - [x] Ticket filed with the owner's instruction and decisions recorded
 - [x] `CLAUDE.md`, `AGENT-PLAYBOOK.md`, `ARCHITECTURE-AND-WORKFLOW.md`, `tickets/README.md` updated
 - [x] Ticket index regenerated
-- [ ] Diff reviewed by the owner
-- [ ] Committed, not merged
+- [x] Diff reviewed by the owner
+- [x] Committed as `ae88e22` on `ticket/DN-010-bilingual-prompt-protocol`, not merged
 
 Always:
 - [ ] PR merged, ticket marked `done` by the human

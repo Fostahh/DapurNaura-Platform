@@ -59,7 +59,7 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-008](DN-008-product-cooking-class-list.md) | Data layer — fetch the list of cooking classes | `in-review` | data |
 | [DN-009](DN-009-product-cooking-class-list-ui.md) | iOS — cooking-class list screen (SwiftUI + MVVM) on GET /classes | `in-review` | both |
 | [DN-011](DN-011-product-cooking-class-detail-data.md) | Data layer — fetch one cooking class with its recipes | `in-review` | data |
-| [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `todo` | ui |
+| [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `in-review` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -92,7 +92,7 @@ same files — **merge each repo's PRs in the order shown**:
 | Repo | Stack |
 |---|---|
 | **DNLibrary** | `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009 → DN-011` |
-| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013` |
+| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013 → DN-012` |
 | **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013` (DN-007 sits on its own branch off `main`) |
 
 The umbrella stack exists because the ticket index and the rulebooks are shared files that every

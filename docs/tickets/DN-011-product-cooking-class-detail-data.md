@@ -197,7 +197,8 @@ Data-layer work:
 - [x] Contract samples added/corrected; `contracts/README.md` notes them
 - [x] Slice implemented as above; `explicitApi()` clean
 - [x] Unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
-- [ ] Committed on `ticket/DN-011-cooking-class-detail`, not merged
+- [x] Committed, not merged — DNLibrary `7ffc189`, umbrella `56093f8`, both on
+      `ticket/DN-011-cooking-class-detail`
 
 Always:
 - [ ] PR merged, ticket marked `done` by the human

@@ -131,8 +131,11 @@ workaround is no longer needed:
 - [x] Known issue 2 replaced in `ios/DapurNaura/CLAUDE.md` (the stale note is gone; the x86_64
       finding took its place)
 - [ ] App verified running on the simulator by the human
-- [ ] Local package wiring confirmed absent from the staged index
-- [ ] Committed on `ticket/DN-013-lower-deployment-target`, not merged
+- [x] Local package wiring confirmed absent from the staged index — the file was reset to HEAD, the
+      eight lines reapplied alone, and `git show :…project.pbxproj | grep DNLibraryLocal` returned
+      nothing before committing; the wiring was restored to the working tree afterwards
+- [x] Committed, not merged — iOS `b756689`, umbrella `c4e7f98`, both on
+      `ticket/DN-013-lower-deployment-target`
 
 Always:
 - [ ] PR merged, ticket marked `done` by the human

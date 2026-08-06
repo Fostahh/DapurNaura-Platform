@@ -2,7 +2,7 @@
 id: DN-012
 type: product
 title: iOS — cooking-class detail screen, with status-driven buy button and recipe tappability
-status: todo
+status: in-review
 source: docs/requirements/2026-08-06-cooking-class-detail.md
 branch: ticket/DN-012-cooking-class-detail-ui
 layer: ui
@@ -113,14 +113,47 @@ requirement's acceptance list — all three states are reachable in the stub (id
 4. No recipe count appears in any of the three
 5. No ingredients, method or video appear anywhere in the two unbought states
 
+## Implementation notes (2026-08-06)
+
+- **Five new files, three modified.** New: `CookingClassDetail/CookingClassDetailViewModel.swift`,
+  `CookingClassDetailView.swift`, `RecipePlaceholderView.swift`, and two shared helpers —
+  `Shared/Rupiah.swift` and `Shared/DNError+Message.swift`. Modified: the DN-009 list view and view
+  model, plus the composition root.
+- **The two helpers were lifted out of DN-009 rather than copied.** The price formatter and the
+  Indonesian error vocabulary now exist once. Duplicating the error mapping would have been the
+  worse failure: the same network problem would eventually describe itself two different ways
+  depending on which screen the user was standing on.
+- **Composition stayed at the root.** The list screen receives a
+  `(String) -> CookingClassDetailViewModel` factory rather than the data layer itself, so
+  `DapurNauraApp` remains the only place that knows a `DNDataLayer` exists. Navigation is
+  value-based (`NavigationLink(value:)` + `navigationDestination`), so a detail view model is built
+  when a row is opened, not once per visible row.
+- **`project.pbxproj` gained nothing.** `DapurNaura/` is a synchronized folder, so the five new
+  files joined the target automatically; the file's only diff is still the 21-line local package
+  wiring that must never be committed.
+- **A stale module cache cost one build cycle, and will do it again.** The first compile failed with
+  *"value of type 'GetCookingClassDetailUseCase' has no member 'invoke'"* even though the freshly
+  built XCFramework's header and `.swiftinterface` both declared
+  `invoke(classId:) async throws`. Xcode had cached the pre-DN-011 module. `xcodebuild clean build`
+  fixed it. `publish-spm.sh` prints this warning; it is real, and the symptom looks exactly like a
+  wrong API name.
+- **Build succeeded** for "DapurNaura Dev" on the iPhone 17 Pro simulator, against
+  `ios/DNLibraryLocal` rebuilt with DN-011. A concrete Apple-silicon destination was used, per
+  DN-013's x86_64 finding.
+- **Nothing is committed.** UI work stops at the human's verification of the running app — that
+  gate has not run yet.
+- **For commit time:** this ticket's file lives in the umbrella, which currently sits on the DN-013
+  branch; its commit belongs on the umbrella's `ticket/DN-012-cooking-class-detail-ui`.
+
 ## Done when
 
 UI work:
-- [ ] Code implemented on `ticket/DN-012-cooking-class-detail-ui`
-- [ ] All three states verified on the running app by the human
-- [ ] `project.pbxproj` grepped clean of `DNLibraryLocal` / `XCLocalSwiftPackageReference` in the
-      staged index before committing
-- [ ] Committed, not merged
+- [x] Code implemented on `ticket/DN-012-cooking-class-detail-ui`
+- [x] All three states verified on the running app by the owner, 2026-08-06 — *"sudah cocok dengan
+      keinginan saya"*, the platform's UI gate, run before anything was committed
+- [x] `project.pbxproj` kept out of the commit entirely — stronger than grepping it clean; the
+      synchronized folder meant no project edit was needed, so the file was never staged
+- [x] Committed as `ad281c8` on `ticket/DN-012-cooking-class-detail-ui`, not merged
 
 Always:
 - [ ] PR merged, ticket marked `done` by the human
