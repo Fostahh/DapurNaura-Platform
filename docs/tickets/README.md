@@ -86,9 +86,10 @@ ordered: **DN-011 must land before DN-012**, which needs its use case and its st
 | [DN-010](DN-010-technical-bilingual-prompt-protocol.md) | Bilingual prompt protocol — English docs, confirm-before-work gate | `in-review` | docs |
 | [DN-013](DN-013-technical-lower-deployment-target.md) | Lower IPHONEOS_DEPLOYMENT_TARGET from 26.2 to 17.0 everywhere | `in-review` | ios |
 | [DN-014](DN-014-technical-ios-codebase-architecture.md) | Decide and document the iOS codebase architecture — CODEBASE-ARCHITECTURE.md | `in-review` | docs |
-| [DN-015](DN-015-technical-apply-architecture-to-screens.md) | Bring the two existing screens up to CODEBASE-ARCHITECTURE | `todo` | ui |
-| [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `todo` | both |
+| [DN-015](DN-015-technical-apply-architecture-to-screens.md) | Bring the two existing screens up to CODEBASE-ARCHITECTURE | `in-review` | ui |
+| [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `in-progress` | both |
 | [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `in-review` | docs |
+| [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `todo` | docs |
 
 **Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**:
@@ -96,13 +97,32 @@ same files — **merge each repo's PRs in the order shown**:
 | Repo | Stack |
 |---|---|
 | **DNLibrary** | `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009 → DN-011 → DN-017` |
-| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013 → DN-012 → DN-014` |
-| **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013 → DN-014` (DN-007 sits on its own branch off `main`) |
+| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013 → DN-012 → DN-014 → DN-015` |
+| **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013 → DN-014 → DN-015` (DN-007 sits on its own branch off `main`) |
 
-**DN-015 and DN-016 are `todo` and unscheduled** — they carry the follow-up work DN-014 deliberately
-excluded. DN-015 fixes the two navigation defects and the swallowed `catch`; DN-016 moves the
-formatters into DNLibrary and is the first ticket to exercise the full publish-and-bump release path.
-Order matters: **DN-015 before DN-016**, so the structural churn lands before the cross-repo move.
+**Work the lowest open id first.** Owner's instruction, 2026-08-06: tickets are reviewed and executed
+in ascending order, and a higher id must not run ahead of a lower one. DN-016 already did — see
+below — and that is the exception the rule exists to prevent, not a precedent.
+
+**DN-015 is `in-review`.** Its original scope landed in `8d6937c`; an amendment on the same branch
+then settled the folder conventions and navigation ownership the owner raised on 2026-08-06, and
+added `DapurNauraAppRouter`, which `CODEBASE-ARCHITECTURE.md` §4 had specified since DN-014 without
+anything implementing it. Awaiting the owner on the running app.
+
+**DN-016 is `in-progress` and deliberately paused.** Its Kotlin half is committed (`28f00e2` — the
+shared `DNFormat` and error vocabulary), out of order, before DN-015. The Swift half — deleting
+`Rupiah.swift` and `DNError+Message.swift` and calling `DNFormat` instead — is held until **the owner
+approves DN-015**, by their instruction of 2026-08-06. The committed Kotlin stays; unwinding it costs
+more than it buys. Until then the §10 known-violation row stays open and `swiftlint lint` reports
+exactly one violation, which is that row.
+
+⚠️ **`ios/DNLibraryLocal` was assembled from DN-016's branch**, so it already exports `DNFormat`.
+Harmless — nothing in the app calls it — but do not run `publish-spm.sh publish` from that branch
+before DN-015 is approved.
+
+**DN-018 is `todo` and unscheduled** — a `README.md` in every repo and one name for the codebase
+document, on the owner's instruction of 2026-08-06. It follows DN-015, which decides the iOS folder
+conventions the README would otherwise have to describe twice.
 
 The umbrella stack exists because the ticket index and the rulebooks are shared files that every
 one of those tickets touches; branching them independently would have produced four conflicting

@@ -44,7 +44,7 @@ DapurNaura-Platform/          umbrella repo — tracks docs/ + config ONLY
   bootstrap.sh                clones the project repos into place
 DNLibrary/                    git repo → github.com/Fostahh/DNLibrary
                               KMP data layer. Ships as XCFramework (iOS) + AAR (Android).
-ios/DapurNaura/               git repo (local only, no remote yet). SwiftUI app.
+ios/DapurNaura/               git repo → github.com/Fostahh/DapurNaura-iOS. SwiftUI app.
 ios/SPMDNLibrary/             git repo → github.com/Fostahh/SPMDNLibrary
                               Manifest-only Swift package, semver tags. iOS distribution channel.
 ios/DNLibraryLocal/           build artifact, NOT a repo. Never committed anywhere.
@@ -196,15 +196,25 @@ API is unstable; what changed in a version goes in the release notes, not the nu
 
 ## Current known blockers
 
-- **`ios/DapurNaura`'s data layer exists only on an unmerged branch.** DN-009 wired the app to
-  `DNDataLayer` → `GetCookingClassesUseCase` and built the class-list screen, but that lives on
-  `ticket/DN-009-cooking-class-list-ui` and is not merged; on `main` the app is still a SwiftUI
-  shell with four build variants and no dependency. The detail screen (**DN-012**) stacks on top of
-  it, and needs **DN-011** first — both `todo` and unscheduled.
-- **The DNLibrary ticket branches are stacked and unmerged** — DN-001 → DN-002 → DN-004 → DN-006 →
-  DN-008, each built on the previous. Merge their PRs in that order.
-- **The `main`/`development` renames are local-only.** Until pushed, GitHub still defaults to
-  `master` and a fresh `bootstrap.sh` clone gets a different world than this machine.
+- **Nothing is merged, in any repo — 25 commits across three stacks.** Everything up to DN-017 is
+  `in-review`; the index's `Done` section is still empty. Each repo's branches are stacked on the
+  previous rather than on `main`, so **merge each repo's PRs in the order given in
+  [`docs/tickets/README.md`](docs/tickets/README.md)**. On `main`, `ios/DapurNaura` is still a
+  SwiftUI shell with four build variants and no data layer.
+- **There is no notion of a signed-in user, and the domain needs one.** `purchaseStatus` is per-user
+  data by definition, but nothing anywhere carries identity: no login, no session, no user model,
+  `NetworkManager` holds a static `apiKey` only, and `SecureStorage` — built by DN-001 to hold
+  exactly this — is referenced by nothing outside its own tests. Two screens already render state
+  that cannot yet exist. **Owner's decision, 2026-08-06: deferred, to be ticketed later.** Do not
+  design around it in the meantime.
+- **Paid classes have no purchase path, manual or automated.** Midtrans is deliberately deferred,
+  but `PENDING_VERIFICATION` describes a transfer-and-verify flow that is the *current* business
+  process, and nothing implements that either — the buy button says *"Pembelian lewat aplikasi belum
+  tersedia."* **Owner's decision, 2026-08-06: deferred, to be ticketed later.**
+- **`docs/requirements/2026-08-06-recipe-detail.md` is approved and unticketed.** The recipe screen
+  is the product — *bahan-bahan*, method, video — and `docs/contracts/recipe.json` is approved, but
+  there is no `Recipe` domain model, no use case and no endpoint; iOS shows a placeholder. Owner's
+  decision, 2026-08-06: ticket it once the iOS architecture work settles.
 
 Previous blockers — no engine seam, singleton, DTOs-as-public-API, leftover scaffolding, zero
 tests — were resolved on 2026-08-06 by DN-001/002/004/006/008 (all `in-review`).

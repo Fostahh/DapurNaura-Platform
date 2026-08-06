@@ -2,7 +2,7 @@
 id: DN-016
 type: technical
 title: Move rupiah formatting and the Indonesian error vocabulary into DNLibrary
-status: todo
+status: in-progress
 source: —
 branch: ticket/DN-016-move-formatters-to-library
 layer: both
