@@ -21,7 +21,7 @@ approved, and this will change repeatedly while the UI takes shape.
 | Endpoint | Returns | File |
 |---|---|---|
 | `GET /classes` | list of cooking classes | `classes.json` |
-| `GET /classes/{id}` | one class + its recipes | `class-detail-purchased.json` / `class-detail-locked.json` |
+| `GET /classes/{id}` | one class + its recipes | `class-detail-purchased.json` / `class-detail-pending.json` / `class-detail-locked.json` |
 | `GET /recipes/{id}` | one recipe in full | `recipe.json` |
 
 ## The rule that makes payment tamper-proof
@@ -54,6 +54,23 @@ again — inviting a second transfer. The UI needs a distinct "waiting for confi
 - **`videoTimestampSeconds` is nullable.** Not every step maps to a moment in the video.
 - **Absent ≠ empty.** A locked class omits `ingredients`/`steps`/`videoUrl` entirely rather than
   sending empty arrays, so "locked" and "no data" stay distinguishable in the domain model.
+
+## About the sample data (DN-011, 2026-08-06)
+
+The *shape* below is the contract. The *values* are samples, and two owner decisions govern them:
+
+- **Each class's `recipes` array holds exactly the `recipeCount` that `classes.json` advertises.**
+  `classes.json` is the reference and is not edited to match the samples; the samples grow to match
+  it. Where real content runs out, the existing recipes repeat in cycle — the 3rd repeats the 1st,
+  the 4th the 2nd, and so on.
+- **Repeated entries reuse the name, image, portions and loyang, but never the id.** Ids stay unique
+  within a class, because no real API returns a duplicate id in one collection and a list UI needs
+  them to tell rows apart.
+
+`class-detail-pending.json` was added by DN-011 — `classes.json` has always listed Pastry Dasar as
+`PENDING_VERIFICATION`, but no detail sample existed for it, so the one status with its own screen
+treatment could not be exercised. Its recipe names (*Croissant*, *Danish Pastry*) are placeholders
+invented with the owner's approval; there is no real content for that class yet.
 
 ## Settled at approval
 

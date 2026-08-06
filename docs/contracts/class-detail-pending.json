@@ -1,0 +1,31 @@
+{
+  "id": "2",
+  "name": "Pastry Dasar",
+  "description": "Dasar-dasar pastry untuk pemula, dari adonan hingga hasil akhir.",
+  "imageUrl": "https://placehold.co/600x400/png?text=Pastry+Dasar",
+  "price": 200000,
+  "currency": "IDR",
+  "purchaseStatus": "PENDING_VERIFICATION",
+  "recipes": [
+    {
+      "id": "21",
+      "name": "Croissant",
+      "imageUrl": "https://placehold.co/600x400/png?text=Croissant"
+    },
+    {
+      "id": "22",
+      "name": "Danish Pastry",
+      "imageUrl": "https://placehold.co/600x400/png?text=Danish+Pastry"
+    },
+    {
+      "id": "23",
+      "name": "Croissant",
+      "imageUrl": "https://placehold.co/600x400/png?text=Croissant"
+    },
+    {
+      "id": "24",
+      "name": "Danish Pastry",
+      "imageUrl": "https://placehold.co/600x400/png?text=Danish+Pastry"
+    }
+  ]
+}
