@@ -5,7 +5,7 @@ not yet been run end to end on a real ticket.
 
 The reference document for how this platform is built. Items are tagged **[DECIDED]** or
 **[OPEN]** (still needs a call). For onboarding, read
-[GETTING-STARTED.md](GETTING-STARTED.md) first — this document is the deep reference.
+the [repository README](../README.md) first — this document is the deep reference.
 
 ---
 
@@ -38,12 +38,31 @@ income — the ingredient notes say things like *"sesuaikan dengan harga jual"*.
 
 ### What actually exists
 
-**Almost nothing of this domain.** The data layer has no domain model — though the JSON contract
-to build it against is now approved, see below; what remains is early scaffolding — one throwaway DTO and the endpoint that fed it — scheduled for
-deletion in DN-004. The iOS app is a SwiftUI shell with four build variants and **no data layer at
-all**. Android has not been created.
+Accurate as of 2026-08-06. **Nothing is merged** — all of this lives on stacked ticket branches, and
+each repository's `main` is still at its pre-DN-001 state.
 
-Treat this document as the design to build toward, not a description of code that exists.
+**The data layer covers the first two levels of the domain.** `CookingClass`, `CookingClassDetail`,
+`RecipeSummary`, `PurchaseStatus` and `DNError` are modelled against the approved contract, reached
+through `GetCookingClassesUseCase` and `GetCookingClassDetailUseCase`. `DNFormat` and
+`DNError.userMessage` render prices and failures for every platform. **89 tests**, green on both.
+
+**The iOS app has two working screens** — the class list and the class detail — built on
+`@Observable` MVVM over an owned navigation path, with SwiftLint reporting zero violations.
+
+**What is missing is the level that matters most.** The recipe screen — *bahan-bahan*, the
+step-by-step method, the video — is a placeholder. Its requirement is approved and still unticketed,
+and no `Recipe` model, use case or endpoint exists.
+
+**Three things the domain assumes and nothing provides:**
+
+- **No backend.** Everything runs on `DNDataLayer.stub()`, which replays the approved contract
+  fixtures through the real decoding path. The wire shape has never met a server.
+- **No signed-in user**, although `purchaseStatus` is per-user data by definition. No login, no
+  session, no user model. Deferred by the owner on 2026-08-06, to be ticketed later.
+- **No purchase path at all** — not Midtrans, and not the manual transfer-and-verify flow that
+  `PENDING_VERIFICATION` describes and that is the *current* business process. Also deferred.
+
+Android has not been created.
 
 **[DECIDED] Naming.** `Recipe` and `CookingClass`. Never a type called `Class` — it collides with
 Objective-C's `Class` in the generated header. Indonesian domain terms are kept where translation
@@ -454,8 +473,8 @@ subcommand. See the ticket for the six verified cases.
 
 `DNNetworkManager` takes an `HttpClientEngine` through an `internal` constructor (tests use Ktor's
 `MockEngine`), and the singleton is gone — instances are constructed at the platform edge and are
-fully independent. The suite (20 tests, both platforms) runs via `./gradlew :sharedLogic:check`.
-The constraint going forward: **do not reintroduce a singleton** — CODEBASE-STANDARD §6.
+fully independent. The suite (89 tests, both platforms) runs via `./gradlew :sharedLogic:check`.
+The constraint going forward: **do not reintroduce a singleton** — CODEBASE-ARCHITECTURE §6.
 
 ### 8.2 Don't publish DTOs as the public API — pattern established (DN-004/DN-008)
 
@@ -512,17 +531,24 @@ created for the app repo.
    history, and configuration now comes from gitignored `Config/Secrets.xcconfig` via Info.plist
    substitution. ⚠️ Anything in Info.plist still ships readable inside the `.ipa` — gitignoring
    keeps keys out of git, it does not make them secret.
-6. ~~**Zero tests.**~~ **Resolved (DN-001/002/006/008).** 20 tests across `commonTest`,
-   `androidHostTest` and `iosTest`; `./gradlew :sharedLogic:check` green on both platforms. The
-   Keychain cases are `@Ignore`d — the hostless iOS test process has no keychain.
+6. ~~**Zero tests.**~~ **Resolved (DN-001/002/006/008).** **89 tests** across `commonTest`,
+   `androidHostTest` and `iosTest` — 45 Android host, 44 iOS simulator, 0 failures;
+   `./gradlew :sharedLogic:check` green on both platforms. The Keychain cases are `@Ignore`d — the
+   hostless iOS test process has no keychain.
 7. **No link between a DNLibrary commit and an SPM tag** — for the *existing* tags. **DN-005**
    (in-review) fixes this going forward: every new release stamps its source commit SHA into the
    release notes. The historical tags `1.0.0`–`1.4.0` stay unlinked and are already slated for
    deletion (§7).
 8. ~~**SPMDNLibrary tracks a `.DS_Store`**~~ **Resolved (DN-005).** Untracked in `e6c6dec`, so the
    publish preflight's clean-tree check can now pass.
-9. **`DapurNaura` has no git remote**, so the push/PR half of the release flow cannot run for the
-   app yet. A repo is planned.
+9. ~~**`DapurNaura` has no git remote.**~~ **Resolved.** It is
+   `github.com/Fostahh/DapurNaura-iOS`, and its ticket branches are pushed.
+10. **`SPMDNLibrary` cannot resolve as a package.** Verified 2026-08-06: the repository has **no
+    tags** and **no releases**, and the binary-target URL in its `Package.swift` returns 404. SPM
+    resolves a version requirement by git tag, so there is nothing to match. Harmless today — the app
+    has only ever built against `ios/DNLibraryLocal` and has never pinned a remote version — and the
+    first `publish-spm.sh publish` rewrites the manifest, creates the tag and creates the release,
+    fixing all three at once. No separate ticket; recorded in that repository's README.
 
 ---
 
@@ -530,14 +556,19 @@ created for the app repo.
 
 1. ~~**Settle the JSON contract for `CookingClass` and `Recipe`.**~~ **Done.** Approved v1 lives
    in [contracts/](contracts/) as of 2026-08-06.
-2. **DN-004 — delete the scaffolding DTO and endpoint.** Cheapest it will ever be: no consumer
-   exists, so it breaks nothing.
-3. **DN-006 — the engine seam.** Every test-bearing ticket is blocked behind it. Then DN-002
-   (same file — decide whether to fold the two), then model the domain against the contract
-   (§8.2–8.3: DTOs internal, domain models public, typed errors).
-4. **Run the loop once, deliberately small.** The process in this document has never been executed
-   end to end — no ticket has yet gone requirement → branch → test → publish → bump. A tiny first
-   ticket will answer more than further design will.
+2. ~~**DN-004 — delete the scaffolding DTO and endpoint.**~~ **Done.**
+3. ~~**DN-006 — the engine seam.**~~ **Done**, along with DN-002 and the domain modelling that was
+   blocked behind them.
+4. **Run the release half of the loop, which has still never executed.** Requirement → branch →
+   test → app → review → commit has now run many times. **Publish → tag → release → bump never
+   has**, and DN-016 is the first ticket that cannot reach `done` without it. Until it runs, the
+   whole distribution channel is unproven — see known issue 10.
+5. **Merge something.** 27 commits sit across three stacks with nothing on any `main`, and stack
+   depth is now the largest single risk in the workspace: every additional ticket makes the eventual
+   merge harder, and a conflict found at depth 8 is far more expensive than one found at depth 2.
+6. **Ticket the recipe screen.** Its requirement has been approved and unticketed since 2026-08-06.
+   It is the level of the domain the product actually sells, and it is the only approved requirement
+   with no ticket behind it.
 5. ~~**Write the first requirement document.**~~ **Done (2026-08-06).**
    [`requirements/2026-08-06-cooking-class-detail.md`](requirements/2026-08-06-cooking-class-detail.md)
    was drafted from the owner's verbal description, revised across four rounds of questions, and

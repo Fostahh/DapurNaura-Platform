@@ -75,8 +75,9 @@ Docs work:
 
 - [x] Every document stating the rule updated — they must agree with each other
 - [x] Ticket index regenerated
-- [ ] Diff reviewed by the human
-- [ ] Committed, not merged
+- [x] Diff reviewed by the human
+- [x] Committed, not merged — `DNLibrary` `14f2b13`; the iOS side needed no commit of its own, the
+      document having been written straight into `docs/` before it was ever committed
 
 Always:
 

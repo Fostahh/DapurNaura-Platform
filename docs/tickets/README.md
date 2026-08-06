@@ -89,16 +89,17 @@ ordered: **DN-011 must land before DN-012**, which needs its use case and its st
 | [DN-015](DN-015-technical-apply-architecture-to-screens.md) | Bring the two existing screens up to CODEBASE-ARCHITECTURE | `in-review` | ui |
 | [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `in-review` | both |
 | [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `in-review` | docs |
-| [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `todo` | docs |
+| [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `in-review` | docs |
 
 **Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**:
 
 | Repo | Stack |
 |---|---|
-| **DNLibrary** | `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009 → DN-011 → DN-017` |
-| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013 → DN-012 → DN-014 → DN-015` |
-| **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013 → DN-014 → DN-015` (DN-007 sits on its own branch off `main`) |
+| **DNLibrary** | `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009 → DN-011 → DN-017 → DN-016 → DN-018` |
+| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013 → DN-012 → DN-014 → DN-015 → DN-016 → DN-018` |
+| **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013 → DN-014 → DN-015 → DN-016 → DN-018` (DN-007 sits on its own branch off `main`) |
+| **ios/SPMDNLibrary** | `DN-018` — its first ticket branch; the repo had no markdown at all |
 
 **Work the lowest open id first.** Owner's instruction, 2026-08-06: tickets are reviewed and executed
 in ascending order, and a higher id must not run ahead of a lower one. DN-016 already did — see
@@ -123,9 +124,21 @@ the next violation visible the moment it appears, which a habitual "3 known ones
 GitHub release, then bumping the app off `../DNLibraryLocal` to the published version. All of it is
 human-triggered and none of it has run. Until it does, the app builds only against the local package.
 
-**DN-018 is `todo` and unscheduled** — a `README.md` in every repo and one name for the codebase
-document, on the owner's instruction of 2026-08-06. It follows DN-015, which decides the iOS folder
-conventions the README would otherwise have to describe twice.
+**DN-018 is `in-review`.** Every repository now carries a `README.md`, and the codebase document is
+called `CODEBASE-ARCHITECTURE.md` everywhere — `DNLibrary`'s was renamed from `CODEBASE-STANDARD.md`,
+which is why tickets DN-001 … DN-017 still cite the old name. **Those were left alone deliberately:**
+a ticket records what was true when it was written, and rewriting closed work to match a later
+decision makes the record lie. The renamed file carries a *formerly named* line so the old term still
+resolves.
+
+`docs/GETTING-STARTED.md` is gone, folded into the umbrella `README.md`. Four of its statements had
+become false and were corrected rather than carried across.
+
+⚠️ **Found while writing SPMDNLibrary's README, and verified**: that repository has **no tags and no
+releases**, and the binary-target URL in its `Package.swift` returns **404**. SPM resolves by tag, so
+the package cannot resolve at all today. Nothing is broken in practice — the app has only ever built
+against `ios/DNLibraryLocal` — and the first `publish-spm.sh publish` fixes all three in one step, so
+no separate ticket was filed. It is recorded in that repository's README.
 
 The umbrella stack exists because the ticket index and the rulebooks are shared files that every
 one of those tickets touches; branching them independently would have produced four conflicting

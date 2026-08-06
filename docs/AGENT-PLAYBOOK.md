@@ -127,7 +127,7 @@ ticket, check and fix, in the same commit where possible:
 |---|---|
 | Ticket status + notes | the ticket file (the **only** source of truth for status) |
 | The ticket index | `docs/tickets/README.md` — regenerate it, it does not regenerate itself |
-| Known-violations table | `DNLibrary/CODEBASE-STANDARD.md` |
+| Known-violations table | `DNLibrary/CODEBASE-ARCHITECTURE.md` |
 | "What exists" descriptions | each repo's `CLAUDE.md` |
 | Blockers / §8 constraints / §9 drift | `docs/ARCHITECTURE-AND-WORKFLOW.md`, umbrella `CLAUDE.md` |
 
@@ -182,6 +182,12 @@ in a real trace:
 6. **Every commit updated its ticket** (SHA, notes, deviations) and swept the doc mirrors, so the
    next cold-started session — or a smaller model — inherits reality, not archaeology.
 
-End state: 9 tickets `in-review`; 21 data-layer tests green on the Android host and 16 on the iOS
-simulator (plus 4 keychain cases parked `@Ignore` with their reason); one screen verified on the
-simulator; zero uncommitted surprises. That is the standard this document exists to keep.
+End state **of that session**: 9 tickets `in-review`; 21 data-layer tests green on the Android host
+and 16 on the iOS simulator (plus 4 keychain cases parked `@Ignore` with their reason); one screen
+verified on the simulator; zero uncommitted surprises. That is the standard this document exists to
+keep.
+
+> **Those numbers are a snapshot, not the current state.** The workspace has run further since —
+> through DN-018, with 89 data-layer tests and two screens. This trace is kept as the evidence the
+> playbook is drawn from; for what is true now, read
+> [`tickets/README.md`](tickets/README.md) and each repository's `CLAUDE.md`.

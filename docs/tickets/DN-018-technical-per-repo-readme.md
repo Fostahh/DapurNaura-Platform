@@ -2,7 +2,7 @@
 id: DN-018
 type: technical
 title: Give every repository a README, and settle on one name for the codebase document
-status: todo
+status: in-review
 source: —
 branch: ticket/DN-018-per-repo-readme
 layer: docs
@@ -31,9 +31,21 @@ Current state against that model:
 | Repo | `README.md` | `CLAUDE.md` | Codebase doc | Workflow |
 |---|---|---|---|---|
 | umbrella | **missing** | ✅ | — *(no code; correct)* | ✅ `docs/ARCHITECTURE-AND-WORKFLOW.md` |
-| `DNLibrary` | ✅ 27 lines, thin | ✅ | ✅ `docs/CODEBASE-STANDARD.md` — **wrong name** | — |
+| `DNLibrary` | ⚠️ **wrong**, not merely thin — see below | ✅ | ✅ `docs/CODEBASE-STANDARD.md` — **wrong name** | — |
 | `ios/DapurNaura` | **missing** | ✅ | ✅ `docs/CODEBASE-ARCHITECTURE.md` | — |
+| `ios/SPMDNLibrary` | **missing** | — *(none; correct)* | — *(no code; correct)* | — |
 | `android` | not created | | | |
+
+**`DNLibrary/README.md` is actively misleading, which is worse than absent.** It is unedited KMP
+template text: it documents `/iosApp`, `/sharedUI` and `./gradlew :androidApp:assembleDebug`, and
+**none of those exist** — the repo has `sharedLogic` and nothing else. A newcomer following it hits
+four dead ends before concluding the document is wrong. DN-017 raised this and deferred it here.
+
+**`ios/SPMDNLibrary` gets a README and nothing else.** Owner's decision, 2026-08-06. It contains one
+generated `Package.swift` and a `.gitignore`. No `CLAUDE.md`, because no agent works in it; no
+codebase document, because there is no code to govern. The README exists because it is a public
+GitHub repository someone can land on, and what it needs to say is mostly *don't* — the manifest is
+rewritten by `publish-spm.sh` and hand edits are lost on the next publish.
 
 **Why the name matters.** `CODEBASE-STANDARD` and `CODEBASE-ARCHITECTURE` are the same slot in the
 same model, and the Android app will need a third one before anybody decides what to call it. A slot
@@ -185,6 +197,55 @@ Docs work (the workflow standard itself):
 Always:
 
 - [ ] PR merged, ticket marked `done` by the human
+
+## Implementation notes (2026-08-06)
+
+Four repositories, four commits. Every relative link in every touched document was resolved against
+the filesystem after editing — **0 dead links**.
+
+**`DNLibrary`** — `docs/CODEBASE-STANDARD.md` → `docs/CODEBASE-ARCHITECTURE.md` by `git mv`, so
+history follows. Six live references updated, path links and prose alike. A *formerly named* line
+sits under the title so the old term still resolves for anyone searching. Historical references in
+DN-001 … DN-017 were **left alone**, per the open question's recommendation: DN-017 set that
+precedent, and rewriting closed tickets to match a later decision makes the record lie.
+
+Its README was not thin, it was **wrong** — unedited KMP template text documenting `/iosApp`,
+`/sharedUI` and `./gradlew :androidApp:assembleDebug`, none of which exist. `CLAUDE.md` carried a
+warning block telling readers to ignore it; that block is gone, replaced by a pointer, because the
+file is now accurate.
+
+**`ios/DapurNaura`** — new README. Its `## Features` section describes **only what runs**: two
+screens on stub data. The structure section is a pointer to §3 rather than a tree, so the layout is
+described in exactly one place.
+
+**`ios/SPMDNLibrary`** — README only, per the owner's decision. Mostly what *not* to do: the manifest
+is generated and a hand edit is lost at the next publish.
+
+**Umbrella** — new README absorbing all 196 lines of `GETTING-STARTED.md`, which is deleted. It runs
+past the model's 68 lines, as this ticket predicted; onboarding is what a front page is for.
+
+Four statements in `GETTING-STARTED.md` had gone false and were corrected rather than carried over:
+the data layer having no domain model, the iOS app having no data layer, `ios/DapurNaura` having no
+remote, and the app having no DNLibrary dependency at all.
+
+### Found on the way: the distribution channel does not resolve
+
+Not this ticket's subject, found while writing SPMDNLibrary's README, and **verified rather than
+assumed** (2026-08-06):
+
+- the repository has **no tags** — SPM resolves a version requirement by git tag, so any `from:`
+  requirement fails; there is nothing to match
+- there are **no GitHub releases** — the API returns `[]`
+- the binary target's URL, `releases/download/1.4.0/DNLibrary.zip`, returns **404**
+
+`Package.swift` predates the current release process; its `1.4.0` was never published under it.
+Nothing is broken *today* because the app has always built against `ios/DNLibraryLocal` and has
+never pinned a remote version — which is exactly why nobody has hit it.
+
+**No ticket filed, deliberately.** The first `publish-spm.sh publish` rewrites the manifest, creates
+the tag and creates the release, fixing all three in one step — and DN-016 needs that publish anyway.
+A separate ticket would be work that the next scheduled action already does. It is recorded in
+SPMDNLibrary's README so it is not rediscovered as a mystery.
 
 ## Notes
 

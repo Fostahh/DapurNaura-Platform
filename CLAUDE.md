@@ -3,7 +3,7 @@
 Guidance for Claude Code working in the Dapur Naura platform workspace.
 
 Full rationale, ticket lifecycle and release flow: [`docs/ARCHITECTURE-AND-WORKFLOW.md`](docs/ARCHITECTURE-AND-WORKFLOW.md).
-Onboarding: [`docs/GETTING-STARTED.md`](docs/GETTING-STARTED.md).
+Onboarding, and what this workspace is: [`README.md`](README.md).
 **How to execute — the working standard every agent follows, literally:
 [`docs/AGENT-PLAYBOOK.md`](docs/AGENT-PLAYBOOK.md).** This file defines what is allowed; the
 playbook defines how to do it well. Read both before starting any ticket.
@@ -26,8 +26,12 @@ Classes are **paid**. A payment gateway (likely Midtrans) is planned but explici
 "really really later". Because a cooking class is a real-world service rather than digital content
 consumed in-app, App Store Guideline 3.1.1 does not force In-App Purchase.
 
-> **Nothing of this domain is built yet.** The data layer has no domain model, and the iOS app is a
-> SwiftUI shell with build variants and no data layer at all. Do not assume any of it exists.
+> **What exists, as of 2026-08-06 — all of it on unmerged ticket branches.** The data layer models
+> classes and class detail (`CookingClass`, `CookingClassDetail`, `RecipeSummary`, `PurchaseStatus`,
+> `DNError`) behind two use cases, with shared formatting and 89 passing tests. iOS has two working
+> screens on `@Observable` MVVM. **The recipe screen — the level the product actually sells — is a
+> placeholder**, its requirement approved and unticketed. There is no backend (everything runs on
+> `DNDataLayer.stub()`), no signed-in user, and no purchase path. Android does not exist.
 
 ## What this folder is
 
