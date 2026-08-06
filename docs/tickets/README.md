@@ -58,11 +58,19 @@ which matters, because that id is the only thing linking work across the separat
 |---|---|---|---|
 | [DN-008](DN-008-product-cooking-class-list.md) | Data layer — fetch the list of cooking classes | `in-review` | data |
 | [DN-009](DN-009-product-cooking-class-list-ui.md) | iOS — cooking-class list screen (SwiftUI + MVVM) on GET /classes | `in-review` | both |
+| [DN-011](DN-011-product-cooking-class-detail-data.md) | Data layer — fetch one cooking class with its recipes | `in-review` | data |
+| [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `todo` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
 exercised. DN-009's UI was verified by the owner on the running app before its commit, per the
 platform's UI gate.
+
+**DN-011 and DN-012 are the first tickets to trace to a real requirement document** —
+[`../requirements/2026-08-06-cooking-class-detail.md`](../requirements/2026-08-06-cooking-class-detail.md),
+approved 2026-08-06 — so their `source:` is a genuine link rather than a flagged deviation. They are
+ordered: **DN-011 must land before DN-012**, which needs its use case and its stub replay. Both are
+`todo` and unscheduled; the owner starts them.
 
 ### Technical
 
@@ -75,12 +83,25 @@ platform's UI gate.
 | [DN-005](DN-005-technical-publish-preflight-provenance.md) | publish-spm.sh — validate the source repo and record release provenance | `in-review` | tooling |
 | [DN-006](DN-006-technical-network-engine-seam.md) | Make DNNetworkManager testable — engine seam, no singleton | `in-review` | data |
 | [DN-007](DN-007-technical-commit-msg-hook.md) | Enforce the DN-XXX commit-message convention with a commit-msg hook | `in-review` | tooling |
+| [DN-010](DN-010-technical-bilingual-prompt-protocol.md) | Bilingual prompt protocol — English docs, confirm-before-work gate | `in-review` | docs |
+| [DN-013](DN-013-technical-lower-deployment-target.md) | Lower IPHONEOS_DEPLOYMENT_TARGET from 26.2 to 17.0 everywhere | `in-review` | ios |
 
-**The DNLibrary branches are stacked**, executed ascending on 2026-08-06 by the owner's
-instruction: `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009`, each branch built on the
-previous (they touch the same files). **Merge their PRs in that order.** DN-007 lives on its own
-branch in the umbrella repo; DN-003 and DN-009's iOS half in `ios/DapurNaura` (DN-009 stacked on
-DN-003).
+**Branches are stacked in all three repos.** Each is built on the previous because they touch the
+same files — **merge each repo's PRs in the order shown**:
+
+| Repo | Stack |
+|---|---|
+| **DNLibrary** | `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009 → DN-011` |
+| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013` |
+| **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013` (DN-007 sits on its own branch off `main`) |
+
+The umbrella stack exists because the ticket index and the rulebooks are shared files that every
+one of those tickets touches; branching them independently would have produced four conflicting
+edits of the same paragraphs.
+
+**DN-010 changes the workflow standard itself**, not the product: it is the first `docs` ticket, and
+the first to be filed and started in the same step because the owner's instruction scheduled it.
+Its branch is cut from `main` — the umbrella repo has no `development` — independent of DN-007's.
 
 ### Done
 
@@ -119,7 +140,7 @@ title: Short imperative title
 status: todo          # todo | in-progress | in-review | done
 source: docs/requirements/2026-08-recipe-catalogue.md
 branch: ticket/DN-005-short-slug
-layer: data | ui | both | tooling
+layer: data | ui | both | tooling | docs
 ---
 
 ## Requirement (traced)
@@ -139,7 +160,7 @@ title: Short imperative title
 status: todo
 source: —             # no requirement document exists, and that is correct
 branch: ticket/DN-001-short-slug
-layer: data | ui | both | tooling
+layer: data | ui | both | tooling | docs
 ---
 
 ## Rationale
@@ -200,6 +221,12 @@ Tooling work (scripts, build config):
 - [ ] Behaviour demonstrated, including the failure paths it should catch
 - [ ] Committed, not merged
 
+Docs work (the workflow standard itself):
+- [ ] Every document stating the rule updated — they must agree with each other
+- [ ] Ticket index regenerated
+- [ ] Diff reviewed by the human
+- [ ] Committed, not merged
+
 Always:
 - [ ] PR merged, ticket marked `done` by the human
 ```
@@ -210,6 +237,8 @@ Always:
 
 - **`type:`** decides whether `source:` or `## Rationale` carries the justification.
 - **`layer:`** decides which gates apply. A `ui` ticket has no tests, no `publish-spm.sh` run, and
-  no version bump.
+  no version bump. A `docs` ticket — a change to the workflow standard itself, like DN-010 — has no
+  automated gate at all; the human reading the diff *is* the verification, so say in the ticket
+  what they should be checking for.
 - **Commit messages must start with the ticket id** (`DN-004: …`). The projects are separate git
   repositories, so that id is the only thread linking the work across them.

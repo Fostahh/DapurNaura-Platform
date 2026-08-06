@@ -83,9 +83,14 @@ UI: built with `xcodebuild` ("DapurNaura Dev"), run on the iOS simulator, screen
 - SKIE bridging notes captured in the app's CLAUDE.md: Kotlin `description` → `description_`,
   sealed results via `onEnum(of:)`, `try await useCase.invoke()`, `DNDataLayer.companion.stub()`.
 - Commits: DNLibrary `fc4d233` (stub path) on `ticket/DN-009-cooking-class-list-ui` stacked on
-  DN-008; iOS `e8d9d9e` (screen) on `ticket/DN-009-cooking-class-list-ui` stacked on DN-003.
-  The local package wiring (21-line `project.pbxproj` diff) was verified absent from the staged
-  index before committing, and remains uncommitted.
+  DN-008; iOS **`7070b55`** (screen) on `ticket/DN-009-cooking-class-list-ui` stacked on DN-003.
+  The local package wiring (21-line `project.pbxproj` diff) is not committed, and remains in the
+  working tree only.
+- **Correction (2026-08-06).** The iOS commit was originally recorded here as `e8d9d9e`. It has
+  since been amended twice by the owner — the local package reference had reached the commit, and
+  the owner removed it — so the SHA above is the third and current one. Verified against
+  `git show HEAD:DapurNaura.xcodeproj/project.pbxproj`, which now contains no
+  `XCLocalSwiftPackageReference`. The branch is unpushed, so the rewrite cost nothing.
 
 ## Done when
 
