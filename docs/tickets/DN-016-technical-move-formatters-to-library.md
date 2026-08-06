@@ -2,7 +2,7 @@
 id: DN-016
 type: technical
 title: Move rupiah formatting and the Indonesian error vocabulary into DNLibrary
-status: in-progress
+status: in-review
 source: —
 branch: ticket/DN-016-move-formatters-to-library
 layer: both
@@ -116,13 +116,13 @@ The owner verifies the running app after `publish-spm.sh local`, per the platfor
 
 Data-layer work:
 
-- [ ] Implemented on `ticket/DN-016-move-formatters-to-library`
-- [ ] Unit tests written and passing — `./gradlew :sharedLogic:check`
-- [ ] Committed, not merged
+- [x] Implemented on `ticket/DN-016-move-formatters-to-library` — `28f00e2`
+- [x] Unit tests written and passing — `./gradlew :sharedLogic:check`
+- [x] Committed, not merged
 
 UI work:
 
-- [ ] Swift helpers deleted, call sites updated, §10 row struck from the known-violations table
+- [x] Swift helpers deleted, call sites updated, §10 row struck from the known-violations table
 - [ ] Verified manually by the human on the running app
 - [ ] Committed, not merged
 
@@ -130,3 +130,42 @@ Always:
 
 - [ ] PR merged, ticket marked `done` by the human
 - [ ] Library published and the app bumped off the local package to the new version
+
+## Implementation notes (2026-08-06)
+
+Delivered in two halves, out of order and then deliberately paused between them.
+
+**Kotlin (`28f00e2`, committed before DN-015).** `DNFormat.rupiah(value:)` and
+`DNError.userMessage`, with `DNFormatTest.kt`. The owner set the lowest-id-first rule after this had
+already landed; the commit stays, and `docs/tickets/README.md` records it as the exception that
+prompted the rule rather than as precedent.
+
+**Swift (this half), held until the owner approved DN-015 on 2026-08-06.**
+
+- `Rupiah.swift` and `DNError+Message.swift` deleted. `Helper/` is now empty and gone — §3 records
+  that it is not to come back, and why a folder named for what its contents are *not* attracts
+  everything nobody classified.
+- Eight call sites migrated, not six. The three ViewModels each had a **hardcoded**
+  `"Terjadi kesalahan. Silakan coba lagi."` in the unreachable `catch`, duplicating
+  `DNError.Unknown`'s wording in Kotlin word for word. That is exactly the drift §10 exists to
+  prevent — two copies of one sentence, one of them invisible to Android — so they now call
+  `DNErrorKt.userMessage(DNErrorUnknown(message: nil))` too.
+- The bridged surface is `DNFormat.shared.rupiah(value:)` and `DNErrorKt.userMessage(_:)`. The
+  second reads awkwardly because a Kotlin top-level extension property exports as a file-facade
+  method. **No Swift convenience extension was added to prettify it** — that is how
+  `DNError+Message.swift` began, and three call sites do not justify the file that would grow back.
+
+**Verified.** `./gradlew :sharedLogic:check` → **89 tests, 0 failures, 0 errors** (45 Android host,
+44 iOS simulator; 4 skipped on iOS, pre-existing). `xcodebuild -scheme "DapurNaura Dev"` →
+**BUILD SUCCEEDED**. `swiftlint lint` → **0 violations, the first time this repo has been clean** —
+every known-violation row is now struck.
+
+`publish-spm.sh local` was **not** re-run: `ios/DNLibraryLocal` was already assembled from this
+branch and exports both symbols, which the successful build proves. Nothing would have changed.
+
+**One process note, recorded because it cost time.** The local-package wiring in `project.pbxproj`
+was reverted for DN-015's commit, so the app could not build until it was restored. Restoring it by
+hand corrupted the file on the first attempt — two faults, a replacement string that was not an
+f-string so `}}` leaked in literally, and an anchor that matched all three targets' Frameworks phases
+rather than the app's. Reverted, then redone by resolving the app target's phase id and asserting
+each anchor matched exactly once. **The wiring is still uncommitted and must stay that way.**

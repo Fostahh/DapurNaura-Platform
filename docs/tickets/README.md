@@ -87,7 +87,7 @@ ordered: **DN-011 must land before DN-012**, which needs its use case and its st
 | [DN-013](DN-013-technical-lower-deployment-target.md) | Lower IPHONEOS_DEPLOYMENT_TARGET from 26.2 to 17.0 everywhere | `in-review` | ios |
 | [DN-014](DN-014-technical-ios-codebase-architecture.md) | Decide and document the iOS codebase architecture — CODEBASE-ARCHITECTURE.md | `in-review` | docs |
 | [DN-015](DN-015-technical-apply-architecture-to-screens.md) | Bring the two existing screens up to CODEBASE-ARCHITECTURE | `in-review` | ui |
-| [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `in-progress` | both |
+| [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `in-review` | both |
 | [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `in-review` | docs |
 | [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `todo` | docs |
 
@@ -109,16 +109,19 @@ then settled the folder conventions and navigation ownership the owner raised on
 added `DapurNauraAppRouter`, which `CODEBASE-ARCHITECTURE.md` §4 had specified since DN-014 without
 anything implementing it. Awaiting the owner on the running app.
 
-**DN-016 is `in-progress` and deliberately paused.** Its Kotlin half is committed (`28f00e2` — the
-shared `DNFormat` and error vocabulary), out of order, before DN-015. The Swift half — deleting
-`Rupiah.swift` and `DNError+Message.swift` and calling `DNFormat` instead — is held until **the owner
-approves DN-015**, by their instruction of 2026-08-06. The committed Kotlin stays; unwinding it costs
-more than it buys. Until then the §10 known-violation row stays open and `swiftlint lint` reports
-exactly one violation, which is that row.
+**DN-016 is `in-review`, delivered in two halves.** Its Kotlin half was committed (`28f00e2`) out of
+order, *before* DN-015 and before the lowest-id-first rule existed — that commit stays, and this is
+the exception that prompted the rule, not a precedent. The Swift half was held until the owner
+approved DN-015 on 2026-08-06 and then landed: both Swift formatters deleted, eight call sites moved
+to `DNFormat` / `DNErrorKt`, and `Helper/` gone entirely.
 
-⚠️ **`ios/DNLibraryLocal` was assembled from DN-016's branch**, so it already exports `DNFormat`.
-Harmless — nothing in the app calls it — but do not run `publish-spm.sh publish` from that branch
-before DN-015 is approved.
+**`swiftlint lint` now reports 0 violations** — the first time, and every row in
+`CODEBASE-ARCHITECTURE.md`'s known-violations table is struck. Keep it there: a clean linter makes
+the next violation visible the moment it appears, which a habitual "3 known ones" never does.
+
+⚠️ **DN-016 is the first ticket to need the full release path** — `publish-spm.sh publish`, a tag, a
+GitHub release, then bumping the app off `../DNLibraryLocal` to the published version. All of it is
+human-triggered and none of it has run. Until it does, the app builds only against the local package.
 
 **DN-018 is `todo` and unscheduled** — a `README.md` in every repo and one name for the codebase
 document, on the owner's instruction of 2026-08-06. It follows DN-015, which decides the iOS folder
