@@ -4,6 +4,14 @@ Guidance for Claude Code working in the Dapur Naura platform workspace.
 
 Full rationale, ticket lifecycle and release flow: [`docs/ARCHITECTURE-AND-WORKFLOW.md`](docs/ARCHITECTURE-AND-WORKFLOW.md).
 Onboarding, and what this workspace is: [`README.md`](README.md).
+> **Source of truth.** For *what was asked for*, `docs/requirements/` wins — over the code, over any other
+> document, over a commit message. Where no requirement exists, **the ticket is the source of truth**
+> and its `## Rationale` carries the why.
+>
+> This governs **intent**, not facts. For *what the code does today*, believe the code. When intent
+> and implementation disagree, the implementation is what is wrong: record the correction in the
+> **ticket**, never by editing the requirement.
+
 **How to execute — the working standard every agent follows, literally:
 [`docs/AGENT-PLAYBOOK.md`](docs/AGENT-PLAYBOOK.md).** This file defines what is allowed; the
 playbook defines how to do it well. Read both before starting any ticket.
@@ -103,7 +111,9 @@ branch; run Gradle tasks; run `publish-spm.sh` in `local` mode; move a ticket be
 **Stop and wait for the human** — **acting on a request before the owner has confirmed your
 restatement of it** (see Language above); **starting** a technical ticket you filed yourself (filing
 is autonomous, scheduling is not); committing; pushing; opening a PR; merging anything; running
-`publish-spm.sh` in `publish` mode; any tag or GitHub-release operation; marking a ticket `done`.
+`publish-spm.sh` in `publish` mode; any tag or GitHub-release operation; marking a ticket `done`;
+**any destructive or irreversible act you were not explicitly asked for** — deleting, overwriting
+or rewriting something you did not create, whether or not it appears on the `Never` list.
 
 **Never** — edit a requirement document once it is `status: approved`; force-push; delete a tag or
 release; commit the local package reference in `ios/DapurNaura` (see below); run `git add -A` or

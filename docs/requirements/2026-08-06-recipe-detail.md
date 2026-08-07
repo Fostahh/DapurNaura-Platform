@@ -4,6 +4,10 @@ date: 2026-08-06
 author: owner
 drafted-by: agent
 approved: 2026-08-06
+# The "ingredients ... kept in their groups" bullet under "What the screen shows" is WRONG.
+# A recipe is a list of components, each carrying its own ingredients AND its own method.
+# Correct shape: docs/contracts/recipe.json. The prose below is left exactly as approved.
+corrected-by: DN-019
 ---
 
 # Recipe detail

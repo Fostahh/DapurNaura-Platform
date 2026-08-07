@@ -1,26 +1,146 @@
 {
   "id": "11",
   "classId": "1",
-  "name": "Brownies",
+  "name": "Brownies Red Velvet Cheese & Original Cheese",
   "images": [
     "https://placehold.co/800x600/png?text=Brownies+1",
     "https://placehold.co/800x600/png?text=Brownies+2"
   ],
-  "portions": "20 pcs",
-  "loyang": "20x20 cm",
+  "portions": null,
+  "loyang": "Loyang sekat 20x20 cm",
   "videoUrl": "https://placehold.co/video/brownies.mp4",
-  "ingredients": [
-    { "group": "Bahan A", "name": "Telur",          "quantity": "4 butir" },
-    { "group": "Bahan A", "name": "Gula pasir",     "quantity": "200 gr" },
-    { "group": "Bahan B", "name": "Tepung terigu",  "quantity": "150 gr" },
-    { "group": "Bahan B", "name": "Coklat bubuk",   "quantity": "50 gr" },
-    { "group": null,      "name": "Dark chocolate", "quantity": "200 gr" }
-  ],
-  "steps": [
-    { "text": "Lelehkan dark chocolate bersama margarin, sisihkan hingga hangat.", "videoTimestampSeconds": 0 },
-    { "text": "Kocok telur dan gula pasir hingga mengembang dan pucat.",           "videoTimestampSeconds": 45 },
-    { "text": "Masukkan campuran tepung terigu dan coklat bubuk, aduk balik.",     "videoTimestampSeconds": 120 },
-    { "text": "Tuang ke loyang, panggang 30 menit pada suhu 170 derajat.",         "videoTimestampSeconds": 210 },
-    { "text": "Dinginkan sebelum dipotong agar tidak hancur.",                     "videoTimestampSeconds": null }
+  "components": [
+    {
+      "name": "Brownies",
+      "ingredients": [
+        {
+          "name": "Dark chocolate",
+          "quantity": "150gr",
+          "merk": null,
+          "note": null
+        },
+        {
+          "name": "Butter",
+          "quantity": "90gr",
+          "merk": "Butter Anchor atau Bakermix Anchor",
+          "note": "Sesuaikan dengan harga jual"
+        },
+        {
+          "name": "Telur",
+          "quantity": "2 butir",
+          "merk": null,
+          "note": null
+        },
+        {
+          "name": "Gula halus",
+          "quantity": "150gr",
+          "merk": null,
+          "note": null
+        },
+        {
+          "name": "Tepung terigu protein rendah",
+          "quantity": "100gr",
+          "merk": "Kunci Biru",
+          "note": null
+        },
+        {
+          "name": "Coklat bubuk",
+          "quantity": "40gr",
+          "merk": "Bordeaux Tulip",
+          "note": null
+        }
+      ],
+      "steps": [
+        {
+          "text": "Lelehkan dark chocolate dan butter dengan cara di-tim atau langsung di kompor dengan api kecil dan diaduk terus.",
+          "videoTimestampSeconds": null
+        },
+        {
+          "text": "Kocok telur dan gula halus menggunakan whisk hingga gula larut, masukkan lelehan coklat, aduk rata.",
+          "videoTimestampSeconds": null
+        },
+        {
+          "text": "Masukkan tepung terigu dan coklat bubuk (ayak), aduk lagi hingga rata.",
+          "videoTimestampSeconds": null
+        },
+        {
+          "text": "Tuang adonan ke dalam loyang sekat ukuran 20x20 cm yang dialasi kertas roti / baking paper.",
+          "videoTimestampSeconds": null
+        }
+      ]
+    },
+    {
+      "name": "Toping creamcheese",
+      "ingredients": [
+        {
+          "name": "Creamcheese",
+          "quantity": "150gr",
+          "merk": "Elle atau Anchor",
+          "note": "Procis oles untuk varian ekonomis"
+        },
+        {
+          "name": "Gula halus",
+          "quantity": "35gr",
+          "merk": null,
+          "note": null
+        },
+        {
+          "name": "Margarin / butter",
+          "quantity": "35gr",
+          "merk": "Bakermix Anchor",
+          "note": "Dipakai DN (Owner)"
+        },
+        {
+          "name": "Kuning telur",
+          "quantity": "1",
+          "merk": null,
+          "note": null
+        },
+        {
+          "name": "Terigu pro sedang",
+          "quantity": "20gr",
+          "merk": "Segitiga Biru",
+          "note": null
+        },
+        {
+          "name": "Whipping cream cair",
+          "quantity": "20gr",
+          "merk": null,
+          "note": "Opsional"
+        },
+        {
+          "name": "Pasta red velvet",
+          "quantity": "2 tetes",
+          "merk": null,
+          "note": "Pewarna — hanya untuk varian red velvet"
+        }
+      ],
+      "steps": [
+        {
+          "text": "Mix creamcheese, gula halus, margarin dan whipping cream. Masukkan kuning telur, mix lagi, kemudian masukkan tepung, mix dengan speed rendah. Siap digunakan.",
+          "videoTimestampSeconds": null
+        },
+        {
+          "text": "Tuang adonan di atas adonan brownies, ratakan kemudian buat motif pakai sumpit.",
+          "videoTimestampSeconds": null
+        },
+        {
+          "text": "Tarik adonan coklat ke atas dengan sumpit, tarik dari bawah sedikit terus bikin motif marmer (lihat video).",
+          "videoTimestampSeconds": null
+        },
+        {
+          "text": "Untuk yang red velvet, ambil 1 sdm adonan creamcheese, tambahkan sedikit pasta red velvet.",
+          "videoTimestampSeconds": null
+        },
+        {
+          "text": "Setelah creamcheese rata di atas adonan brownies, tuang creamcheese yang sudah diberi pasta red velvet di beberapa titik, kemudian bentuk marmer pakai sumpit (lihat video).",
+          "videoTimestampSeconds": null
+        },
+        {
+          "text": "Panggang suhu 170°C selama 30 menitan.",
+          "videoTimestampSeconds": null
+        }
+      ]
+    }
   ]
 }

@@ -14,6 +14,14 @@ Classes are paid. A payment gateway (likely Midtrans) is planned but deliberatel
 a cooking class is a real-world service rather than digital content consumed in-app, App Store
 Guideline 3.1.1 does not force In-App Purchase.
 
+> **Source of truth.** For *what was asked for*, `docs/requirements/` wins — over the code, over any other
+> document, over a commit message. Where no requirement exists, **the ticket is the source of truth**
+> and its `## Rationale` carries the why.
+>
+> This governs **intent**, not facts. For *what the code does today*, believe the code. When intent
+> and implementation disagree, the implementation is what is wrong: record the correction in the
+> **ticket**, never by editing the requirement.
+
 ## Where the project actually is
 
 Two screens run — the class list and the class detail — against **stub data**. There is no backend,

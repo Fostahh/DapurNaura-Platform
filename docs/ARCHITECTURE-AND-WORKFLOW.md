@@ -83,7 +83,7 @@ the UI takes shape, which is why they live in `docs/contracts/` rather than the 
 |---|---|---|---|
 | **Umbrella** | `DapurNaura-Platform/` | repo, `main` | Tracks `docs/` + config only |
 | **DNLibrary** | `DNLibrary/` | repo → `Fostahh/DNLibrary`, `main` + `development` | KMP source. One `sharedLogic` module → XCFramework + Android library |
-| **DapurNaura** | `ios/DapurNaura/` | repo, `main`, **no remote yet** | SwiftUI app |
+| **DapurNaura** | `ios/DapurNaura/` | repo → `Fostahh/DapurNaura-iOS`, `main` + `development` | SwiftUI app |
 | **SPMDNLibrary** | `ios/SPMDNLibrary/` | repo → `Fostahh/SPMDNLibrary`, `main` + `development` | Manifest-only Swift package. `Package.swift` → GitHub release zip + checksum |
 | **DNLibraryLocal** | `ios/DNLibraryLocal/` | **not a repo** | Build artifact — local SPM package for development |
 | **Android** | `android/` | — | Not created yet |
@@ -111,6 +111,14 @@ load-bearing, not cosmetic.
 `bootstrap.sh`. Until it lands, the convention is unenforced and can be silently forgotten.
 
 ---
+
+> **Source of truth.** For *what was asked for*, `requirements/` wins — over the code, over any other
+> document, over a commit message. Where no requirement exists, **the ticket is the source of truth**
+> and its `## Rationale` carries the why.
+>
+> This governs **intent**, not facts. For *what the code does today*, believe the code. When intent
+> and implementation disagree, the implementation is what is wrong: record the correction in the
+> **ticket**, never by editing the requirement.
 
 ## 3. Document Driven Development
 

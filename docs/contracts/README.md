@@ -16,6 +16,14 @@ These files are the **source of truth for the JSON shape**, used twice:
 They live here rather than in `docs/requirements/` deliberately: requirements are frozen once
 approved, and this will change repeatedly while the UI takes shape.
 
+> **Source of truth.** For *what was asked for*, `../requirements/` wins — over the code, over any other
+> document, over a commit message. Where no requirement exists, **the ticket is the source of truth**
+> and its `## Rationale` carries the why.
+>
+> This governs **intent**, not facts. For *what the code does today*, believe the code. When intent
+> and implementation disagree, the implementation is what is wrong: record the correction in the
+> **ticket**, never by editing the requirement.
+
 ## Endpoints
 
 | Endpoint | Returns | File |
@@ -74,7 +82,23 @@ invented with the owner's approval; there is no real content for that class yet.
 
 ## Settled at approval
 
-- **Ingredient grouping stays** — optional `group` per ingredient (*Bahan A* / *Bahan B*).
+- ~~**Ingredient grouping stays** — optional `group` per ingredient (*Bahan A* / *Bahan B*).~~
+  **Revised 2026-08-07 by the owner, who supplied the first real recipe.** `group` is gone. It was
+  the wrong shape: it separated an ingredient from the method that uses it, and the real structure
+  is one level up.
+
+  **A recipe is a list of `components`, and each component carries its own `ingredients` *and* its
+  own `steps`.** Brownies Red Velvet has two: *Brownies* and *Toping creamcheese*. The owner's
+  reason is the one that settles it — the split exists **so a student can prepare each component in
+  its own bowl**. Ingredients and the method that consumes them must therefore travel together;
+  a flat ingredient list with group labels cannot express that, and a flat step list cannot say
+  which ingredients it draws on.
+
+  A recipe with no natural split is **one component**, whose `name` may be `null` so the screen
+  shows no heading. There is no separate "simple recipe" shape.
+
+  An ingredient is `name`, `quantity`, optional `merk` (brand) and optional `note`. `merk` matters
+  commercially — students are told which brand to buy, and which cheaper brand still works.
 - **`videoTimestampSeconds` stays**, nullable, even though video is not yet in scope. Steps may
   render as a plain list for now; the field is carried so the contract does not change when the
   player arrives.

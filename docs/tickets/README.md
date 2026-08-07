@@ -20,6 +20,14 @@ Lifecycle, autonomy rules and the Definition of Done live in
 
 ---
 
+> **Source of truth.** For *what was asked for*, `../requirements/` wins — over the code, over any other
+> document, over a commit message. Where no requirement exists, **the ticket is the source of truth**
+> and its `## Rationale` carries the why.
+>
+> This governs **intent**, not facts. For *what the code does today*, believe the code. When intent
+> and implementation disagree, the implementation is what is wrong: record the correction in the
+> **ticket**, never by editing the requirement.
+
 ## Two kinds of ticket
 
 | | **Product** | **Technical** |
@@ -90,6 +98,7 @@ ordered: **DN-011 must land before DN-012**, which needs its use case and its st
 | [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `in-review` | both |
 | [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `in-review` | docs |
 | [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `in-review` | docs |
+| [DN-019](DN-019-technical-source-of-truth.md) | Settle where truth lives — hierarchy, requirement corrections, and the CLAUDE.md/playbook boundary | `in-review` | docs |
 
 **Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**:
@@ -133,6 +142,18 @@ resolves.
 
 `docs/GETTING-STARTED.md` is gone, folded into the umbrella `README.md`. Four of its statements had
 become false and were corrected rather than carried across.
+
+**DN-019 states which artefact wins when documents disagree** — the requirement, and where none
+exists, the ticket. Owner's instruction, 2026-08-07, after the agent revised an approved requirement
+in place to absorb a corrected recipe shape. **That violated the standing immutability rule and was
+reverted.** The rule is unchanged; what was missing was any document saying where truth lives, so
+"put the correction in the ticket" read as bookkeeping rather than as the answer.
+
+⚠️ **The approved recipe requirement is knowingly wrong and stays that way.**
+`2026-08-06-recipe-detail.md` describes ingredients as a flat list with group labels. The first real
+recipe proved a recipe is a list of **components**, each with its own ingredients *and* method. The
+document is **not edited** — the corrected shape lives in `docs/contracts/recipe.json`, in
+`docs/contracts/README.md`, and in the recipe tickets when they are written.
 
 ⚠️ **Found while writing SPMDNLibrary's README, and verified**: that repository has **no tags and no
 releases**, and the binary-target URL in its `Package.swift` returns **404**. SPM resolves by tag, so

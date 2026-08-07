@@ -39,6 +39,45 @@ built differs from what was asked, the correction goes in the *ticket*, not here
 
 Drafts are mutable. That is what `status:` is for — it marks exactly when the document freezes.
 
+### The one permitted edit: a `corrected-by:` pointer
+
+Owner's decision, 2026-08-07. **The prose of an approved document is never touched.** But when part
+of it turns out to be wrong, the frontmatter may gain one line naming the ticket that carries the
+correction:
+
+```yaml
+corrected-by: DN-020    # which part is wrong, in a few words
+```
+
+**This is metadata, not content.** The rule protects the *evidence* — what was asked for, on what
+date. A pointer does not alter that evidence; it makes the correction findable by the one reader who
+most needs it, the person who opened this document first. A retracted paper keeps its text and gains
+a retraction notice; it is not rewritten.
+
+What stays forbidden is unchanged: **never edit the prose**, never soften a statement that turned
+out wrong, never delete an `[ASSUMPTION]` that proved false. The wrong sentence stays, visibly
+wrong, with a pointer to what is right.
+
+### Do not describe data shapes
+
+This is what made the pointer necessary in the first place, and it is cheaper to avoid than to
+correct.
+
+`2026-08-06-recipe-detail.md` was approved saying ingredients are one list whose entries carry group
+labels (*Bahan A* / *Bahan B*). The first real recipe proved otherwise — a recipe is a list of
+**components**, each with its own ingredients *and* its own method. The document was not wrong
+because the owner changed their mind. It was wrong because **it described a shape instead of a
+need**, and a shape belongs in `docs/contracts/`.
+
+Had it said *"the parts of a recipe must not be merged into one list — a student must be able to
+prepare each part separately"*, components would satisfy it exactly and nothing would need
+correcting.
+
+**The test while drafting:** if a sentence could be answered with *"that depends what the JSON ends
+up looking like"*, it is not a requirement. Move it to `## Open questions`, or rewrite it as a need
+that does not care about the shape. **Never approve a data shape before real content exists to
+check it against.**
+
 ## Naming
 
 `YYYY-MM-dd-short-slug.md` — for example `2026-08-05-recipe-catalogue.md`.
