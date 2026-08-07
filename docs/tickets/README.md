@@ -68,6 +68,8 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-009](DN-009-product-cooking-class-list-ui.md) | iOS — cooking-class list screen (SwiftUI + MVVM) on GET /classes | `in-review` | both |
 | [DN-011](DN-011-product-cooking-class-detail-data.md) | Data layer — fetch one cooking class with its recipes | `in-review` | data |
 | [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `in-review` | ui |
+| [DN-020](DN-020-product-recipe-detail-data.md) | Data layer — fetch one recipe in full, as a list of components | `in-review` | data |
+| [DN-021](DN-021-product-recipe-detail-ui.md) | iOS — the recipe screen, replacing the placeholder | `in-review` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -79,6 +81,19 @@ platform's UI gate.
 approved 2026-08-06 — so their `source:` is a genuine link rather than a flagged deviation. They are
 ordered: **DN-011 must land before DN-012**, which needs its use case and its stub replay. Both are
 `todo` and unscheduled; the owner starts them.
+
+**DN-020 and DN-021 are the recipe screen — the level of the domain the product actually sells.**
+Both are `in-review`, delivered 2026-08-07. **103 data-layer tests pass** (up from 89) and
+`swiftlint lint` reports **0 violations**, with every row of the iOS known-violations table now
+struck — the last one, `RecipePlaceholderView`'s §3 exemption, died with the file DN-021 deleted. They are the first tickets whose
+`source:` points at a requirement **known to be partly wrong**: the approved document describes
+ingredients as a flat list with group labels, and the first real recipe proved a recipe is a list of
+**components**, each with its own ingredients *and* its own method.
+
+That is safe only because of what DN-019 put in place. The requirement carries
+`corrected-by: DN-019, DN-020, DN-021` in its frontmatter, its prose is untouched, the corrected
+shape lives in `docs/contracts/recipe.json`, and **both tickets carry the correction inside
+`## Requirement (traced)`** — before the quote it modifies, not buried in an implementation note.
 
 ### Technical
 
