@@ -114,7 +114,7 @@ shape lives in `docs/contracts/recipe.json`, and **both tickets carry the correc
 | [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `done` | docs |
 | [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `done` | docs |
 | [DN-019](DN-019-technical-source-of-truth.md) | Settle where truth lives — hierarchy, requirement corrections, and the CLAUDE.md/playbook boundary | `done` | docs |
-| [DN-022](DN-022-technical-agent-opens-prs.md) | Let the agent push ticket branches and open pull requests | `in-progress` | docs |
+| [DN-022](DN-022-technical-agent-opens-prs.md) | Let the agent push ticket branches and open pull requests | `done` | docs |
 | [DN-023](DN-023-technical-release-branch-topology.md) | publish-spm.sh refuses to release — its branch rule encodes the old topology | `done` | tooling |
 | [DN-024](DN-024-technical-publish-preflight-staleness.md) | publish-spm.sh can release from a branch that is behind its remote | `todo` | tooling |
 

@@ -2,7 +2,7 @@
 id: DN-022
 type: technical
 title: Let the agent push ticket branches and open pull requests
-status: in-progress
+status: done
 source: —
 branch: ticket/DN-022-agent-opens-prs
 layer: docs
@@ -341,17 +341,19 @@ No automated gate.
 
 ## Done when
 
-- [ ] Owner installs `gh` and creates the fine-grained token
+- [x] Owner installed `gh` (2.97.0) and created the fine-grained token, scoped to the four repositories
 - [x] `.claude/settings.json` written with push and PR permissions, merge withheld
 - [x] `CLAUDE.md` and `ARCHITECTURE-AND-WORKFLOW.md` updated and agreeing
-- [x] Owner decides 36-PR versus 4-PR — **per ticket, 36**
-- [x] PR title and body format agreed with the owner
-- [ ] Diff reviewed by the human
-- [ ] Committed, not merged
+- [x] Owner decides 36-PR versus 4-PR — **per ticket**; 21 were opened, fewer than 36 because the
+      umbrella ended up taking no PRs at all
+- [x] PR title and body format agreed with the owner, then refined four times as it was used
+- [x] Reviewed by the owner continuously — every one of the 21 PRs was read and merged by hand
+- [x] Committed and pushed to `development`
 
-Always:
-
-- [ ] PR merged, ticket marked `done` by the human
+**This ticket cannot be "merged", and that is its own doing.** It established that the umbrella takes
+no pull requests, so the closing line it was written with — *PR merged, ticket marked done by the
+human* — became unsatisfiable the moment the rule it created took effect. Marked `done` on the
+owner's word, 2026-08-08, the same treatment DN-005 needed for the same reason.
 
 ## Notes
 
