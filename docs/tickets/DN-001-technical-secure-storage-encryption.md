@@ -2,7 +2,7 @@
 id: DN-001
 type: technical
 title: SecureStorage stores plaintext on Android
-status: in-review
+status: done
 source: —
 branch: ticket/DN-001-secure-storage-encryption
 layer: data
@@ -125,4 +125,4 @@ Gate: `./gradlew :sharedLogic:check`.
 - [x] Test 5 above demonstrably fails against the current implementation and passes after
 - [x] `CODEBASE-STANDARD.md` known-violations table updated
 - [x] Committed on `ticket/DN-001-secure-storage-encryption` (`f263523`), not merged
-- [ ] PR merged, ticket marked `done` by the human
+- [x] PR merged as [DNLibrary#1](https://github.com/Fostahh/DNLibrary/pull/1) (merge commit `2ee6892`), ticket marked `done` on the owner's word

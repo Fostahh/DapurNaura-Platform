@@ -2,7 +2,7 @@
 id: DN-014
 type: technical
 title: Decide and document the iOS codebase architecture — CODEBASE-ARCHITECTURE.md
-status: in-review
+status: done
 source: —
 branch: ticket/DN-014-ios-codebase-architecture
 layer: docs

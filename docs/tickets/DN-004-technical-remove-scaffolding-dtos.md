@@ -2,7 +2,7 @@
 id: DN-004
 type: technical
 title: Delete the leftover scaffolding DTO and endpoint from DNLibrary
-status: in-review
+status: done
 source: —
 branch: ticket/DN-004-remove-scaffolding-dtos
 layer: data

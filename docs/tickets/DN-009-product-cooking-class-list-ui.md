@@ -2,7 +2,7 @@
 id: DN-009
 type: product
 title: iOS — cooking-class list screen (SwiftUI + MVVM) on GET /classes
-status: in-review
+status: done
 source: — (verbal instruction from the owner, 2026-08-06 — see below)
 branch: ticket/DN-009-cooking-class-list-ui
 layer: both

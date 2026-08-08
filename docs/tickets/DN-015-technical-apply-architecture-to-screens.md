@@ -2,7 +2,7 @@
 id: DN-015
 type: technical
 title: Bring the two existing screens up to CODEBASE-ARCHITECTURE — navigation, error handling, composition
-status: in-review
+status: done
 source: —
 branch: ticket/DN-015-apply-architecture-to-screens
 layer: ui

@@ -106,12 +106,17 @@ stays autonomous, because there is no instruction there to misread.
 **Do without asking** — read anything; create and edit ticket files; **file a technical ticket at
 `status: todo`** when you notice a problem; create the ticket branch; write code and tests on that
 branch; run Gradle tasks; run `publish-spm.sh` in `local` mode; move a ticket between `todo` →
-`in-progress` → `in-review`.
+`in-progress` → `in-review`; **push a `ticket/*` branch**; **open a pull request** (DN-022);
+**mark a ticket `done` once the owner has said its PR is approved and merged** (DN-022).
 
 **Stop and wait for the human** — **acting on a request before the owner has confirmed your
 restatement of it** (see Language above); **starting** a technical ticket you filed yourself (filing
-is autonomous, scheduling is not); committing; pushing; opening a PR; merging anything; running
-`publish-spm.sh` in `publish` mode; any tag or GitHub-release operation; marking a ticket `done`;
+is autonomous, scheduling is not); committing; **pushing anything other than a `ticket/*` branch**; merging anything; running
+**initiating** `publish-spm.sh` in `publish` mode, a tag, or a GitHub release — the agent never
+decides that a release should happen. **When the owner instructs it, the agent runs the publish end
+to end and chooses the version number itself** (see Versioning below); **declaring a ticket `done`
+on your own judgement** — the owner saying the PR is approved and merged is what authorises it, and
+the agent never infers it from a green PR page;
 **any destructive or irreversible act you were not explicitly asked for** — deleting, overwriting
 or rewriting something you did not create, whether or not it appears on the `Never` list.
 
@@ -201,19 +206,40 @@ as `dirname(scripts/)`.
 
 - **`local`** — assembles the XCFramework into `ios/DNLibraryLocal/` for development. Run freely.
 - **`publish`** — release build, zip, checksum, rewrites SPMDNLibrary's `Package.swift`, then
-  tags, pushes, creates the GitHub release. **Human-triggered only, after the PR is merged.**
+  tags, pushes, creates the GitHub release. **Human-triggered, after the PR is merged** — the owner
+  decides that a release happens; the agent then runs it and derives the version. Irreversible:
+  deleting a tag or release is on the `Never` list, so a wrong number cannot be cleanly undone.
 
 Versioning is plain semver on the library tag, independent of the app's version. `0.x` while the
 API is unstable; what changed in a version goes in the release notes, not the number.
 
-`gh` is not installed, so the agent cannot open PRs or create releases — the human does both.
+**The scheme, settled with the owner on 2026-08-07.** First release is **`0.1.0`** — not `0.0.1`,
+which reads as "nothing works yet" and wastes the only patch slot on a release already containing
+two tickets. Then `0.MINOR.PATCH`: **MINOR** for any public API change, **PATCH** for a behaviour fix
+with no API movement. **`1.0.0` is reserved for the App Store release** and must not be used before
+it — owner's rule.
+
+**The agent picks the number, the owner picks the moment.** Every ticket already declares its bump in
+`## Public API contract` → *"Version bump implied"*, so the next version is **derived from the
+tickets merged since the last tag**, never invented at publish time. If those declarations disagree
+with the diff, the diff wins and the ticket is corrected.
+
+**The app pins the library exactly (`.exact("0.1.0")`) for the whole of `0.x`, never a range.** A
+range is a compatibility promise, and `0.x` makes none — DN-004, DN-006 and DN-008 each remove public
+symbols and would silently break an app pinned to a range. Switch to a range at `1.0.0`.
+
+Since DN-022 the agent may push `ticket/*` branches and open pull requests, using a
+fine-grained token scoped to these four repositories. **Merging, tagging and releases stay the
+human's** — the token has no permission for them either, so policy and credentials agree.
+A pull request is a request; the decision is not delegated.
 
 ## Current known blockers
 
-- **Nothing is merged, in any repo — 25 commits across three stacks.** Everything up to DN-017 is
-  `in-review`; the index's `Done` section is still empty. Each repo's branches are stacked on the
-  previous rather than on `main`, so **merge each repo's PRs in the order given in
-  [`docs/tickets/README.md`](docs/tickets/README.md)**. On `main`, `ios/DapurNaura` is still a
+- **Merging started on 2026-08-07 and has barely begun — DN-001 is the only ticket `done`.**
+  Everything else is `in-review` across four stacks. Each repo's branches are stacked on the previous
+  rather than on the base, so **merge each repo's PRs in the order given in
+  [`docs/tickets/README.md`](docs/tickets/README.md)**, one at a time — and **with a merge commit,
+  never a squash**, or every branch above needs rebasing. On `main`, `ios/DapurNaura` is still a
   SwiftUI shell with four build variants and no data layer.
 - **There is no notion of a signed-in user, and the domain needs one.** `purchaseStatus` is per-user
   data by definition, but nothing anywhere carries identity: no login, no session, no user model,

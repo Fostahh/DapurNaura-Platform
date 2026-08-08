@@ -2,7 +2,7 @@
 id: DN-006
 type: technical
 title: Make DNNetworkManager testable — engine seam, resettable instance
-status: in-review
+status: done
 source: —
 branch: ticket/DN-006-network-engine-seam
 layer: data

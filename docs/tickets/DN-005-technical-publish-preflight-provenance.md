@@ -2,7 +2,7 @@
 id: DN-005
 type: technical
 title: publish-spm.sh — validate the source repo and record release provenance
-status: in-review
+status: done
 source: —
 branch: development
 layer: tooling

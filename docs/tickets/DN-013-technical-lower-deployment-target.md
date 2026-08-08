@@ -2,7 +2,7 @@
 id: DN-013
 type: technical
 title: Lower IPHONEOS_DEPLOYMENT_TARGET from 26.2 to 17.0 across every build configuration
-status: in-review
+status: done
 source: —
 branch: ticket/DN-013-lower-deployment-target
 layer: ios

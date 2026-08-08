@@ -64,10 +64,10 @@ which matters, because that id is the only thing linking work across the separat
 
 | Id | Title | Status | Layer |
 |---|---|---|---|
-| [DN-008](DN-008-product-cooking-class-list.md) | Data layer — fetch the list of cooking classes | `in-review` | data |
-| [DN-009](DN-009-product-cooking-class-list-ui.md) | iOS — cooking-class list screen (SwiftUI + MVVM) on GET /classes | `in-review` | both |
-| [DN-011](DN-011-product-cooking-class-detail-data.md) | Data layer — fetch one cooking class with its recipes | `in-review` | data |
-| [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `in-review` | ui |
+| [DN-008](DN-008-product-cooking-class-list.md) | Data layer — fetch the list of cooking classes | `done` | data |
+| [DN-009](DN-009-product-cooking-class-list-ui.md) | iOS — cooking-class list screen (SwiftUI + MVVM) on GET /classes | `done` | both |
+| [DN-011](DN-011-product-cooking-class-detail-data.md) | Data layer — fetch one cooking class with its recipes | `done` | data |
+| [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `done` | ui |
 | [DN-020](DN-020-product-recipe-detail-data.md) | Data layer — fetch one recipe in full, as a list of components | `in-review` | data |
 | [DN-021](DN-021-product-recipe-detail-ui.md) | iOS — the recipe screen, replacing the placeholder | `in-review` | ui |
 
@@ -99,31 +99,48 @@ shape lives in `docs/contracts/recipe.json`, and **both tickets carry the correc
 
 | Id | Title | Status | Layer |
 |---|---|---|---|
-| [DN-001](DN-001-technical-secure-storage-encryption.md) | SecureStorage stores plaintext on Android | `in-review` | data |
-| [DN-002](DN-002-technical-network-manager-hardening.md) | Harden DNNetworkManager — timeouts, strict JSON, hide internals | `in-review` | data |
-| [DN-003](DN-003-technical-ios-build-variants.md) | iOS build variants — Development / Alpha / Beta / Release via xcconfig | `in-review` | ios |
-| [DN-004](DN-004-technical-remove-scaffolding-dtos.md) | Delete the leftover scaffolding DTO and endpoint from DNLibrary | `in-review` | data |
-| [DN-005](DN-005-technical-publish-preflight-provenance.md) | publish-spm.sh — validate the source repo and record release provenance | `in-review` | tooling |
-| [DN-006](DN-006-technical-network-engine-seam.md) | Make DNNetworkManager testable — engine seam, no singleton | `in-review` | data |
-| [DN-007](DN-007-technical-commit-msg-hook.md) | Enforce the DN-XXX commit-message convention with a commit-msg hook | `in-review` | tooling |
-| [DN-010](DN-010-technical-bilingual-prompt-protocol.md) | Bilingual prompt protocol — English docs, confirm-before-work gate | `in-review` | docs |
-| [DN-013](DN-013-technical-lower-deployment-target.md) | Lower IPHONEOS_DEPLOYMENT_TARGET from 26.2 to 17.0 everywhere | `in-review` | ios |
-| [DN-014](DN-014-technical-ios-codebase-architecture.md) | Decide and document the iOS codebase architecture — CODEBASE-ARCHITECTURE.md | `in-review` | docs |
-| [DN-015](DN-015-technical-apply-architecture-to-screens.md) | Bring the two existing screens up to CODEBASE-ARCHITECTURE | `in-review` | ui |
-| [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `in-review` | both |
-| [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `in-review` | docs |
+| [DN-001](DN-001-technical-secure-storage-encryption.md) | SecureStorage stores plaintext on Android | `done` | data |
+| [DN-002](DN-002-technical-network-manager-hardening.md) | Harden DNNetworkManager — timeouts, strict JSON, hide internals | `done` | data |
+| [DN-003](DN-003-technical-ios-build-variants.md) | iOS build variants — Development / Alpha / Beta / Release via xcconfig | `done` | ios |
+| [DN-004](DN-004-technical-remove-scaffolding-dtos.md) | Delete the leftover scaffolding DTO and endpoint from DNLibrary | `done` | data |
+| [DN-005](DN-005-technical-publish-preflight-provenance.md) | publish-spm.sh — validate the source repo and record release provenance | `done` | tooling |
+| [DN-006](DN-006-technical-network-engine-seam.md) | Make DNNetworkManager testable — engine seam, no singleton | `done` | data |
+| [DN-007](DN-007-technical-commit-msg-hook.md) | Enforce the DN-XXX commit-message convention with a commit-msg hook | `done` | tooling |
+| [DN-010](DN-010-technical-bilingual-prompt-protocol.md) | Bilingual prompt protocol — English docs, confirm-before-work gate | `done` | docs |
+| [DN-013](DN-013-technical-lower-deployment-target.md) | Lower IPHONEOS_DEPLOYMENT_TARGET from 26.2 to 17.0 everywhere | `done` | ios |
+| [DN-014](DN-014-technical-ios-codebase-architecture.md) | Decide and document the iOS codebase architecture — CODEBASE-ARCHITECTURE.md | `done` | docs |
+| [DN-015](DN-015-technical-apply-architecture-to-screens.md) | Bring the two existing screens up to CODEBASE-ARCHITECTURE | `done` | ui |
+| [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `done` | both |
+| [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `done` | docs |
 | [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `in-review` | docs |
 | [DN-019](DN-019-technical-source-of-truth.md) | Settle where truth lives — hierarchy, requirement corrections, and the CLAUDE.md/playbook boundary | `in-review` | docs |
+| [DN-022](DN-022-technical-agent-opens-prs.md) | Let the agent push ticket branches and open pull requests | `in-progress` | docs |
 
 **Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**:
 
-| Repo | Stack |
-|---|---|
-| **DNLibrary** | `DN-001 → DN-002 → DN-004 → DN-006 → DN-008 → DN-009 → DN-011 → DN-017 → DN-016 → DN-018` |
-| **ios/DapurNaura** | `DN-003 → DN-009 → DN-013 → DN-012 → DN-014 → DN-015 → DN-016 → DN-018` |
-| **umbrella** | `DN-010 → DN-011 → DN-012 → DN-013 → DN-014 → DN-015 → DN-016 → DN-018` (DN-007 sits on its own branch off `main`) |
-| **ios/SPMDNLibrary** | `DN-018` — its first ticket branch; the repo had no markdown at all |
+Verified against git on 2026-08-07, not read off this index:
+
+| Repo | Base | Stack |
+|---|---|---|
+| **DNLibrary** | `development` | ~~`DN-001`~~ ~~`DN-002`~~ **merged** → `DN-004` → `DN-006` → `DN-008` → `DN-009` → `DN-011` → `DN-017` → `DN-016` → `DN-018` → `DN-019` → `DN-020` |
+| **ios/DapurNaura** | `development` | `DN-003` → `DN-009` → `DN-013` → `DN-012` → `DN-014` → `DN-015` → `DN-016` → `DN-018` → `DN-019` → `DN-021` |
+| **umbrella** | `development` | `DN-010` → `DN-011` → `DN-012` → `DN-013` → `DN-014` → `DN-015` → `DN-016` → `DN-018` → `DN-019` → `DN-020` → `DN-021` (DN-007 sits on its own branch) |
+| **ios/SPMDNLibrary** | `development` | `DN-018` → `DN-019` — its first ticket branches; the repo had no markdown at all |
+
+**All four repos target `development`.** `main` is frozen until the app reaches `1.0.0`, when
+`development` merges into it once — owner's instruction, 2026-08-07. The umbrella's `development` was
+created from `main` at `30c711d` that day; it had none before.
+
+**The umbrella takes no PRs** — its ticket branches are pushed into `development` directly. It
+carries only docs and workspace config, so there is no build to break and nothing to review that was
+not already reviewed on the ticket.
+
+**Merge with a merge commit, not a squash.** DN-001 was, and `f263523` survived into `development`
+as a result. That matters beyond one ticket: the commit SHAs recorded throughout these ticket files
+stay valid, and every downstream branch stayed correctly based, so none needed rebasing. A squash
+would rewrite `development`, orphan every branch above it, and turn ~20 recorded SHAs into dead
+references. See [DN-022](DN-022-technical-agent-opens-prs.md).
 
 **Work the lowest open id first.** Owner's instruction, 2026-08-06: tickets are reviewed and executed
 in ascending order, and a higher id must not run ahead of a lower one. DN-016 already did — see
@@ -184,10 +201,6 @@ edits of the same paragraphs.
 the first to be filed and started in the same step because the owner's instruction scheduled it.
 Its branch is cut from `main` — the umbrella repo has no `development` — independent of DN-007's.
 
-### Done
-
-_None yet._
-
 ---
 
 ## States
@@ -197,7 +210,7 @@ _None yet._
 | `todo` | Written up, not started | Agent, at creation |
 | `in-progress` | Being implemented | Agent |
 | `in-review` | Implemented, data-layer tests green, awaiting review | Agent |
-| `done` | PR merged | **Human, manually** |
+| `done` | PR merged | Agent, **only after the owner says the PR is approved and merged** |
 
 Rejections are verbal — flip back to `in-progress` and fix. If the same feedback arrives twice,
 write it into the ticket so it survives the next session.

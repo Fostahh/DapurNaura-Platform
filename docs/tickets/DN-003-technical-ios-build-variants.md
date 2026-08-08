@@ -2,7 +2,7 @@
 id: DN-003
 type: technical
 title: iOS build variants — Development / Alpha / Beta / Release via xcconfig
-status: in-review
+status: done
 source: —
 branch: ticket/DN-003-ios-build-variants
 layer: ios

@@ -2,7 +2,7 @@
 id: DN-011
 type: product
 title: Data layer — fetch one cooking class with its recipes
-status: in-review
+status: done
 source: docs/requirements/2026-08-06-cooking-class-detail.md
 branch: ticket/DN-011-cooking-class-detail
 layer: data

@@ -2,7 +2,7 @@
 id: DN-017
 type: technical
 title: Move the standards documents out of the repository roots into docs/
-status: in-review
+status: done
 source: —
 branch: ticket/DN-017-tidy-root-docs
 layer: docs

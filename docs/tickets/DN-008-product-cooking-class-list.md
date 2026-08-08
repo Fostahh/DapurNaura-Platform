@@ -2,7 +2,7 @@
 id: DN-008
 type: product
 title: Data layer — fetch the list of cooking classes
-status: in-review
+status: done
 source: — (verbal instruction from the owner, 2026-08-06 — see below)
 branch: ticket/DN-008-cooking-class-list
 layer: data

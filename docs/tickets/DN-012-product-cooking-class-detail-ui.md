@@ -2,7 +2,7 @@
 id: DN-012
 type: product
 title: iOS — cooking-class detail screen, with status-driven buy button and recipe tappability
-status: in-review
+status: done
 source: docs/requirements/2026-08-06-cooking-class-detail.md
 branch: ticket/DN-012-cooking-class-detail-ui
 layer: ui

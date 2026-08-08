@@ -2,7 +2,7 @@
 id: DN-002
 type: technical
 title: Harden DNNetworkManager — timeouts, strict JSON, hide internals
-status: in-review
+status: done
 source: —
 branch: ticket/DN-002-network-manager-hardening
 layer: data
@@ -132,4 +132,4 @@ which cases had to be deferred rather than silently skipping them.
 - [x] Unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
 - [x] `CODEBASE-STANDARD.md` known-violations table updated
 - [x] Committed on `ticket/DN-002-network-manager-hardening` (`86c05ce`), not merged
-- [ ] PR merged, ticket marked `done` by the human
+- [x] PR merged as [DNLibrary#2](https://github.com/Fostahh/DNLibrary/pull/2) (merge commit `8c55a5d`), ticket marked `done` on the owner's word

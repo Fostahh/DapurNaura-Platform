@@ -2,7 +2,7 @@
 id: DN-007
 type: technical
 title: Enforce the DN-XXX commit-message convention with a commit-msg hook
-status: in-review
+status: done
 source: —
 branch: ticket/DN-007-commit-msg-hook
 layer: tooling

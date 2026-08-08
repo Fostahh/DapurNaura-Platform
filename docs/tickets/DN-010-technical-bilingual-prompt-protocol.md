@@ -2,7 +2,7 @@
 id: DN-010
 type: technical
 title: Bilingual prompt protocol — English docs, confirm-before-work gate
-status: in-review
+status: done
 source: —
 branch: ticket/DN-010-bilingual-prompt-protocol
 layer: docs

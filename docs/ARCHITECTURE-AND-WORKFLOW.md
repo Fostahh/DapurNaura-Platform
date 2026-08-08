@@ -311,7 +311,7 @@ never correct.
 
 - **Acting on a request before the human has confirmed the agent's restatement of it** — §3, DN-010
 - **Starting** work on a technical ticket it created itself — filing is autonomous, scheduling is not
-- Committing, pushing, opening a PR
+- Committing; pushing anything other than a `ticket/*` branch; merging
 - Merging anything
 - Running `publish-spm.sh` in **`publish`** mode
 - Any tag or GitHub-release operation
@@ -325,8 +325,10 @@ never correct.
 - `git add -A` or `git commit -a` in `ios/DapurNaura` — Xcode rewrites `project.pbxproj`
   constantly, so a blanket add sweeps the local wiring into history
 
-**[OPEN]** `gh` is not installed, so the agent cannot open PRs or create releases even when
-told to. The human does both by hand. Revisit when the manual hand-off becomes tiresome.
+**[DECIDED — DN-022, 2026-08-07]** The agent may push `ticket/*` branches and open pull
+requests. It may not merge, tag, or create a release, and it may not push to `main` or
+`development`. The fine-grained token it authenticates with carries no permission for any of
+those, so a mistaken command cannot land code — the credential enforces what the rule says.
 
 ---
 
