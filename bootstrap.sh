@@ -26,12 +26,12 @@ command -v git >/dev/null || { echo "✗ git is not installed." >&2; exit 1; }
 # ---------------------------------------------------------------------------
 REPOS=(
   "DNLibrary|https://github.com/Fostahh/DNLibrary.git"
+  "ios/DapurNaura|https://github.com/Fostahh/DapurNaura-iOS.git"
   "ios/SPMDNLibrary|https://github.com/Fostahh/SPMDNLibrary.git"
 )
 
 # Projects that exist locally but have no remote yet — reported, never touched.
 NO_REMOTE_YET=(
-  "ios/DapurNaura|SwiftUI app — local-only repo, no remote configured yet"
   "android|Native Android app — not created yet"
 )
 
@@ -69,20 +69,31 @@ for entry in "${NO_REMOTE_YET[@]}"; do
 done
 
 # ---------------------------------------------------------------------------
-# Install the commit-msg hook (DN-007) into every project repo present.
-# The DN-XXX commit convention is the only cross-repo link between a commit
-# and its ticket. Hooks live in .git/hooks/ (per-clone, never committed), so
+# Install the commit-msg hook (DN-007) into every repo present — including this
+# one. The DN-XXX convention is the only cross-repo link between a commit and
+# its ticket. Hooks live in .git/hooks/ (per-clone, never committed), so
 # installation happens here and is safe to repeat.
+#
+# The umbrella is passed explicitly rather than added to REPOS, because REPOS is
+# "things to clone" and the umbrella is the thing you are standing in. Until
+# DN-028 it was in neither list, so the one repository that stores the hook and
+# receives every ticket and docs commit was the only one not checked against the
+# convention it defines.
 # ---------------------------------------------------------------------------
 HOOK_SRC="$ROOT/hooks/commit-msg"
+
+install_hook() {  # $1 = repo dir, $2 = label
+  [[ -d "$1/.git" ]] || return 0
+  mkdir -p "$1/.git/hooks"
+  install -m 0755 "$HOOK_SRC" "$1/.git/hooks/commit-msg"
+  echo "✓ $2 — commit-msg hook installed"
+}
+
 echo
+install_hook "$ROOT" "DapurNaura-Platform (umbrella)"
 for entry in "${REPOS[@]}" "${NO_REMOTE_YET[@]}"; do
   path="${entry%%|*}"
-  if [[ -d "$path/.git" ]]; then
-    mkdir -p "$path/.git/hooks"
-    install -m 0755 "$HOOK_SRC" "$path/.git/hooks/commit-msg"
-    echo "✓ $path — commit-msg hook installed"
-  fi
+  install_hook "$path" "$path"
 done
 
 cat <<'EOF'
@@ -90,7 +101,7 @@ cat <<'EOF'
 Done.
 
 Next:
-  1. Read docs/GETTING-STARTED.md
+  1. Read README.md, then docs/ARCHITECTURE-AND-WORKFLOW.md
   2. Build the data layer:   cd DNLibrary && ./gradlew :sharedLogic:check
   3. The iOS app is opened from ios/DapurNaura in Xcode — Gradle alone cannot build it.
 
