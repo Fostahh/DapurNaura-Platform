@@ -115,6 +115,7 @@ shape lives in `docs/contracts/recipe.json`, and **both tickets carry the correc
 | [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `in-review` | docs |
 | [DN-019](DN-019-technical-source-of-truth.md) | Settle where truth lives — hierarchy, requirement corrections, and the CLAUDE.md/playbook boundary | `in-review` | docs |
 | [DN-022](DN-022-technical-agent-opens-prs.md) | Let the agent push ticket branches and open pull requests | `in-progress` | docs |
+| [DN-023](DN-023-technical-release-branch-topology.md) | publish-spm.sh refuses to release — its branch rule encodes the old topology | `done` | tooling |
 
 **Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**:

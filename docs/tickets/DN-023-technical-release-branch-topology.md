@@ -2,7 +2,7 @@
 id: DN-023
 type: technical
 title: publish-spm.sh refuses to release — its branch rule encodes the old topology
-status: in-progress
+status: done
 source: —
 branch: ticket/DN-023-release-branch-topology
 layer: tooling
@@ -110,7 +110,7 @@ No automated gate — this is a shell constant. Verified by running the script:
 - [ ] `DNLIB_RELEASE_BRANCHES` defaults to `development main`, comment rewritten to match
 - [ ] Dry run from `development` reports release-clean
 - [ ] Committed on `ticket/DN-023-release-branch-topology`, not merged
-- [ ] PR merged, ticket marked `done` on the owner's word
+- [x] PR merged as [DNLibrary#3](https://github.com/Fostahh/DNLibrary/pull/3), ticket marked `done` on the owner's word
 
 ## Notes
 
