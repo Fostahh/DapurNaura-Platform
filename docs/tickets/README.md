@@ -70,8 +70,8 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `done` | ui |
 | [DN-020](DN-020-product-recipe-detail-data.md) | Data layer — fetch one recipe in full, as a list of components | `done` | data |
 | [DN-021](DN-021-product-recipe-detail-ui.md) | iOS — the recipe screen, replacing the placeholder | `done` | ui |
-| [DN-024](DN-024-product-cooking-class-category.md) | Data layer — class category, and filtering GET /classes by it | `in-review` | data |
-| [DN-025](DN-025-product-cooking-class-category-filter-ui.md) | iOS — category filter chips on the cooking-class list | `in-review` | ui |
+| [DN-024](DN-024-product-cooking-class-category.md) | Data layer — class category, and filtering GET /classes by it | `done` | data |
+| [DN-025](DN-025-product-cooking-class-category-filter-ui.md) | iOS — category filter chips on the cooking-class list | `done` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is

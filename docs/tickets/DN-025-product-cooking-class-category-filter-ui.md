@@ -2,7 +2,7 @@
 id: DN-025
 type: product
 title: iOS — category filter chips on the cooking-class list
-status: in-review
+status: done
 source: docs/requirements/2026-08-08-cooking-class-category-filter.md
 branch: ticket/DN-025-cooking-class-category-filter-ui
 commit: f076cd1

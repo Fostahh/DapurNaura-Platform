@@ -2,7 +2,7 @@
 id: DN-024
 type: product
 title: Data layer — class category, and filtering GET /classes by it
-status: in-review
+status: done
 source: docs/requirements/2026-08-08-cooking-class-category-filter.md
 branch: ticket/DN-024-cooking-class-category
 commit: 308694b
