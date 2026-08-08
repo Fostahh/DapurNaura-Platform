@@ -164,7 +164,8 @@ The loop:
    verbal — fix and return to step 3. *If the same feedback comes up twice, write it into the
    ticket or the relevant `CLAUDE.md` so it survives the next session.*
 6. After the PR merges the human says so; only then does the release step happen.
-7. Once published, bump the app from the local package to the new version and commit that.
+7. **The publish is not finished until the app is repinned.** See *Publishing the iOS binary* — the
+   release and the app's bump are one step, not two.
 
 **Steps 1–4 are one loop with a single approval gate.** Do not wait for a DNLibrary merge before
 building the app against it — that is what `publish-spm.sh local` is for. The library change and
@@ -241,6 +242,22 @@ as `dirname(scripts/)`.
 > `Package.resolved` alone does not fix.
 >
 > **Two seconds of `git pull` prevents all of it.**
+
+> **A publish is not finished when the release appears — it is finished when the app is repinned.**
+> Owner's rule, 2026-08-09. The agent runs straight on from `gh release create` to bumping
+> `project.pbxproj` and `Package.resolved` to the new version, resolving, building, and committing.
+> **It does not report the release as done first**, and it does not leave the repin for a later
+> instruction.
+>
+> **This exists because a two-minute gap is long enough for the owner to do it by hand.** On
+> 2026-08-09 `0.6.0` was released at 03:04 and the repin landed at 03:07; the owner opened Xcode in
+> between and resolved the project themselves. Nothing was lost — the commit was already correct —
+> but they had to do work the agent had been asked to do, and two people editing the same
+> `Package.resolved` is how a conflict starts.
+>
+> Xcode also caches package state in **DerivedData/SourcePackages** as well as `Package.resolved`.
+> If a resolve fails with *"Package.swift was modified during the build"*, delete `SourcePackages`
+> and resolve again.
 
 Versioning is plain semver on the library tag, independent of the app's version. `0.x` while the
 API is unstable; what changed in a version goes in the release notes, not the number.
