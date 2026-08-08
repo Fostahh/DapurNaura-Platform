@@ -210,6 +210,33 @@ as `dirname(scripts/)`.
   decides that a release happens; the agent then runs it and derives the version. Irreversible:
   deleting a tag or release is on the `Never` list, so a wrong number cannot be cleanly undone.
 
+> **Before every publish, fetch and pull both repositories.** Owner's rule, 2026-08-08. `DNLibrary`
+> *and* `ios/SPMDNLibrary` — check out the release branch and confirm it is level with its remote
+> before running anything:
+>
+> ```sh
+> git -C DNLibrary        checkout development && git -C DNLibrary        pull --ff-only
+> git -C ios/SPMDNLibrary checkout development && git -C ios/SPMDNLibrary pull --ff-only
+> ```
+>
+> **This exists because skipping it broke `0.5.0` on 2026-08-08.** The script was run against an
+> `SPMDNLibrary` checkout four commits behind — DN-018 and DN-019 had merged on GitHub in the
+> meantime. Its preflight passed (clean tree, allowed branch, HEAD on a remote branch — none of which
+> notices staleness), so it rewrote the manifest, committed and tagged **on the stale base**.
+>
+> `git push origin HEAD --tags` then **partly succeeded**: git pushes refs independently, the branch
+> was rejected as a non-fast-forward, and **the tag went through anyway** — leaving a published tag
+> on a commit that existed on no branch, with no release behind it. The script blamed
+> authentication; git had said `Note about fast-forwards`.
+>
+> Repairing it needed a tag and release deletion, which the `Never` list forbids and the owner
+> authorised once. It also tripped SPM's tamper detection — it records tag-to-commit fingerprints and
+> refuses to resolve when one moves — so every machine that had already resolved `0.5.0` had to have
+> its fingerprint cache cleared by hand, with Xcode holding a second copy in DerivedData that
+> `Package.resolved` alone does not fix.
+>
+> **Two seconds of `git pull` prevents all of it.**
+
 Versioning is plain semver on the library tag, independent of the app's version. `0.x` while the
 API is unstable; what changed in a version goes in the release notes, not the number.
 

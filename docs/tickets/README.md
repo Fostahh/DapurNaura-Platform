@@ -116,7 +116,6 @@ shape lives in `docs/contracts/recipe.json`, and **both tickets carry the correc
 | [DN-019](DN-019-technical-source-of-truth.md) | Settle where truth lives — hierarchy, requirement corrections, and the CLAUDE.md/playbook boundary | `done` | docs |
 | [DN-022](DN-022-technical-agent-opens-prs.md) | Let the agent push ticket branches and open pull requests | `done` | docs |
 | [DN-023](DN-023-technical-release-branch-topology.md) | publish-spm.sh refuses to release — its branch rule encodes the old topology | `done` | tooling |
-| [DN-024](DN-024-technical-publish-preflight-staleness.md) | publish-spm.sh can release from a branch that is behind its remote | `todo` | tooling |
 
 **Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**:
