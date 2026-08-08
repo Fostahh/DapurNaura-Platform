@@ -2,7 +2,7 @@
 id: DN-018
 type: technical
 title: Give every repository a README, and settle on one name for the codebase document
-status: in-review
+status: done
 source: —
 branch: ticket/DN-018-per-repo-readme
 layer: docs

@@ -2,7 +2,7 @@
 id: DN-019
 type: technical
 title: Settle where truth lives — the hierarchy, how a wrong requirement is corrected, and the CLAUDE.md/playbook boundary
-status: in-review
+status: done
 source: —
 branch: ticket/DN-019-source-of-truth
 layer: docs

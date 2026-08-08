@@ -68,8 +68,8 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-009](DN-009-product-cooking-class-list-ui.md) | iOS — cooking-class list screen (SwiftUI + MVVM) on GET /classes | `done` | both |
 | [DN-011](DN-011-product-cooking-class-detail-data.md) | Data layer — fetch one cooking class with its recipes | `done` | data |
 | [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `done` | ui |
-| [DN-020](DN-020-product-recipe-detail-data.md) | Data layer — fetch one recipe in full, as a list of components | `in-review` | data |
-| [DN-021](DN-021-product-recipe-detail-ui.md) | iOS — the recipe screen, replacing the placeholder | `in-review` | ui |
+| [DN-020](DN-020-product-recipe-detail-data.md) | Data layer — fetch one recipe in full, as a list of components | `done` | data |
+| [DN-021](DN-021-product-recipe-detail-ui.md) | iOS — the recipe screen, replacing the placeholder | `done` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -79,11 +79,11 @@ platform's UI gate.
 **DN-011 and DN-012 are the first tickets to trace to a real requirement document** —
 [`../requirements/2026-08-06-cooking-class-detail.md`](../requirements/2026-08-06-cooking-class-detail.md),
 approved 2026-08-06 — so their `source:` is a genuine link rather than a flagged deviation. They are
-ordered: **DN-011 must land before DN-012**, which needs its use case and its stub replay. Both are
-`todo` and unscheduled; the owner starts them.
+ordered: **DN-011 landed before DN-012**, which needed its use case and its stub replay. Both are
+`done` — merged 2026-08-08.
 
 **DN-020 and DN-021 are the recipe screen — the level of the domain the product actually sells.**
-Both are `in-review`, delivered 2026-08-07. **103 data-layer tests pass** (up from 89) and
+Both are `done`, delivered 2026-08-07 and merged 2026-08-08. **103 data-layer tests pass** (up from 89) and
 `swiftlint lint` reports **0 violations**, with every row of the iOS known-violations table now
 struck — the last one, `RecipePlaceholderView`'s §3 exemption, died with the file DN-021 deleted. They are the first tickets whose
 `source:` points at a requirement **known to be partly wrong**: the approved document describes
@@ -112,10 +112,11 @@ shape lives in `docs/contracts/recipe.json`, and **both tickets carry the correc
 | [DN-015](DN-015-technical-apply-architecture-to-screens.md) | Bring the two existing screens up to CODEBASE-ARCHITECTURE | `done` | ui |
 | [DN-016](DN-016-technical-move-formatters-to-library.md) | Move rupiah formatting and the Indonesian error vocabulary into DNLibrary | `done` | both |
 | [DN-017](DN-017-technical-tidy-root-docs.md) | Move the standards documents out of the repository roots into docs/ | `done` | docs |
-| [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `in-review` | docs |
-| [DN-019](DN-019-technical-source-of-truth.md) | Settle where truth lives — hierarchy, requirement corrections, and the CLAUDE.md/playbook boundary | `in-review` | docs |
+| [DN-018](DN-018-technical-per-repo-readme.md) | Give every repository a README, and settle on one name for the codebase document | `done` | docs |
+| [DN-019](DN-019-technical-source-of-truth.md) | Settle where truth lives — hierarchy, requirement corrections, and the CLAUDE.md/playbook boundary | `done` | docs |
 | [DN-022](DN-022-technical-agent-opens-prs.md) | Let the agent push ticket branches and open pull requests | `in-progress` | docs |
 | [DN-023](DN-023-technical-release-branch-topology.md) | publish-spm.sh refuses to release — its branch rule encodes the old topology | `done` | tooling |
+| [DN-024](DN-024-technical-publish-preflight-staleness.md) | publish-spm.sh can release from a branch that is behind its remote | `todo` | tooling |
 
 **Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**:
@@ -147,12 +148,12 @@ references. See [DN-022](DN-022-technical-agent-opens-prs.md).
 in ascending order, and a higher id must not run ahead of a lower one. DN-016 already did — see
 below — and that is the exception the rule exists to prevent, not a precedent.
 
-**DN-015 is `in-review`.** Its original scope landed in `8d6937c`; an amendment on the same branch
+**DN-015 is `done`.** Its original scope landed in `8d6937c`; an amendment on the same branch
 then settled the folder conventions and navigation ownership the owner raised on 2026-08-06, and
 added `DapurNauraAppRouter`, which `CODEBASE-ARCHITECTURE.md` §4 had specified since DN-014 without
 anything implementing it. Awaiting the owner on the running app.
 
-**DN-016 is `in-review`, delivered in two halves.** Its Kotlin half was committed (`28f00e2`) out of
+**DN-016 is `done`, delivered in two halves.** Its Kotlin half was committed (`28f00e2`) out of
 order, *before* DN-015 and before the lowest-id-first rule existed — that commit stays, and this is
 the exception that prompted the rule, not a precedent. The Swift half was held until the owner
 approved DN-015 on 2026-08-06 and then landed: both Swift formatters deleted, eight call sites moved
@@ -166,7 +167,7 @@ the next violation visible the moment it appears, which a habitual "3 known ones
 GitHub release, then bumping the app off `../DNLibraryLocal` to the published version. All of it is
 human-triggered and none of it has run. Until it does, the app builds only against the local package.
 
-**DN-018 is `in-review`.** Every repository now carries a `README.md`, and the codebase document is
+**DN-018 is `done`.** Every repository now carries a `README.md`, and the codebase document is
 called `CODEBASE-ARCHITECTURE.md` everywhere — `DNLibrary`'s was renamed from `CODEBASE-STANDARD.md`,
 which is why tickets DN-001 … DN-017 still cite the old name. **Those were left alone deliberately:**
 a ticket records what was true when it was written, and rewriting closed work to match a later

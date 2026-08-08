@@ -2,7 +2,7 @@
 id: DN-020
 type: product
 title: Data layer — fetch one recipe in full, as a list of components
-status: in-review
+status: done
 source: docs/requirements/2026-08-06-recipe-detail.md
 branch: ticket/DN-020-recipe-detail-data
 layer: data

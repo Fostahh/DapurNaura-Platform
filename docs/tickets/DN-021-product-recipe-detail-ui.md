@@ -2,7 +2,7 @@
 id: DN-021
 type: product
 title: iOS — the recipe screen, replacing the placeholder
-status: in-review
+status: done
 source: docs/requirements/2026-08-06-recipe-detail.md
 branch: ticket/DN-021-recipe-detail-ui
 layer: ui
