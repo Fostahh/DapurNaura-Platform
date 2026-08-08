@@ -28,7 +28,7 @@ approved, and this will change repeatedly while the UI takes shape.
 
 | Endpoint | Returns | File |
 |---|---|---|
-| `GET /classes` | list of cooking classes | `classes.json` |
+| `GET /classes` | list of cooking classes; `?category=` narrows it to one category | `classes.json` |
 | `GET /classes/{id}` | one class + its recipes | `class-detail-purchased.json` / `class-detail-pending.json` / `class-detail-locked.json` |
 | `GET /recipes/{id}` | one recipe in full | `recipe.json` |
 
@@ -53,6 +53,52 @@ This is the only place the rule can be enforced. Do not add client-side checks a
 Payment is a bank/Midtrans transfer cross-checked by the server, so there is a real window between
 paying and being unlocked. A boolean collapses that window and shows a paying customer the paywall
 again — inviting a second transfer. The UI needs a distinct "waiting for confirmation" state.
+
+## Revision 2026-08-08 — class category, and filtering by it (DN-024)
+
+Requested by the owner on 2026-08-08 — see
+[`../requirements/2026-08-08-cooking-class-category-filter.md`](../requirements/2026-08-08-cooking-class-category-filter.md).
+A deliberate, noted revision of v1, which is what the *approved is not frozen* paragraph above
+exists for.
+
+**Every class carries a `category`**, and exactly one:
+
+```json
+"category": "BAKING"
+```
+
+| Value | Which sample class carries it |
+|---|---|
+| `MINUMAN` | Jajanan Pasar |
+| `BAKING` | Makanan Kekinian |
+| `COOKING` | Pastry Dasar |
+
+The three sample assignments are the **owner's**, given on 2026-08-08. They are what the app is
+verified against, so every category has exactly one class and no chip is dead on arrival.
+
+**`GET /classes` accepts an optional `category` query parameter** — `GET /classes?category=BAKING`.
+
+- **Omitted means every class**, in every category. It is not the same as an empty value.
+- **The server does the filtering.** Owner's decision, 2026-08-08: the client does not fetch
+  everything and narrow it locally, so this parameter — not the field — is what the class list
+  actually uses.
+- **A category with no classes is `200` with an empty `classes` array**, never `404`. An empty
+  category is a normal answer, not a missing resource.
+- Only the three values above are ever sent by the app.
+
+**A `category` value the client does not recognise must not break the list.** The set of categories
+belongs to the owner and may grow; an app already installed cannot be updated in step with the
+server. So an unrecognised value decodes to *"no known category"* on that one class, and the class
+still appears — where a strict enum would fail the whole payload and empty the screen. This is the
+one place the client is deliberately tolerant.
+
+**The field itself is not optional.** Tolerance covers unknown *values*, never an absent field: a
+class with no `category` at all is a contract violation and is treated as one, exactly like a class
+with no `name`. `purchaseStatus` keeps its strict enum for the same reason it always had one — its
+three values are fixed by how payment works, not by what the owner decides to teach.
+
+`class-detail-*.json` is **unchanged**. No screen shows a class's category, so the detail payload has
+no reason to carry it; add it there when something needs it.
 
 ## Conventions
 

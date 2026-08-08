@@ -34,11 +34,16 @@ Classes are **paid**. A payment gateway (likely Midtrans) is planned but explici
 "really really later". Because a cooking class is a real-world service rather than digital content
 consumed in-app, App Store Guideline 3.1.1 does not force In-App Purchase.
 
-> **What exists, as of 2026-08-06 — all of it on unmerged ticket branches.** The data layer models
-> classes and class detail (`CookingClass`, `CookingClassDetail`, `RecipeSummary`, `PurchaseStatus`,
-> `DNError`) behind two use cases, with shared formatting and 89 passing tests. iOS has two working
-> screens on `@Observable` MVVM. **The recipe screen — the level the product actually sells — is a
-> placeholder**, its requirement approved and unticketed. There is no backend (everything runs on
+> **What exists, as of 2026-08-08 — everything through DN-021 merged into `development`.** The data
+> layer models all three levels — classes, class detail and the recipe itself (`CookingClass`,
+> `CookingClassCategory`, `CookingClassDetail`, `RecipeSummary`, `Recipe`, `RecipeComponent`,
+> `Ingredient`, `RecipeStep`, `PurchaseStatus`, `DNError`) behind three use cases, with shared
+> formatting and **117 passing tests**. iOS has **three working screens** on `@Observable` MVVM,
+> including the recipe screen the product actually sells. The library is published as `0.5.0` and the
+> app pins it exactly.
+>
+> **In flight, uncommitted:** DN-024/DN-025 — a `category` on each class and a chip filter on the
+> class list, `GET /classes?category=`. There is still no backend (everything runs on
 > `DNDataLayer.stub()`), no signed-in user, and no purchase path. Android does not exist.
 
 ## What this folder is
@@ -262,12 +267,13 @@ A pull request is a request; the decision is not delegated.
 
 ## Current known blockers
 
-- **Merging started on 2026-08-07 and has barely begun — DN-001 is the only ticket `done`.**
-  Everything else is `in-review` across four stacks. Each repo's branches are stacked on the previous
-  rather than on the base, so **merge each repo's PRs in the order given in
-  [`docs/tickets/README.md`](docs/tickets/README.md)**, one at a time — and **with a merge commit,
-  never a squash**, or every branch above needs rebasing. On `main`, `ios/DapurNaura` is still a
-  SwiftUI shell with four build variants and no data layer.
+- ~~**Merging started on 2026-08-07 and has barely begun — DN-001 is the only ticket `done`.**~~
+  **Cleared 2026-08-08:** every stack is merged through DN-021, and DN-024/DN-025 are the first
+  tickets in months to branch from a `development` that is level with its remote — nothing is stacked.
+  The rules that made it work stand: **merge with a merge commit, never a squash**, and merge one PR
+  at a time in the order given in [`docs/tickets/README.md`](docs/tickets/README.md). On `main`,
+  `ios/DapurNaura` is still a SwiftUI shell with four build variants and no data layer — `main` is
+  frozen until `1.0.0`.
 - **There is no notion of a signed-in user, and the domain needs one.** `purchaseStatus` is per-user
   data by definition, but nothing anywhere carries identity: no login, no session, no user model,
   `NetworkManager` holds a static `apiKey` only, and `SecureStorage` — built by DN-001 to hold
@@ -278,10 +284,10 @@ A pull request is a request; the decision is not delegated.
   but `PENDING_VERIFICATION` describes a transfer-and-verify flow that is the *current* business
   process, and nothing implements that either — the buy button says *"Pembelian lewat aplikasi belum
   tersedia."* **Owner's decision, 2026-08-06: deferred, to be ticketed later.**
-- **`docs/requirements/2026-08-06-recipe-detail.md` is approved and unticketed.** The recipe screen
-  is the product — *bahan-bahan*, method, video — and `docs/contracts/recipe.json` is approved, but
-  there is no `Recipe` domain model, no use case and no endpoint; iOS shows a placeholder. Owner's
-  decision, 2026-08-06: ticket it once the iOS architecture work settles.
+- ~~**`docs/requirements/2026-08-06-recipe-detail.md` is approved and unticketed.**~~ **Cleared
+  2026-08-08 by DN-020 and DN-021** — the recipe is modelled as a list of components and the screen
+  is real. The requirement carries `corrected-by:` pointers because its description of the ingredient
+  shape turned out wrong; the prose is untouched, as the rule requires.
 
 Previous blockers — no engine seam, singleton, DTOs-as-public-API, leftover scaffolding, zero
 tests — were resolved on 2026-08-06 by DN-001/002/004/006/008 (all `in-review`).

@@ -8,6 +8,7 @@
       "price": 150000,
       "currency": "IDR",
       "recipeCount": 6,
+      "category": "BAKING",
       "purchaseStatus": "PURCHASED"
     },
     {
@@ -18,6 +19,7 @@
       "price": 200000,
       "currency": "IDR",
       "recipeCount": 4,
+      "category": "COOKING",
       "purchaseStatus": "PENDING_VERIFICATION"
     },
     {
@@ -28,6 +30,7 @@
       "price": 125000,
       "currency": "IDR",
       "recipeCount": 8,
+      "category": "MINUMAN",
       "purchaseStatus": "NOT_PURCHASED"
     }
   ]
