@@ -265,6 +265,55 @@ fine-grained token scoped to these four repositories. **Merging, tagging and rel
 human's** — the token has no permission for them either, so policy and credentials agree.
 A pull request is a request; the decision is not delegated.
 
+## Pull requests — title and body
+
+Owner's format, settled 2026-08-07 and restated 2026-08-09. It is the owner's existing habit.
+**Follow it literally; do not import a shape from anywhere else.** Rationale and the full
+worked-through reasoning live in [`docs/tickets/DN-022-technical-agent-opens-prs.md`](docs/tickets/DN-022-technical-agent-opens-prs.md).
+
+**Title:** `DN-XXX: <the ticket title>` — the same id as the commit messages, which is the only
+thread tying work across four repositories.
+
+**Body — `### Description` is the only required section. A section appears only when it has
+content:** no placeholder headings, no empty tables, no dash standing in for content. Most PRs are
+`### Description` alone.
+
+```markdown
+### Description
+Optional sentence of context, then:
+- What changed
+
+### Evidence
+
+| Device | Result |
+| - | - |
+| iPhone 15 Pro, iOS 17.5 | … |
+
+### Dependencies
+- [DNLibrary#12](https://github.com/Fostahh/DNLibrary/pull/12)
+
+### RCA
+Why the defect existed.
+```
+
+- **`### Description`** — a context sentence may open it, then bullets. **Bullets carry the
+  substance, including caveats and design decisions.** Do not append essay paragraphs after them;
+  a point worth making is worth a bullet. A short `Verified:` line and `Version bump implied:` close
+  it where they apply.
+- **`### Evidence`** — screenshots or the `| Device | Result |` table, when there are any. Omitted
+  otherwise; the owner may add it by hand afterwards.
+- **`### Dependencies` is a link, nothing more.** Owner's instruction: *"Just put a reference link
+  into the PR from DNLibrary."* No explanation of what it needs, no version, no release note.
+- **`### RCA`** — defect fixes only, including `type: technical` tickets correcting something already
+  wrong. Not for tickets that add capability.
+- **Nothing else.** No generated-by footer, no extra sections. Twenty-one merged PRs set the
+  precedent and none carry one.
+
+**Which PRs name a dependency.** Only the ticket whose work *required* that library change — the two
+halves of one delivery. A ticket using API that already existed names nothing, however heavily it
+uses it. Once merged, the link stays: it is the only path from a Swift call site back to the Kotlin
+PR that created it.
+
 ## Current known blockers
 
 - ~~**Merging started on 2026-08-07 and has barely begun — DN-001 is the only ticket `done`.**~~

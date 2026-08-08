@@ -116,6 +116,30 @@ When authorized:
    `## Implementation notes` recording every deviation, discovery, and decision the human may
    want to veto.
 
+## 5b. Opening the pull request
+
+The branch is pushed and the PR is opened by the agent; **merging is not.** Four steps, in order.
+
+1. **Check the branch is ahead of its base before pushing.** `git fetch origin`, then
+   `git rev-list --count origin/$BASE..ticket/DN-XXX` — `$BASE` is `development` in all four repos;
+   `main` is frozen until `1.0.0`. If the count exceeds this ticket's own commits, rebase
+   `--onto origin/$BASE` **before the branch's first push**, so no force-push is ever needed.
+2. **Read the format in `CLAUDE.md` → *Pull requests* before writing the body, not after.**
+   It is short and exact, and drift is the normal failure: on 2026-08-09 an agent opened two PRs
+   with `## What this adds` / `## Verification` / `## Version`, and the correction then drifted a
+   second time by keeping essay paragraphs under the right headings. **Open the file. Do not write
+   the body from memory.**
+3. **Decide each optional section by its own test.** Evidence: is there a device or a screenshot?
+   Dependencies: did *this ticket's work* require a library change, as opposed to merely using the
+   library? RCA: does this fix a defect, as opposed to adding capability? Any "no" means the
+   heading does not appear at all.
+4. **A cross-repo ticket is two PRs, and they cannot both open at once** when the app half consumes
+   unpublished API. Library PR → owner merges → publish → bump the pin → app PR naming the library
+   PR under `### Dependencies`.
+
+**One `go` from the owner is one ticket.** The agent does not open a batch, and does not open one
+unprompted.
+
 ## 6. The doc sweep — after every change
 
 Documentation is a set of caches over the code; every change invalidates some of them. After each
