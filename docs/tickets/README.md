@@ -70,6 +70,8 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-012](DN-012-product-cooking-class-detail-ui.md) | iOS — cooking-class detail screen, status-driven buy button and recipe tappability | `done` | ui |
 | [DN-020](DN-020-product-recipe-detail-data.md) | Data layer — fetch one recipe in full, as a list of components | `done` | data |
 | [DN-021](DN-021-product-recipe-detail-ui.md) | iOS — the recipe screen, replacing the placeholder | `done` | ui |
+| [DN-024](DN-024-product-cooking-class-category.md) | Data layer — class category, and filtering GET /classes by it | `in-review` | data |
+| [DN-025](DN-025-product-cooking-class-category-filter-ui.md) | iOS — category filter chips on the cooking-class list | `in-review` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -83,7 +85,7 @@ ordered: **DN-011 landed before DN-012**, which needed its use case and its stub
 `done` — merged 2026-08-08.
 
 **DN-020 and DN-021 are the recipe screen — the level of the domain the product actually sells.**
-Both are `done`, delivered 2026-08-07 and merged 2026-08-08. **103 data-layer tests pass** (up from 89) and
+Both are `done`, delivered 2026-08-07 and merged 2026-08-08. **103 data-layer tests passed** at that point (up from 89 — DN-024 has since taken it to 117) and
 `swiftlint lint` reports **0 violations**, with every row of the iOS known-violations table now
 struck — the last one, `RecipePlaceholderView`'s §3 exemption, died with the file DN-021 deleted. They are the first tickets whose
 `source:` points at a requirement **known to be partly wrong**: the approved document describes
@@ -94,6 +96,18 @@ That is safe only because of what DN-019 put in place. The requirement carries
 `corrected-by: DN-019, DN-020, DN-021` in its frontmatter, its prose is untouched, the corrected
 shape lives in `docs/contracts/recipe.json`, and **both tickets carry the correction inside
 `## Requirement (traced)`** — before the quote it modifies, not buried in an implementation note.
+
+**DN-024 and DN-025 are the category filter**, from
+[`../requirements/2026-08-08-cooking-class-category-filter.md`](../requirements/2026-08-08-cooking-class-category-filter.md)
+— the first requirement drafted, corrected and approved inside a single session. Two things about them
+are worth knowing before reading either ticket:
+
+- **The owner corrected the third category from `Decor` to `COOKING` minutes after asking**, and both
+  statements are preserved in the requirement. The correction is part of the record, not a reason to
+  rewrite it.
+- **The filtering is done by the server** (`GET /classes?category=`), by the owner's choice over
+  client-side narrowing. That is why a UI ticket needed a data-layer ticket underneath it, and why the
+  stub had to start filtering: with no backend, the stub *is* the server.
 
 ### Technical
 
@@ -116,18 +130,37 @@ shape lives in `docs/contracts/recipe.json`, and **both tickets carry the correc
 | [DN-019](DN-019-technical-source-of-truth.md) | Settle where truth lives — hierarchy, requirement corrections, and the CLAUDE.md/playbook boundary | `done` | docs |
 | [DN-022](DN-022-technical-agent-opens-prs.md) | Let the agent push ticket branches and open pull requests | `done` | docs |
 | [DN-023](DN-023-technical-release-branch-topology.md) | publish-spm.sh refuses to release — its branch rule encodes the old topology | `done` | tooling |
+| [DN-026](DN-026-technical-status-labels-in-swift.md) | PurchaseStatusBadge words a domain enum in Swift, which §10 sends to the library | `todo` | ui |
 
-**Branches are stacked in all three repos.** Each is built on the previous because they touch the
-same files — **merge each repo's PRs in the order shown**:
-
-Verified against git on 2026-08-07, not read off this index:
+~~**Branches are stacked in all three repos.** Each is built on the previous because they touch the
+same files — **merge each repo's PRs in the order shown**~~ — **every stack below is merged as of
+2026-08-08.** Verified against `git log` in all four repos on 2026-08-08, not read off this index.
+The stacks are kept struck rather than deleted because the ticket files record SHAs that only make
+sense against this order:
 
 | Repo | Base | Stack |
 |---|---|---|
-| **DNLibrary** | `development` | ~~`DN-001`~~ ~~`DN-002`~~ **merged** → `DN-004` → `DN-006` → `DN-008` → `DN-009` → `DN-011` → `DN-017` → `DN-016` → `DN-018` → `DN-019` → `DN-020` |
-| **ios/DapurNaura** | `development` | `DN-003` → `DN-009` → `DN-013` → `DN-012` → `DN-014` → `DN-015` → `DN-016` → `DN-018` → `DN-019` → `DN-021` |
-| **umbrella** | `development` | `DN-010` → `DN-011` → `DN-012` → `DN-013` → `DN-014` → `DN-015` → `DN-016` → `DN-018` → `DN-019` → `DN-020` → `DN-021` (DN-007 sits on its own branch) |
-| **ios/SPMDNLibrary** | `development` | `DN-018` → `DN-019` — its first ticket branches; the repo had no markdown at all |
+| **DNLibrary** | `development` | ~~`DN-001` → `DN-002` → `DN-004` → `DN-006` → `DN-008` → `DN-009` → `DN-011` → `DN-017` → `DN-016` → `DN-018` → `DN-019` → `DN-020`~~ **all merged** |
+| **ios/DapurNaura** | `development` | ~~`DN-003` → `DN-009` → `DN-013` → `DN-012` → `DN-014` → `DN-015` → `DN-016` → `DN-018` → `DN-019` → `DN-021`~~ **all merged** |
+| **umbrella** | `development` | ~~`DN-010` → `DN-011` → `DN-012` → `DN-013` → `DN-014` → `DN-015` → `DN-016` → `DN-018` → `DN-019` → `DN-020` → `DN-021`~~ **all merged** (DN-007 sat on its own branch) |
+| **ios/SPMDNLibrary** | `development` | ~~`DN-018` → `DN-019`~~ **all merged** — its first ticket branches; the repo had no markdown at all |
+
+**Nothing is stacked for DN-024 / DN-025.** Both branch straight from a `development` that is level
+with its remote, in the first repos to start from a clean base since DN-001:
+
+| Repo | Branch | Commit | PR |
+|---|---|---|---|
+| **DNLibrary** | `ticket/DN-024-cooking-class-category` | `308694b` | [#14](https://github.com/Fostahh/DNLibrary/pull/14) |
+| **ios/DapurNaura** | `ticket/DN-025-cooking-class-category-filter-ui` | `f076cd1` | [#11](https://github.com/Fostahh/DapurNaura-iOS/pull/11) |
+| **umbrella** | `ticket/DN-024-cooking-class-category` | — | none, by policy |
+
+**The umbrella carries both tickets on one branch**, named for DN-024. Splitting them would have put
+the requirement, the contract revision and this index on one side of a stack and the DN-025 ticket on
+the other, for two changes that are one piece of work and take no PR anyway.
+
+**Merge DNLibrary#14 before DapurNaura-iOS#11**, and publish `0.6.0` in between: the iOS branch calls
+API that only exists in that version, so it does not compile against the pinned `0.5.0` until the
+follow-up repin commit. That is the local package rule working as designed, not a broken branch.
 
 **All four repos target `development`.** `main` is frozen until the app reaches `1.0.0`, when
 `development` merges into it once — owner's instruction, 2026-08-07. The umbrella's `development` was
