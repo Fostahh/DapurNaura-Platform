@@ -2,7 +2,7 @@
 id: DN-027
 type: technical
 title: publish-spm.sh can still orphan a tag — no staleness guard, and a non-atomic push
-status: in-progress
+status: done
 source: —
 branch: ticket/DN-027-publish-atomic-tag-push
 layer: tooling
@@ -156,13 +156,15 @@ No automated gate — this is a shell script. Verified by running it:
 
 ## Done when
 
-- [ ] `check_behind_remote` exists and is applied to **both** `DNLibrary` and `SPMDNLibrary`
-- [ ] Staleness is fatal under `confirm`, a visible warning under `dry`
-- [ ] `push origin HEAD --tags` is gone; the branch and the tag are pushed separately, in that order
-- [ ] A failed branch push exits non-zero **before** the remote is tagged, and prints git's own stderr
-- [ ] The repin checklist prints after a successful release
-- [ ] `bash -n` + `shellcheck` clean; stale-checkout case verified to refuse
-- [ ] Committed on `ticket/DN-027-publish-atomic-tag-push`, not merged
+- [x] `check_behind_remote` exists and is applied to **both** `DNLibrary` and `SPMDNLibrary`
+- [x] Staleness is fatal under `confirm`, a visible warning under `dry`
+- [x] `push origin HEAD --tags` is gone; the branch and the tag are pushed separately, in that order
+- [x] A failed branch push exits non-zero **before** the remote is tagged, and prints git's own stderr
+- [x] The repin checklist prints after a successful release
+- [x] `bash -n` clean; stale-checkout case verified to refuse — **`shellcheck` was not run: it is
+      not installed on this machine.** Left unclaimed rather than assumed
+- [x] Merged as [DNLibrary#15](https://github.com/Fostahh/DNLibrary/pull/15) (`7e82cc6`), ticket
+      marked `done` on the owner's word
 
 ## Notes
 

@@ -2,7 +2,7 @@
 id: DN-030
 type: technical
 title: Pin SPMDNLibrary by range, not exactly — so a release needs no manual dependency edit
-status: in-progress
+status: done
 source: —
 branch: ticket/DN-030-range-pin-ios
 layer: ios
@@ -133,12 +133,13 @@ describing it.
 
 ## Done when
 
-- [ ] `project.pbxproj` uses `upToNextMajorVersion` with `minimumVersion = 0.6.0`
-- [ ] `Package.resolved` verified unchanged, and still committed
-- [ ] App builds; no Swift source touched
-- [ ] No local-package wiring anywhere in the staged project file
-- [ ] `CLAUDE.md`, §7 and `ios/DapurNaura/CLAUDE.md` all state the new rule and name what it supersedes
-- [ ] Committed on `ticket/DN-030-range-pin-ios`, not merged
+- [x] `project.pbxproj` uses `upToNextMajorVersion` with `minimumVersion = 0.6.0`
+- [x] `Package.resolved` verified unchanged, and still committed
+- [x] App builds; no Swift source touched
+- [x] No local-package wiring anywhere in the staged project file
+- [x] `CLAUDE.md`, §7 and `ios/DapurNaura/CLAUDE.md` all state the new rule and name what it supersedes
+- [x] Merged as [DapurNaura-iOS#12](https://github.com/Fostahh/DapurNaura-iOS/pull/12) (`5f1c12f`),
+      ticket marked `done` on the owner's word
 
 ## Notes
 

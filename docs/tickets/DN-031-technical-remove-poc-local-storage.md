@@ -2,7 +2,7 @@
 id: DN-031
 type: technical
 title: Delete the POC local storage — four public types, zero consumers
-status: in-progress
+status: done
 source: —
 branch: ticket/DN-031-remove-poc-local-storage
 layer: data
@@ -140,14 +140,15 @@ observations, which stop being true when the class stops existing.
 
 ## Done when
 
-- [ ] All eight files deleted
-- [ ] DataStore, Robolectric and the `androidHostTest` block removed; version catalog cleaned
-- [ ] `:sharedLogic:check` green at **108 tests**, with `commonTest` unchanged at 54
-- [ ] Generated header names them **0** times, down from 20
-- [ ] `DNLibrary/CLAUDE.md`, `docs/CODEBASE-ARCHITECTURE.md`, umbrella `CLAUDE.md` and
+- [x] All eight files deleted
+- [x] DataStore, Robolectric and the `androidHostTest` block removed; version catalog cleaned
+- [x] `:sharedLogic:check` green at **108 tests**, with `commonTest` unchanged at 54
+- [x] Generated header names them **0** times, down from 20
+- [x] `DNLibrary/CLAUDE.md`, `docs/CODEBASE-ARCHITECTURE.md`, umbrella `CLAUDE.md` and
       `ARCHITECTURE-AND-WORKFLOW.md` no longer describe storage that does not exist
-- [ ] Known-violations table shown as empty rather than removed
-- [ ] Committed on `ticket/DN-031-remove-poc-local-storage`, not merged
+- [x] Known-violations table shown as empty rather than removed
+- [x] Merged as [DNLibrary#16](https://github.com/Fostahh/DNLibrary/pull/16) (`6a70039`), ticket
+      marked `done` on the owner's word
 
 ## Notes
 

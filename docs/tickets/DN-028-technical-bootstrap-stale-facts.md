@@ -2,7 +2,7 @@
 id: DN-028
 type: technical
 title: bootstrap.sh — the umbrella never gets the hook, and three of its facts are stale
-status: in-progress
+status: done
 source: —
 branch: ticket/DN-028-bootstrap-stale-facts
 layer: tooling
@@ -114,12 +114,14 @@ No automated gate — shell. Verified by running it:
 
 ## Done when
 
-- [ ] The umbrella repo receives the commit-msg hook, with a labelled line in the output
-- [ ] `ios/DapurNaura` sits in `REPOS` with its real remote; `android` alone in `NO_REMOTE_YET`
-- [ ] The closing text points at `README.md`, not the deleted `GETTING-STARTED.md`
-- [ ] Hook rejection verified live in the umbrella, and the `docs:` exemption still passes
-- [ ] `bash -n` + `shellcheck` clean; re-run on a populated workspace clones nothing
-- [ ] Committed on `ticket/DN-028-bootstrap-stale-facts`, not merged
+- [x] The umbrella repo receives the commit-msg hook, with a labelled line in the output
+- [x] `ios/DapurNaura` sits in `REPOS` with its real remote; `android` alone in `NO_REMOTE_YET`
+- [x] The closing text points at `README.md`, not the deleted `GETTING-STARTED.md`
+- [x] Hook rejection verified live in the umbrella, and the `docs:` exemption still passes
+- [x] `bash -n` clean; re-run on a populated workspace clones nothing — **`shellcheck` was not run:
+      it is not installed on this machine.** Left unclaimed rather than assumed
+- [x] Merged as [DapurNaura-Platform#1](https://github.com/Fostahh/DapurNaura-Platform/pull/1)
+      (`98b6269`), ticket marked `done` on the owner's word
 
 ## Notes
 

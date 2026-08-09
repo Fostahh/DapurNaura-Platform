@@ -2,8 +2,8 @@
 id: DN-026
 type: technical
 title: PurchaseStatusBadge words a domain enum in Swift, which §10 sends to the library
-status: todo
-branch: —
+status: in-review
+branch: ticket/DN-026-status-labels-in-swift
 layer: ui
 ---
 
@@ -53,12 +53,53 @@ travel with the next release that is happening anyway, rather than causing one.
 
 ## Done when
 
-- [ ] `DNFormat.purchaseStatusLabel` exists with tests; `:sharedLogic:check` green
-- [ ] `PurchaseStatusBadge` holds no Indonesian string
-- [ ] The §10 row in the iOS known-violations table records it
-- [ ] Owner has verified the badge still reads correctly on the running app
+- [x] `DNFormat.purchaseStatusLabel` exists with tests; `:sharedLogic:check` green — **112 tests**,
+      0 failures, up from 108
+- [x] `PurchaseStatusBadge` holds no Indonesian string
+- [x] The §10 row in the iOS known-violations table records it
+- [ ] **Owner has verified the badge still reads correctly on the running app** — the one box the
+      agent cannot tick
 
 ## Notes
 
 Filed autonomously at `status: todo` — a noticed problem, not a request. **Scheduling it is the
 owner's**, per the autonomy table in `CLAUDE.md`.
+
+## Implementation notes
+
+**The detail screen's notice was checked, and deliberately stays in Swift.** The ticket asked whether
+`CookingClassDetail`'s pending-verification wording belongs in the same move. It does not, and the
+evidence is that the two strings differ for the same state: the badge reads *"Menunggu Verifikasi"*
+and `PurchaseSection` reads *"Pembayaran sedang dicek"*. A canonical label of an enum would be one
+string; two phrasings of one state is view context — the detail screen has room for a sentence and a
+reason to reassure someone who has already transferred money. `DNFormat`'s own contract draws exactly
+this line, and only the canonical label crossed it.
+
+Also left in Swift, for the same reason: *"Pembelian lewat aplikasi belum tersedia."* describes the
+missing purchase path rather than wording a status.
+
+**The colour stayed too**, as the ticket required — a tint is a decision about this badge on this
+surface.
+
+**`isPurchased` was simplified by the owner during review**, and the agent's framing of it was wrong.
+
+```swift
+- switch detail.purchaseStatus {          + detail.purchaseStatus == .purchased
+-   case .purchased: true
+-   default: false
+- }
+```
+
+The agent had flagged the `default: false` as a latent hazard — *"a new status silently reads as not
+purchased"*. **That is true of both versions**, so the change does not address it, and the concern
+was misframed to begin with: `isPurchased` is a boolean predicate, not a total mapping. Answering
+"is this exactly `PURCHASED`?" is *supposed* to be non-exhaustive, and `false` is the safe default
+for a gate over content the server never sent anyway.
+
+What the change actually buys is idiom, and it is worth having: three lines become one that says what
+it means, and the `default:` keyword disappears — which matters because that keyword pattern-matches
+against the §10-adjacent checklist item *"no `default:` in a switch over a sealed Kotlin type"* and
+made a reader stop on code that was never wrong. Removing a false signal is worth a one-line diff.
+
+Verified after the change: `** BUILD SUCCEEDED **`, `swiftlint` 0 violations. It rides in this
+ticket's commit — one line, found in this ticket's review, on the same screen family.
