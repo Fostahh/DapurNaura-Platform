@@ -2,9 +2,11 @@
 id: DN-034
 type: technical
 title: Every iOS change must build before it is offered for review
-status: in-progress
+status: done
 source: —
 branch: ticket/DN-033-cooking-class-selection-entry
+commit: ab9ea11
+pr: https://github.com/Fostahh/DapurNaura-iOS/pull/14
 layer: docs
 ---
 
@@ -116,13 +118,15 @@ Demonstrated on DN-033, which is the change that prompted it: `** BUILD SUCCEEDE
 
 ## Done when
 
-- [ ] All four documents updated and in agreement
-- [ ] §6's UI entry distinguishes *no automated test gate* from *no automated gate*
-- [ ] Every copy of the command uses an id-based destination
-- [ ] Ticket index regenerated
-- [ ] Diff reviewed by the human
-- [ ] Committed, not merged
-- [ ] PR merged, ticket marked `done` by the human
+- [x] All four documents updated and in agreement
+- [x] §6's UI entry distinguishes *no automated test gate* from *no automated gate*
+- [x] Every copy of the command uses an id-based destination
+- [x] Ticket index regenerated
+- [x] Diff reviewed by the human
+- [x] Committed, not merged
+- [x] PR merged — [DapurNaura-iOS#14](https://github.com/Fostahh/DapurNaura-iOS/pull/14),
+      merge commit `2621092`, 2026-08-09. **The umbrella half is pushed and still needs merging
+      into `development`** — the umbrella takes no PR by policy
 
 ## Notes
 

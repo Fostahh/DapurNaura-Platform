@@ -72,7 +72,7 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-021](DN-021-product-recipe-detail-ui.md) | iOS — the recipe screen, replacing the placeholder | `done` | ui |
 | [DN-024](DN-024-product-cooking-class-category.md) | Data layer — class category, and filtering GET /classes by it | `done` | data |
 | [DN-025](DN-025-product-cooking-class-category-filter-ui.md) | iOS — category filter chips on the cooking-class list | `done` | ui |
-| [DN-033](DN-033-product-cooking-class-selection-entry.md) | iOS — open on a choice between Kelas Online and Kelas Offline, with a reusable "not built yet" sheet | `in-progress` | ui |
+| [DN-033](DN-033-product-cooking-class-selection-entry.md) | iOS — open on a choice between Kelas Online and Kelas Offline, with a reusable "not built yet" sheet | `done` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -149,7 +149,7 @@ Two things about it are worth knowing before reading it:
 | [DN-030](DN-030-technical-range-pin-ios.md) | Pin SPMDNLibrary by range, not exactly — so a release needs no manual dependency edit | `done` | ios |
 | [DN-031](DN-031-technical-remove-poc-local-storage.md) | Delete the POC local storage — four public types, zero consumers | `done` | data |
 | [DN-032](DN-032-technical-repin-checklist-stale.md) | The repin checklist tells you to hand-edit project.pbxproj, which DN-030 made wrong | `done` | tooling |
-| [DN-034](DN-034-technical-ios-build-gate.md) | Every iOS change must build before it is offered for review | `in-progress` | docs |
+| [DN-034](DN-034-technical-ios-build-gate.md) | Every iOS change must build before it is offered for review | `done` | docs |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is

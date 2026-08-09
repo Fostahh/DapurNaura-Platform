@@ -2,9 +2,11 @@
 id: DN-033
 type: product
 title: iOS — open on a choice between Kelas Online and Kelas Offline, with a reusable "not built yet" sheet
-status: in-progress
+status: done
 source: docs/requirements/2026-08-09-cooking-class-selection-entry.md
 branch: ticket/DN-033-cooking-class-selection-entry
+commit: 5089dc9
+pr: https://github.com/Fostahh/DapurNaura-iOS/pull/14
 layer: ui
 ---
 
@@ -230,22 +232,24 @@ and lints clean, and nothing more — DN-034 scopes the gate to a build, with no
 
 ## Done when
 
-- [ ] `CookingClassSelectionView` is the `WindowGroup`'s content, owning the `NavigationStack` and
+- [x] `CookingClassSelectionView` is the `WindowGroup`'s content, owning the `NavigationStack` and
       the app's single `navigationDestination`, with `.id(route)` intact
-- [ ] `CookingClassListView` no longer owns a stack or a factory, and is titled `Kelas Online`
-- [ ] `CookingClassListRoute` lives in the list feature's folder and is wrapped by `Route`
-- [ ] `ClassKindCard` names no `Route`; the link and the button wrap it from outside
-- [ ] `NoticeSheet` is in `Presentation/Components/`, is our own view rather than `.sheet`, takes
+- [x] `CookingClassListView` no longer owns a stack or a factory, and is titled `Kelas Online`
+- [x] `CookingClassListRoute` lives in the list feature's folder and is wrapped by `Route`
+- [x] `ClassKindCard` names no `Route`; the link and the button wrap it from outside
+- [x] `NoticeSheet` is in `Presentation/Components/`, is our own view rather than `.sheet`, takes
       image URL, title and message, sizes itself to its content, and closes by a floating X
-- [ ] Wording matches the requirement's table exactly
-- [ ] `#Preview`s for the content, the card and the sheet
+- [x] Wording matches the requirement's table exactly
+- [x] `#Preview`s for the content, the card and the sheet
 - [x] `swiftlint lint` clean, and `xcodebuild … build` reports `** BUILD SUCCEEDED **` — the gate
       DN-034 introduced, whose first application this is
-- [ ] `project.pbxproj` carries no local package reference — nothing here needs one
-- [ ] **Owner has verified the running app**
-- [ ] Committed, not merged
-- [ ] PR opened
-- [ ] PR merged, ticket marked `done` by the human
+- [x] `project.pbxproj` carries no local package reference — nothing here needs one
+- [x] **Owner has verified the running app**
+- [x] Committed, not merged
+- [x] PR opened
+- [x] PR merged — [DapurNaura-iOS#14](https://github.com/Fostahh/DapurNaura-iOS/pull/14),
+      merge commit `2621092`, 2026-08-09. **The umbrella docs branch is pushed and still needs
+      merging into `development`** — it takes no PR by policy
 
 ## Revisions during review (2026-08-09)
 
