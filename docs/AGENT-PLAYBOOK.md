@@ -78,10 +78,11 @@ Then, turning it into a ticket:
   Record that it failed and how. A fix whose test never failed proves nothing. (DN-001 did this:
   the encryption check read raw file bytes and failed against the plaintext implementation before
   the fix existed.)
-- When the platform blocks a planned test (no keychain in the hostless simulator process, no
-  Keystore under Robolectric), do not delete the case and do not fake it: keep it `@Ignore`d with
-  the reason written at the ignore site, inject a seam so the rest stays testable, and record the
-  deviation in the ticket.
+- When the platform blocks a planned test, do not delete the case and do not fake it: keep it
+  `@Ignore`d with the reason written at the ignore site, inject a seam so the rest stays testable,
+  and record the deviation in the ticket. *(The cases that prompted this — no keychain in the
+  hostless iOS test process, no Android Keystore under Robolectric — belonged to the POC storage
+  deleted by DN-031. The rule outlives the example; nothing is `@Ignore`d today.)*
 
 ## 4. Verification — tests are your only eyes
 

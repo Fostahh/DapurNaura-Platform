@@ -38,20 +38,27 @@ income — the ingredient notes say things like *"sesuaikan dengan harga jual"*.
 
 ### What actually exists
 
-Accurate as of 2026-08-06. **Nothing is merged** — all of this lives on stacked ticket branches, and
-each repository's `main` is still at its pre-DN-001 state.
+**This section describes shape, not status.** For which tickets are `done`, which library version is
+published and what is in flight, read [`tickets/README.md`](tickets/README.md) and `git log` — a
+hand-maintained status paragraph is stale within a day of the next merge, which is what DN-029 was
+filed to stop.
 
-**The data layer covers the first two levels of the domain.** `CookingClass`, `CookingClassDetail`,
-`RecipeSummary`, `PurchaseStatus` and `DNError` are modelled against the approved contract, reached
-through `GetCookingClassesUseCase` and `GetCookingClassDetailUseCase`. `DNFormat` and
-`DNError.userMessage` render prices and failures for every platform. **89 tests**, green on both.
+**The data layer covers all three levels of the domain.** `CookingClass`, `CookingClassCategory`,
+`CookingClassDetail`, `RecipeSummary`, `Recipe`, `RecipeComponent`, `Ingredient`, `RecipeStep`,
+`PurchaseStatus` and `DNError` are modelled against the approved contract, reached through
+`GetCookingClassesUseCase`, `GetCookingClassDetailUseCase` and `GetRecipeUseCase`, all entered
+through `DNDataLayer`. `DNFormat` and `DNError.userMessage` render prices, category labels and
+failure wording for every platform. The suite runs on both platforms and
+`./gradlew :sharedLogic:check` is the gate.
 
-**The iOS app has two working screens** — the class list and the class detail — built on
-`@Observable` MVVM over an owned navigation path, with SwiftLint reporting zero violations.
+**A recipe is a list of components**, each carrying its own ingredients *and* its own method — the
+owner's reason being that a student prepares each component in its own bowl. The approved requirement
+describes a flatter shape and is wrong about it; it carries `corrected-by:` pointers and its prose is
+deliberately untouched.
 
-**What is missing is the level that matters most.** The recipe screen — *bahan-bahan*, the
-step-by-step method, the video — is a placeholder. Its requirement is approved and still unticketed,
-and no `Recipe` model, use case or endpoint exists.
+**The iOS app renders all three levels** — the class list with its category filter, the class detail,
+and the recipe screen the product actually sells — on `@Observable` MVVM over an owned navigation
+path, with SwiftLint reporting zero violations.
 
 **Three things the domain assumes and nothing provides:**
 
@@ -190,13 +197,13 @@ Agent writes ticket(s) into docs/tickets/
                        ↓ approved
                   Human triggers commit — every repo, each on ticket/DN-XXX-slug
                        ↓
-                  Push + PR (human opens the PR; no gh)
+                  Agent pushes ticket/* and opens the PR (DN-022)
                        ↓
-                  PR merged into `development`; human tells the agent
+                  Human merges into `development`, and tells the agent it merged
                        ↓
-                  Release step (see §7) — human-triggered
+                  Agent marks the ticket done — on the human's word, never inferred
                        ↓
-                  Human marks the ticket done
+                  Release step (see §7) — human-triggered, agent runs it end to end
 ```
 
 **An approved requirement is never edited to match what was built.** That destroys the audit
@@ -270,7 +277,10 @@ if it drifts from the files, the files win).
 | `todo` | Written from a requirement, not started | Agent, at creation |
 | `in-progress` | Being implemented | Agent |
 | `in-review` | Implemented, data-layer tests green, awaiting human review | Agent |
-| `done` | PR merged | **Human, manually** |
+| `done` | PR merged | Agent — **only once the human says the PR is approved and merged** (DN-022) |
+
+**`done` is the human's decision, set by the agent's hand.** The agent never infers it from a green
+PR page or from the merge appearing on GitHub; the owner saying so is what authorises it.
 
 ### Rejection
 
@@ -311,15 +321,18 @@ never correct.
 
 - **Acting on a request before the human has confirmed the agent's restatement of it** — §3, DN-010
 - **Starting** work on a technical ticket it created itself — filing is autonomous, scheduling is not
-- Committing; pushing anything other than a `ticket/*` branch; merging
-- Merging anything
-- Running `publish-spm.sh` in **`publish`** mode
-- Any tag or GitHub-release operation
-- Marking a ticket `done`
+- Committing; pushing anything other than a `ticket/*` branch; merging anything
+- **Initiating** `publish-spm.sh` in **`publish`** mode, a tag, or a GitHub release — the agent never
+  decides that a release should happen. Once the human instructs it, the agent runs the publish end
+  to end, derives the version, and repins the app (§7)
+- Declaring a ticket `done` on its own judgement — the human's word is what authorises it (§4)
 
 ### Never
 
-- Edit a file in `docs/requirements/` — they are immutable
+- Edit the **prose** of a file in `docs/requirements/` once it is `status: approved`. The single
+  permitted edit is a `corrected-by:` frontmatter pointer naming the ticket that carries the
+  correction — owner's decision 2026-08-07, see [`requirements/README.md`](requirements/README.md).
+  That is metadata; the prose is never touched, not even to remove an `[ASSUMPTION]` that proved false
 - Force-push; delete a tag or a release
 - Commit the local package reference in `ios/DapurNaura` (§7)
 - `git add -A` or `git commit -a` in `ios/DapurNaura` — Xcode rewrites `project.pbxproj`
@@ -378,13 +391,18 @@ falls entirely on the human review.
 |---|---|
 | `ticket/DN-XXX-slug` | One per ticket. Branched from `development`. Never merged by the agent. |
 | `development` | PR base. Integration. QA / CISO testing. Alpha / Beta / UAT variants. |
-| `main` | Protected. Receives release-ready code from `development`. No direct changes. |
+| `main` | **Frozen until `1.0.0`.** Receives `development` once, at the App Store release. No direct changes. |
 
 **[DECIDED] `main` is the standard name** across every repository — DNLibrary and SPMDNLibrary
-were renamed from `master`. `development` now exists in all three project repos.
+were renamed from `master`. `development` exists in all four repos.
 
-**[OPEN]** The renames and the new branches are **local only**. Until they are pushed, GitHub still
-shows `master` as the default branch for DNLibrary and SPMDNLibrary.
+**`main` is frozen, not merely protected.** Releases are cut from `development` (DN-023), and
+`main` holds each repository's pre-workspace state until the app reaches `1.0.0`. On
+`ios/DapurNaura` that is a single stock-template `Initial Commit` — none of the app is there.
+
+~~**[OPEN]** The renames and the new branches are local only.~~ **Resolved.** All four repositories
+have `origin/main` and `origin/development`; every ticket branch since DN-001 has been pushed and
+merged through a PR.
 
 ### Versioning **[DECIDED]**
 
@@ -396,27 +414,61 @@ Three independent numbers. **They are not related and must not be made to match.
 | **App version** | `MARKETING_VERSION` | Humans, in the App Store |
 | **Build number** | `CURRENT_PROJECT_VERSION` | App Store Connect; must strictly increase |
 
-The library uses **plain semver, driven by the change** — additive API is a minor, a
-changed/removed public symbol is a major, a fix is a patch. `0.x` while the API is unstable, which
-it is; `1.0.0` is reserved for the deliberate moment the API is committed to.
+**The scheme, settled with the owner on 2026-08-07.** The first release is **`0.1.0`** — not
+`0.0.1`, which reads as "nothing works yet" and wastes the only patch slot on a release already
+containing two tickets. Then `0.MINOR.PATCH`:
+
+- **MINOR** — any public API change, additive or breaking
+- **PATCH** — a behaviour fix with no API movement
+
+**A removed public symbol is a minor, not a major, for the whole of `0.x`** — `0.x` makes no
+compatibility promise, and DN-004, DN-006 and DN-008 each removed public symbols and each shipped as
+a minor. **`1.0.0` is reserved for the App Store release** and must not be used before it.
 
 **What changed in a version belongs in the release notes, not in the number.**
 
-The agent proposes the bump from the ticket's *Public API contract* section; the human confirms
-at publish time.
+**The agent picks the number, the human picks the moment.** Every ticket declares its bump in
+*Public API contract* → *"Version bump implied"*, so the next version is **derived from the tickets
+merged since the last tag**, never invented at publish time. If those declarations disagree with the
+diff, the diff wins and the ticket is corrected.
 
-**[OPEN]** The existing tags `1.0.0`–`1.4.0` predate this workflow and mean nothing. Resetting to
-`0.x` requires deleting those 5 tags and their 5 GitHub releases. Safe — nothing consumes them,
-and `ios/DapurNaura` has no dependency at all — but the human will do it manually.
+~~**[OPEN]** The existing tags `1.0.0`–`1.4.0` predate this workflow.~~ **Resolved.** No `1.x` tag
+exists in `SPMDNLibrary`; its tags are `0.1.0`–`0.6.0` and nothing needs deleting. A legacy commit
+on `main` still carries the subject *"Release 1.4.0"*, which is history, not a tag.
 
 ### The iOS dependency **[DECIDED]**
 
-The app depends on SPMDNLibrary by **version range** (`.upToNextMajor`), **not** an exact pin.
+**[DECIDED — DN-030, 2026-08-09]** The app depends on SPMDNLibrary by **range**:
 
-**Therefore `Package.resolved` must be committed.** With a range, it is the only thing that makes
-a build reproducible — without it, two people building the same commit can get different library
-versions, and a "frozen, ready to release" `main` is not actually frozen. It is currently deleted
-from the working tree (§9) and must be restored.
+```
+kind = upToNextMajorVersion;
+minimumVersion = 0.6.0;        →  >= 0.6.0, < 1.0.0
+```
+
+**This supersedes the exact pin introduced by DN-022.** The reason is the release flow, not
+semantics: an exact pin makes every release require a hand-edit of `project.pbxproj`, and that edit
+is the step that nearly collided on 2026-08-09 when the owner resolved the project by hand in the
+three minutes between the `0.6.0` release and its repin. Under a range, *Update to Latest Package
+Versions* is the entire repin and the project file never changes.
+
+It also restores the original design — this section read *"by version range (`.upToNextMajor`), not
+an exact pin"* until DN-029 corrected it against the code, which by then had moved to an exact pin.
+
+**Therefore `Package.resolved` must be committed** — and under a range it carries more weight than
+it did before, not less. With an exact pin the version also sat in `project.pbxproj`, so resolution
+was deterministic either way. With a range, `Package.resolved` is the **only** thing that makes a
+build reproducible: without it, two people building the same commit can resolve different library
+versions.
+
+**Two properties of the choice worth knowing.** SPM does not special-case `0.x` as npm and Cargo do,
+so `upToNextMajor` from a `0.x` floor means `< 1.0.0` rather than `< 0.7.0` — the range asked for.
+And because it stops below `1.0.0`, the rule *"`1.0.0` is reserved for the App Store release"* is
+enforced by the resolver instead of by memory.
+
+**The cost, recorded rather than glossed.** DN-004, DN-006 and DN-008 each removed public symbols;
+under a range such a release breaks the build when someone presses *Update*, instead of at a version
+bump they chose. Every release since `0.4.0` has been additive, and the break would be loud and
+deliberately triggered. Judged worth it against friction charged on every single release.
 
 ### The local package rule **[DECIDED]**
 
@@ -443,27 +495,32 @@ approving a diff, merging, publishing, and only then finding out the app doesn't
 | 4 | **Verify the running app**, review the diff — nothing is committed yet | **human** |
 | 5 | Rejected? verbal feedback, back to step 1 | human |
 | 6 | Approved → trigger commit in every repo, each on `ticket/DN-XXX-slug` | **human** |
-| 7 | Push; open the PR (no `gh`, so the human does this) | human |
-| 8 | PR merged into `development`; tell the agent | **human** |
-| 9 | Release cut: `development` → `main`, then `publish-spm.sh publish` from a clean `main` | human-triggered |
-| 10 | App switches from the local package to the published version; commit `Package.resolved` | agent |
-| 11 | Mark the ticket `done` | **human** |
+| 7 | Push `ticket/*`; open the PR (DN-022) | agent |
+| 8 | PR merged into `development`; tell the agent it merged | **human** |
+| 9 | Mark the ticket `done`, on that word | agent |
+| 10 | Authorise the release | **human** |
+| 11 | `publish-spm.sh publish` from `development` — tag + GitHub release (DN-023) | agent |
+| 12 | Repin the app to the new version, resolve, build, commit — **part of step 11, not a later step** | agent |
 
 **Steps 1–4 are one loop with one gate.** Nothing merges, publishes, or waits in the middle. That
 is the point of the change — the human is asked to approve once, on something that demonstrably
 runs, not twice on partial state.
 
-**Step 10 cannot move earlier.** The tag does not exist until step 9, and the app cannot reference
-a version that has not been published. So the final version bump is always a separate, tiny commit
-after the release. It is two lines in `Package.resolved` and needs no second review.
+**Step 12 cannot move earlier, and must not move later.** The tag does not exist until step 11, so
+the app cannot reference the version before then — the bump is always a separate, tiny commit after
+the release. But it is part of the same instruction: **a publish is finished when the app is
+repinned, not when the release appears** (owner's rule, 2026-08-09). The agent runs straight on from
+`gh release create` to the bump, and does not report the release as done first. On 2026-08-09 a
+two-minute gap was long enough for the owner to open Xcode and resolve the project by hand; two
+people editing one `Package.resolved` is how a conflict starts.
 
-Until then the app's committed state names the *previous* version and does not compile — expected,
-and covered by the local package rule above.
+Until step 12 lands, the app's committed state names the *previous* version and does not compile —
+expected, and covered by the local package rule above.
 
-**[OPEN] Publish cadence.** Step 5 as written cuts tags from `main` only, which means library
-versions increment **per release, not per ticket** — several tickets batch into one version.
-That keeps version numbers meaningful and stops them burning through `0.9.0` in a fortnight. It
-also means a ticket can be `done` before its code is ever published. Needs explicit confirmation.
+~~**[OPEN] Publish cadence.**~~ **Answered by practice.** Six releases, `0.1.0`–`0.6.0`, have each
+carried one ticket or one paired ticket stack, cut from `development`. Versions have not run away —
+the API changes at roughly the rate the domain does. A ticket can still reach `done` before its code
+is published, which is correct: `done` tracks the PR, the tag tracks the binary.
 
 ### Publish preflight — fixed by DN-005 **[RESOLVED]**
 
@@ -471,19 +528,32 @@ also means a ticket can be `done` before its code is ever published. Needs expli
 built from uncommitted DNLibrary code on any branch, tagged and published, with nothing recording
 where it came from.
 
-**DN-005** (in-review) fixed it: publishing now refuses a dirty, non-release-branch or unpushed
-DNLibrary tree, stamps the source commit SHA into the release notes, and adds a `preflight`
-subcommand. See the ticket for the six verified cases.
+**DN-005** fixed it: publishing refuses a dirty, non-release-branch or unpushed DNLibrary tree,
+stamps the source commit SHA into the release notes, and adds a `preflight` subcommand. See the
+ticket for the six verified cases.
+
+**DN-027 closed what those checks could not see.** A clean tree, an allowed branch and a HEAD
+contained in some remote branch are all still true of a checkout that is four commits behind — which
+is how `0.5.0` was published onto a stale base on 2026-08-08, its branch push rejected as a
+non-fast-forward while `--tags` pushed the tag anyway, leaving a published tag on a commit no branch
+contained. Two changes:
+
+- **Both repositories are checked for staleness** before a publish — `DNLibrary` and
+  `ios/SPMDNLibrary`. The script refuses and names `git pull --ff-only`; it never pulls for you,
+  because that would change what is being released after the plan has been read.
+- **The release commit and its tag are pushed as two ordered steps.** A failed branch push aborts
+  before the remote is tagged. **A tag can therefore only exist after its commit does** —
+  unreachable by construction, not merely unlikely, and it holds even if the preflight is skipped.
 
 ---
 
 ## 8. Architecture constraints
 
-### 8.1 Testability — resolved (DN-006, in-review)
+### 8.1 Testability — resolved (DN-006)
 
 `DNNetworkManager` takes an `HttpClientEngine` through an `internal` constructor (tests use Ktor's
 `MockEngine`), and the singleton is gone — instances are constructed at the platform edge and are
-fully independent. The suite (89 tests, both platforms) runs via `./gradlew :sharedLogic:check`.
+fully independent. The suite runs on both platforms via `./gradlew :sharedLogic:check`.
 The constraint going forward: **do not reintroduce a singleton** — CODEBASE-ARCHITECTURE §6.
 
 ### 8.2 Don't publish DTOs as the public API — pattern established (DN-004/DN-008)
@@ -498,14 +568,16 @@ The repository maps every exception into sealed `DNError` cases; nothing throws 
 gets an exhaustive `switch` — SKIE's highest-leverage feature, now in use. Still pending: the
 storage classes rethrow bare `Exception`; align them when they gain real consumers.
 
-### 8.4 DI shape is already decided by the code
+### 8.4 DI shape — decided, and it binds the next `expect`/`actual`
 
-`expect class PreferenceStorage` has different constructors per platform — Android's actual takes
-a `Context`, iOS's takes nothing. **commonMain can therefore never construct one.** Any repository
-in commonMain must take it as a constructor parameter injected from the platform edge. Same for
-`SecureStorage`.
+When an `expect`/`actual` pair has different constructors per platform — say a `Context` on Android
+and nothing on iOS — **commonMain can never construct one.** Any repository in commonMain must take
+it as a constructor parameter injected from the platform edge.
 
-This is not a choice to be made later; it is already true.
+**No such pair exists today**: the only two, `SecureStorage` and `PreferenceStorage`, were deleted by
+DN-031. So this is not a description of current code — it is the constraint on whoever adds the next
+one, and it must be designed for from the first line rather than discovered when the compiler
+refuses.
 
 ### 8.5 Smaller shape issues
 
@@ -522,9 +594,9 @@ This is not a choice to be made later; it is already true.
 Observed and verified. Recorded so it isn't rediscovered.
 
 **These are candidate technical tickets.** As a list in a document, nothing acts on them; as
-tickets they become schedulable work with a `## Rationale` each. Items 1–5 and 8 are resolved;
-6 is ticketed (DN-006), 7 is addressed going forward by DN-005, and 9 waits on a remote being
-created for the app repo.
+tickets they become schedulable work with a `## Rationale` each. **Items 1–10 are all resolved** —
+the list is kept so the findings are not rediscovered, and because the resolutions record why each
+mattered. What remains open is tracked as tickets, not here.
 
 1. ~~**DapurNaura is wired to the local package.**~~ **Resolved (DN-003).** The app now has **no
    package dependency at all** — `packageReferences` and every `packageProductDependencies` list
@@ -541,24 +613,29 @@ created for the app repo.
    history, and configuration now comes from gitignored `Config/Secrets.xcconfig` via Info.plist
    substitution. ⚠️ Anything in Info.plist still ships readable inside the `.ipa` — gitignoring
    keeps keys out of git, it does not make them secret.
-6. ~~**Zero tests.**~~ **Resolved (DN-001/002/006/008).** **89 tests** across `commonTest`,
-   `androidHostTest` and `iosTest` — 45 Android host, 44 iOS simulator, 0 failures;
-   `./gradlew :sharedLogic:check` green on both platforms. The Keychain cases are `@Ignore`d — the
-   hostless iOS test process has no keychain.
-7. **No link between a DNLibrary commit and an SPM tag** — for the *existing* tags. **DN-005**
-   (in-review) fixes this going forward: every new release stamps its source commit SHA into the
-   release notes. The historical tags `1.0.0`–`1.4.0` stay unlinked and are already slated for
-   deletion (§7).
+6. ~~**Zero tests.**~~ **Resolved (DN-001/002/006/008, extended since).** Every test lives in
+   `commonTest` and runs on both platforms — DN-031 removed the only platform-specific source sets
+   along with the POC storage they tested. The suite grows with each data-layer ticket;
+   `./gradlew :sharedLogic:check` is green on both platforms and is the gate. The Keychain cases are
+   `@Ignore`d — the hostless iOS test process has no keychain. **The count lives in the test-result
+   XML, not in this document** — read it from a run, since a number written here is stale on the
+   next ticket.
+7. ~~**No link between a DNLibrary commit and an SPM tag.**~~ **Resolved (DN-005).** Every release
+   stamps its source commit SHA and branch into the release notes, and all six published releases
+   carry it. The historical `1.x` tags this item worried about turned out not to exist.
 8. ~~**SPMDNLibrary tracks a `.DS_Store`**~~ **Resolved (DN-005).** Untracked in `e6c6dec`, so the
    publish preflight's clean-tree check can now pass.
 9. ~~**`DapurNaura` has no git remote.**~~ **Resolved.** It is
    `github.com/Fostahh/DapurNaura-iOS`, and its ticket branches are pushed.
-10. **`SPMDNLibrary` cannot resolve as a package.** Verified 2026-08-06: the repository has **no
-    tags** and **no releases**, and the binary-target URL in its `Package.swift` returns 404. SPM
-    resolves a version requirement by git tag, so there is nothing to match. Harmless today — the app
-    has only ever built against `ios/DNLibraryLocal` and has never pinned a remote version — and the
-    first `publish-spm.sh publish` rewrites the manifest, creates the tag and creates the release,
-    fixing all three at once. No separate ticket; recorded in that repository's README.
+10. ~~**`SPMDNLibrary` cannot resolve as a package** — no tags, no releases, manifest URL 404s.~~
+    **Resolved 2026-08-08 by the first publish**, exactly as predicted: `publish-spm.sh publish`
+    rewrote the manifest, created the tag and created the release in one run. The repository now
+    carries tags `0.1.0`–`0.6.0` with a matching release and asset behind each, and the app resolves
+    against it.
+11. ~~**A published tag could be orphaned by a partial push.**~~ **Resolved (DN-027).** It happened
+    to `0.5.0` on 2026-08-08 before it was understood; the repair needed a tag and release deletion,
+    both on the `Never` list and authorised once. The push is now ordered and checked, and both
+    repositories are checked for staleness first — see §7.
 
 ---
 
@@ -569,19 +646,31 @@ created for the app repo.
 2. ~~**DN-004 — delete the scaffolding DTO and endpoint.**~~ **Done.**
 3. ~~**DN-006 — the engine seam.**~~ **Done**, along with DN-002 and the domain modelling that was
    blocked behind them.
-4. **Run the release half of the loop, which has still never executed.** Requirement → branch →
-   test → app → review → commit has now run many times. **Publish → tag → release → bump never
-   has**, and DN-016 is the first ticket that cannot reach `done` without it. Until it runs, the
-   whole distribution channel is unproven — see known issue 10.
-5. **Merge something.** 27 commits sit across three stacks with nothing on any `main`, and stack
-   depth is now the largest single risk in the workspace: every additional ticket makes the eventual
-   merge harder, and a conflict found at depth 8 is far more expensive than one found at depth 2.
-6. **Ticket the recipe screen.** Its requirement has been approved and unticketed since 2026-08-06.
-   It is the level of the domain the product actually sells, and it is the only approved requirement
-   with no ticket behind it.
-5. ~~**Write the first requirement document.**~~ **Done (2026-08-06).**
+4. ~~**Run the release half of the loop, which has never executed.**~~ **Done.** It has now run six
+   times, `0.1.0` through `0.6.0`, and the distribution channel is proven end to end: publish → tag
+   → release → repin. The two defects it exposed on the way are ticketed and fixed — DN-023 (the
+   branch rule) and DN-027 (the stale base and the partial push).
+5. ~~**Merge something.**~~ **Done 2026-08-08.** Twenty-seven PRs are merged across the three project
+   repos, each with a merge commit, and nothing is stacked. Stack depth is no longer a risk in this
+   workspace.
+6. ~~**Ticket the recipe screen.**~~ **Done — DN-020 (data) and DN-021 (iOS), both merged.** It is
+   also the first stack whose `source:` points at a requirement known to be partly wrong; the
+   correction lives in the tickets and in `contracts/recipe.json`, and the requirement's prose is
+   untouched.
+7. ~~**Write the first requirement document.**~~ **Done (2026-08-06).**
    [`requirements/2026-08-06-cooking-class-detail.md`](requirements/2026-08-06-cooking-class-detail.md)
    was drafted from the owner's verbal description, revised across four rounds of questions, and
    approved — the first document to exercise the `product` path end to end. **DN-011** (data) and
    **DN-012** (iOS) are the first tickets whose `source:` is a real link rather than a flagged
-   deviation. The still-open piece is backfilling documents for DN-008 and DN-009.
+   deviation.
+
+**What is actually still open**, as tickets rather than prose:
+
+- **No CI runs the data-layer gate** — `:sharedLogic:check` is run by the agent and attested by the
+  agent in its own PR body. **Deferred by the owner on 2026-08-09** and deliberately left unticketed;
+  the compensating control is that the owner reviews every diff. Recorded here so the gap is not
+  rediscovered, **not as a standing proposal.**
+- **DN-026** — status labels still live in Swift rather than the shared layer.
+- **Backfill requirement documents for DN-008 and DN-009**, which trace to verbal instructions.
+- **The two deferred domain gaps** — no signed-in user and no purchase path — both the owner's
+  explicit decision of 2026-08-06, to be ticketed when they are wanted.
