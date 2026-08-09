@@ -2,7 +2,7 @@
 id: DN-026
 type: technical
 title: PurchaseStatusBadge words a domain enum in Swift, which §10 sends to the library
-status: in-review
+status: done
 branch: ticket/DN-026-status-labels-in-swift
 layer: ui
 ---
@@ -57,8 +57,11 @@ travel with the next release that is happening anyway, rather than causing one.
       0 failures, up from 108
 - [x] `PurchaseStatusBadge` holds no Indonesian string
 - [x] The §10 row in the iOS known-violations table records it
-- [ ] **Owner has verified the badge still reads correctly on the running app** — the one box the
-      agent cannot tick
+- [x] **Owner verified the badge on the running app** and approved, 2026-08-09 — the one box the
+      agent cannot tick itself
+- [x] Merged as [DNLibrary#17](https://github.com/Fostahh/DNLibrary/pull/17) (`ef05ad6`) and
+      [DapurNaura-iOS#13](https://github.com/Fostahh/DapurNaura-iOS/pull/13) (`639095e`), shipped in
+      **`0.7.0`**; ticket marked `done` on the owner's word
 
 ## Notes
 
