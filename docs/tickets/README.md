@@ -131,6 +131,36 @@ are worth knowing before reading either ticket:
 | [DN-022](DN-022-technical-agent-opens-prs.md) | Let the agent push ticket branches and open pull requests | `done` | docs |
 | [DN-023](DN-023-technical-release-branch-topology.md) | publish-spm.sh refuses to release — its branch rule encodes the old topology | `done` | tooling |
 | [DN-026](DN-026-technical-status-labels-in-swift.md) | PurchaseStatusBadge words a domain enum in Swift, which §10 sends to the library | `todo` | ui |
+| [DN-027](DN-027-technical-publish-atomic-tag-push.md) | publish-spm.sh can still orphan a tag — no staleness guard, and a non-atomic push | `in-progress` | tooling |
+| [DN-028](DN-028-technical-bootstrap-stale-facts.md) | bootstrap.sh — the umbrella never gets the hook, and three of its facts are stale | `in-progress` | tooling |
+| [DN-029](DN-029-technical-docs-match-reality.md) | The workspace documents describe a project that no longer exists | `in-progress` | docs |
+| [DN-030](DN-030-technical-range-pin-ios.md) | Pin SPMDNLibrary by range, not exactly — so a release needs no manual dependency edit | `in-progress` | ios |
+| [DN-031](DN-031-technical-remove-poc-local-storage.md) | Delete the POC local storage — four public types, zero consumers | `in-progress` | data |
+
+**DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
+rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
+that **the rules held wherever they were encoded and drifted wherever they were prose** — the
+commit-msg hook and `explicitApi()` have zero violations between them, while "pull before
+publishing", "keep the status block current" and "no essay paragraphs in a PR body" each slipped.
+They are ordered by what they can cost: DN-027 is the only hazard that had already fired.
+
+**DN-030 is not an audit finding — it is a standard the owner set on 2026-08-09**, and it moves in
+the opposite direction from the others: it *removes* a manual step rather than adding a guard. The
+app now pins by range, so a release needs no edit to `project.pbxproj` at all. It supersedes the
+exact pin DN-022 introduced, and in doing so restores what §7 originally specified.
+
+**DN-031 removes the library's local storage**, and the reason it existed is the part worth keeping:
+this repository began as a **POC to prove a KMP module could be exported as a library and consumed by
+an iOS native project, locally and remotely**. `LocalDataSource` was the *local* half of that proof.
+Nothing in the repository recorded that, so what a cold reader saw was encrypted, tested storage that
+nothing calls — which reads as a forgotten integration rather than finished scaffolding. **There is
+no requirement for local storage and the owner has deliberately not implemented it.** Do not
+reintroduce it speculatively.
+
+**A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
+is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by
+the agent and attested by the agent. The compensating control is that the owner reviews every diff.
+Recorded here in one line so the finding is not silently lost, and **not to be re-proposed.**
 
 ~~**Branches are stacked in all three repos.** Each is built on the previous because they touch the
 same files — **merge each repo's PRs in the order shown**~~ — **every stack below is merged as of

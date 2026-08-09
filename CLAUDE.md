@@ -34,17 +34,23 @@ Classes are **paid**. A payment gateway (likely Midtrans) is planned but explici
 "really really later". Because a cooking class is a real-world service rather than digital content
 consumed in-app, App Store Guideline 3.1.1 does not force In-App Purchase.
 
-> **What exists, as of 2026-08-08 — everything through DN-021 merged into `development`.** The data
-> layer models all three levels — classes, class detail and the recipe itself (`CookingClass`,
-> `CookingClassCategory`, `CookingClassDetail`, `RecipeSummary`, `Recipe`, `RecipeComponent`,
-> `Ingredient`, `RecipeStep`, `PurchaseStatus`, `DNError`) behind three use cases, with shared
-> formatting and **117 passing tests**. iOS has **three working screens** on `@Observable` MVVM,
-> including the recipe screen the product actually sells. The library is published as `0.5.0` and the
-> app pins it exactly.
+> **The shape of what is built.** The data layer models all three levels of the domain — classes,
+> class detail, and the recipe itself (`CookingClass`, `CookingClassCategory`, `CookingClassDetail`,
+> `RecipeSummary`, `Recipe`, `RecipeComponent`, `Ingredient`, `RecipeStep`, `PurchaseStatus`,
+> `DNError`) behind use cases entered through `DNDataLayer`, with shared formatting in `DNFormat` and
+> a test suite covering both platforms. iOS renders it as `@Observable` MVVM screens, including the
+> recipe screen the product actually sells. The app depends on the library **by range** — see
+> *Versioning*.
 >
-> **In flight, uncommitted:** DN-024/DN-025 — a `category` on each class and a chip filter on the
-> class list, `GET /classes?category=`. There is still no backend (everything runs on
-> `DNDataLayer.stub()`), no signed-in user, and no purchase path. Android does not exist.
+> **Three things the domain assumes and nothing provides**, all deliberate: no backend (everything
+> runs on `DNDataLayer.stub()`), no signed-in user, and no purchase path. Android does not exist.
+>
+> **For current state — which tickets are `done`, which library version is published, what is in
+> flight — read [`docs/tickets/README.md`](docs/tickets/README.md) and `git log`. Do not restate it
+> here.** This file is loaded into every session, so a status block that nobody is forced to update
+> goes stale within a day of the next merge and is then believed. That is not hypothetical: it
+> claimed DN-024/DN-025 were uncommitted for a day after they had shipped, while the derived ticket
+> index was correct the whole time (DN-029).
 
 ## What this folder is
 
@@ -125,9 +131,16 @@ the agent never infers it from a green PR page;
 **any destructive or irreversible act you were not explicitly asked for** — deleting, overwriting
 or rewriting something you did not create, whether or not it appears on the `Never` list.
 
-**Never** — edit a requirement document once it is `status: approved`; force-push; delete a tag or
-release; commit the local package reference in `ios/DapurNaura` (see below); run `git add -A` or
-`git commit -a` in `ios/DapurNaura`.
+**Never** — edit the **prose** of a requirement document once it is `status: approved`; force-push;
+delete a tag or release; commit the local package reference in `ios/DapurNaura` (see below); run
+`git add -A` or `git commit -a` in `ios/DapurNaura`.
+
+> **The one permitted edit to an approved requirement** is a `corrected-by:` pointer in its
+> frontmatter, naming the ticket that carries the correction — owner's decision, 2026-08-07, spelled
+> out in [`docs/requirements/README.md`](docs/requirements/README.md). That is metadata, not content:
+> the rule protects the evidence of what was asked and when, and a pointer alters no evidence. The
+> prose is never touched — not softened, not deleted, and an `[ASSUMPTION]` that proved false is not
+> quietly removed.
 
 **Drafting requirements.** The human explains what they want; you draft it into
 `docs/requirements/` at `status: draft` and ask whether it is correct, revising until they approve.
@@ -185,7 +198,7 @@ Gradle commands run from `DNLibrary/` — that is the Gradle root, `gradlew` liv
 ```sh
 cd DNLibrary
 ./gradlew :sharedLogic:check                # all checks + tests, both platforms — the gate
-./gradlew :sharedLogic:testAndroidHostTest  # Android host tests (Robolectric)
+./gradlew :sharedLogic:testAndroidHostTest  # the Android host run
 ./gradlew :sharedLogic:iosSimulatorArm64Test
 ./gradlew :sharedLogic:assemble             # Android library + iOS XCFramework
 ```
@@ -273,9 +286,26 @@ it — owner's rule.
 tickets merged since the last tag**, never invented at publish time. If those declarations disagree
 with the diff, the diff wins and the ticket is corrected.
 
-**The app pins the library exactly (`.exact("0.1.0")`) for the whole of `0.x`, never a range.** A
-range is a compatibility promise, and `0.x` makes none — DN-004, DN-006 and DN-008 each remove public
-symbols and would silently break an app pinned to a range. Switch to a range at `1.0.0`.
+**The app pins the library by range — `upToNextMajorVersion` from `0.6.0`, i.e. `>= 0.6.0, < 1.0.0`.**
+Owner's decision, 2026-08-09 (DN-030), **superseding the exact pin DN-022 introduced.** A release
+then needs no edit to `project.pbxproj` at all: *Update to Latest Package Versions* in Xcode is the
+whole repin. The floor is the first version carrying the API the app calls, so the resolver cannot
+fall back to one that predates it.
+
+> **`Package.resolved` is still committed, and it matters more under a range, not less.** With an
+> exact pin the version sat in `project.pbxproj` and resolution was deterministic anyway. With a
+> range, `Package.resolved` is the *only* thing making a build reproducible — without it, two people
+> building the same commit can resolve different library versions. It is the file a reviewer checks
+> when a bump lands.
+>
+> SPM does not special-case `0.x` the way npm and Cargo do — `.upToNextMajor(from: "0.6.0")` means
+> `< 1.0.0`, not `< 0.7.0`. It therefore stops below `1.0.0` on its own, which makes *"`1.0.0` is
+> reserved for the App Store release"* a bound the resolver enforces rather than one to remember.
+>
+> **What was traded away**, stated so nobody has to rediscover it: DN-004, DN-006 and DN-008 each
+> removed public symbols, and under a range such a release breaks the build on *Update* rather than
+> at a bump you chose. Every release since `0.4.0` has been purely additive, and the failure is loud
+> and deliberately triggered — judged worth the friction it removes from every release.
 
 Since DN-022 the agent may push `ticket/*` branches and open pull requests, using a
 fine-grained token scoped to these four repositories. **Merging, tagging and releases stay the
@@ -334,18 +364,19 @@ PR that created it.
 ## Current known blockers
 
 - ~~**Merging started on 2026-08-07 and has barely begun — DN-001 is the only ticket `done`.**~~
-  **Cleared 2026-08-08:** every stack is merged through DN-021, and DN-024/DN-025 are the first
-  tickets in months to branch from a `development` that is level with its remote — nothing is stacked.
-  The rules that made it work stand: **merge with a merge commit, never a squash**, and merge one PR
-  at a time in the order given in [`docs/tickets/README.md`](docs/tickets/README.md). On `main`,
-  `ios/DapurNaura` is still a SwiftUI shell with four build variants and no data layer — `main` is
-  frozen until `1.0.0`.
+  **Cleared 2026-08-08:** nothing is stacked, and every ticket branch since has cut from a
+  `development` level with its remote. The rules that made it work stand: **merge with a merge
+  commit, never a squash**, and merge one PR at a time in the order given in
+  [`docs/tickets/README.md`](docs/tickets/README.md). **`main` is frozen until `1.0.0`** in all four
+  repositories — on `ios/DapurNaura` it is still the single stock-template `Initial Commit`, so none
+  of the app exists there, not even the build variants from DN-003.
 - **There is no notion of a signed-in user, and the domain needs one.** `purchaseStatus` is per-user
   data by definition, but nothing anywhere carries identity: no login, no session, no user model,
-  `NetworkManager` holds a static `apiKey` only, and `SecureStorage` — built by DN-001 to hold
-  exactly this — is referenced by nothing outside its own tests. Two screens already render state
-  that cannot yet exist. **Owner's decision, 2026-08-06: deferred, to be ticketed later.** Do not
-  design around it in the meantime.
+  and `NetworkManager` holds a static `apiKey` only. There is also **no local storage to put a token
+  in** — DN-031 deleted the POC `SecureStorage`, since it had no consumer and no requirement. Two
+  screens already render state that cannot yet exist. **Owner's decision, 2026-08-06: deferred, to be
+  ticketed later.** Do not design around it in the meantime — and when it does land, DN-001's
+  AES-GCM Keystore implementation is in git history rather than gone.
 - **Paid classes have no purchase path, manual or automated.** Midtrans is deliberately deferred,
   but `PENDING_VERIFICATION` describes a transfer-and-verify flow that is the *current* business
   process, and nothing implements that either — the buy button says *"Pembelian lewat aplikasi belum
@@ -356,4 +387,4 @@ PR that created it.
   shape turned out wrong; the prose is untouched, as the rule requires.
 
 Previous blockers — no engine seam, singleton, DTOs-as-public-API, leftover scaffolding, zero
-tests — were resolved on 2026-08-06 by DN-001/002/004/006/008 (all `in-review`).
+tests — were resolved on 2026-08-06 by DN-001/002/004/006/008, all since merged and `done`.
