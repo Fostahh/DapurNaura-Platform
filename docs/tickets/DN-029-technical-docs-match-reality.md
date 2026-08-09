@@ -2,7 +2,7 @@
 id: DN-029
 type: technical
 title: The workspace documents describe a project that no longer exists
-status: in-progress
+status: done
 source: —
 branch: —
 layer: docs
@@ -168,17 +168,19 @@ Documentation, so the gate is cross-reading rather than execution:
 
 ## Done when
 
-- [ ] `CLAUDE.md` holds no derivable state; the pointer replaces the status block
-- [ ] Both `Never` lists carry the `corrected-by:` exception
-- [ ] iOS `main` described as what it contains
-- [ ] §1, §9, §10 rewritten against the repository and dated
-- [ ] §3, §4, §5, §7 corrected for DN-022 and DN-023; both resolved `[OPEN]`s struck
-- [ ] ~~§7 states the exact pin~~ **superseded by DN-030 the same day** — the owner changed the rule
+- [x] `CLAUDE.md` holds no derivable state; the pointer replaces the status block
+- [x] Both `Never` lists carry the `corrected-by:` exception
+- [x] iOS `main` described as what it contains
+- [x] §1, §9, §10 rewritten against the repository and dated
+- [x] §3, §4, §5, §7 corrected for DN-022 and DN-023; both resolved `[OPEN]`s struck
+- [x] ~~§7 states the exact pin~~ **superseded by DN-030 the same day** — the owner changed the rule
       to a range before this ticket merged, so §7 now states the range and names what it replaced.
       The correction is recorded here rather than by rewriting the rationale above, which was true
       when written. §7 still states the `0.MINOR.PATCH` scheme, unchanged
-- [ ] Every fact re-derived from the repo; no dead links; the two files agree
-- [ ] `docs/requirements/` untouched
+- [x] Every fact re-derived from the repo; no dead links; the two files agree
+- [x] `docs/requirements/` untouched
+- [x] Merged as [DapurNaura-Platform#2](https://github.com/Fostahh/DapurNaura-Platform/pull/2)
+      (`5559d40`), ticket marked `done` on the owner's word
 
 ## Notes
 
