@@ -72,6 +72,7 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-021](DN-021-product-recipe-detail-ui.md) | iOS — the recipe screen, replacing the placeholder | `done` | ui |
 | [DN-024](DN-024-product-cooking-class-category.md) | Data layer — class category, and filtering GET /classes by it | `done` | data |
 | [DN-025](DN-025-product-cooking-class-category-filter-ui.md) | iOS — category filter chips on the cooking-class list | `done` | ui |
+| [DN-033](DN-033-product-cooking-class-selection-entry.md) | iOS — open on a choice between Kelas Online and Kelas Offline, with a reusable "not built yet" sheet | `done` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -109,6 +110,17 @@ are worth knowing before reading either ticket:
   client-side narrowing. That is why a UI ticket needed a data-layer ticket underneath it, and why the
   stub had to start filtering: with no backend, the stub *is* the server.
 
+**DN-033 changes what the app opens on**, from
+[`../requirements/2026-08-09-cooking-class-selection-entry.md`](../requirements/2026-08-09-cooking-class-selection-entry.md).
+Two things about it are worth knowing before reading it:
+
+- **It is the first screen that fetches nothing.** Every screen before it renders a `DNDataLayer`
+  call, and two rules in `CODEBASE-ARCHITECTURE.md` are written for that shape and do not apply — no
+  ViewModel and no three-state switch. The ticket records why rather than leaving it to be
+  re-argued at review.
+- **It takes no data-layer work at all** — no use case, no publish, no version bump, no repin. The
+  first product ticket to go straight to `ios/DapurNaura/`.
+
 ### Technical
 
 | Id | Title | Status | Layer |
@@ -136,7 +148,8 @@ are worth knowing before reading either ticket:
 | [DN-029](DN-029-technical-docs-match-reality.md) | The workspace documents describe a project that no longer exists | `done` | docs |
 | [DN-030](DN-030-technical-range-pin-ios.md) | Pin SPMDNLibrary by range, not exactly — so a release needs no manual dependency edit | `done` | ios |
 | [DN-031](DN-031-technical-remove-poc-local-storage.md) | Delete the POC local storage — four public types, zero consumers | `done` | data |
-| [DN-032](DN-032-technical-repin-checklist-stale.md) | The repin checklist tells you to hand-edit project.pbxproj, which DN-030 made wrong | `in-review` | tooling |
+| [DN-032](DN-032-technical-repin-checklist-stale.md) | The repin checklist tells you to hand-edit project.pbxproj, which DN-030 made wrong | `done` | tooling |
+| [DN-034](DN-034-technical-ios-build-gate.md) | Every iOS change must build before it is offered for review | `done` | docs |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -157,6 +170,14 @@ Nothing in the repository recorded that, so what a cold reader saw was encrypted
 nothing calls — which reads as a forgotten integration rather than finished scaffolding. **There is
 no requirement for local storage and the owner has deliberately not implemented it.** Do not
 reintroduce it speculatively.
+
+**DN-034 gives iOS work its first agent-side gate.** Owner's rule, 2026-08-09: every change to the
+iOS project is built — build only, no simulator run — and `** BUILD SUCCEEDED **` or it is not
+finished. It is documentation, not code, and it corrects a sentence in §6 that was being misread:
+*"no automated gate"* meant no automated **test** gate, and was taken to mean the agent had nothing
+it could check. SwiftLint compiles nothing, so *"0 violations"* was equally true of code that did not
+build. **It shares DN-033's branch in both repos** — the rule arrived mid-ticket and DN-033 is its
+first application; the commits are separate and each carries its own id.
 
 **A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
 is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by

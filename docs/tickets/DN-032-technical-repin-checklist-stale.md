@@ -2,7 +2,7 @@
 id: DN-032
 type: technical
 title: The repin checklist tells you to hand-edit project.pbxproj, which DN-030 made wrong
-status: in-review
+status: done
 source: —
 branch: ticket/DN-032-repin-checklist-stale
 layer: tooling

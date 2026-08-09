@@ -358,9 +358,34 @@ those, so a mistaken command cannot land code — the credential enforces what t
 ### UI (DapurNaura)
 
 - Code implemented on `ticket/DN-XXX-slug`
-- **Verified manually by the human.** No automated gate — tests are data-layer only.
+- **It builds.** `xcodebuild … build` succeeds — see *The iOS build gate* below (DN-034)
+- `swiftlint lint` reports no violations
+- **Verified manually by the human**, on the running app
 
 **[OPEN]** UI testing on both platforms is wanted eventually; no date set.
+
+#### The iOS build gate **[DECIDED]** — DN-034
+
+**Owner's rule, 2026-08-09: any change to the iOS project is built before it is offered for
+review.** Build only — no simulator run, no install, no launch.
+
+```sh
+xcodebuild -project DapurNaura.xcodeproj -scheme "DapurNaura Dev" \
+  -destination 'platform=iOS Simulator,id=<simulator-uuid>' build
+```
+
+`** BUILD SUCCEEDED **` or the work is not finished. A failing build is fixed, not reported as a
+caveat beside the diff.
+
+**Pass the simulator's id**, from `xcrun simctl list devices available` — never a bare device name
+and never the generic destination. The XCFramework has no x86_64 slice and several runtimes publish
+one device name for two architectures; both traps are known issue 2 in `ios/DapurNaura/CLAUDE.md`.
+
+**There is no automated *test* gate on the UI — that is not the same as no automated gate**, and the
+distinction is the whole point of this rule. SwiftLint checks shape and compiles nothing, so before
+DN-034 the strongest thing an agent could say about iOS work was *"0 violations"* — a sentence
+equally true of code that does not build. **It does not replace the human's verification of the
+running app.** The agent proves it compiles; the owner proves it behaves.
 
 ### Tooling (scripts, build config, CI)
 
