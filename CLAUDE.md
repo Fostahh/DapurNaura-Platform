@@ -170,7 +170,8 @@ The loop:
    - **Yes** → implement in `DNLibrary/`, write and **run** unit tests, fix until green.
      Then `publish-spm.sh local`, build the UI in `ios/DapurNaura/` against it, and **run it** on
      every platform that exists (iOS now, Android later).
-   - **No (UI only)** → straight to `ios/DapurNaura/`. No tests, no publish, no version bump.
+   - **No (UI only)** → straight to `ios/DapurNaura/`. No tests, no publish, no version bump —
+     **but always build it** (DN-034). Building is not one of the steps a UI-only ticket skips.
 4. Stop. The human **verifies the running app** and reviews the diff — still on the local package,
    **nothing committed yet**.
 5. On approval the human triggers commit in every repo, then push → PR. On rejection, feedback is
@@ -203,7 +204,19 @@ cd DNLibrary
 ./gradlew :sharedLogic:assemble             # Android library + iOS XCFramework
 ```
 
-The iOS app must be built/run from `ios/DapurNaura/` in Xcode — Gradle alone cannot build it.
+The iOS app must be built/run from `ios/DapurNaura/` — Gradle alone cannot build it.
+
+**Every change to the iOS project is built before it is offered for review.** Owner's rule,
+2026-08-09 (DN-034) — build only, no simulator run, and `** BUILD SUCCEEDED **` or it is not
+finished. Pass the simulator's **id**, never a bare device name:
+
+```sh
+xcodebuild -project DapurNaura.xcodeproj -scheme "DapurNaura Dev" \
+  -destination 'platform=iOS Simulator,id=<simulator-uuid>' build
+```
+
+Full rule, and why the destination cannot be written casually:
+[`docs/ARCHITECTURE-AND-WORKFLOW.md`](docs/ARCHITECTURE-AND-WORKFLOW.md) §6.
 
 ## The local package rule (iOS)
 
