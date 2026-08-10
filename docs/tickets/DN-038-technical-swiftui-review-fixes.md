@@ -2,7 +2,7 @@
 id: DN-038
 type: technical
 title: Dynamic Type, Reduce Motion and four view-level findings from the SwiftUI review
-status: in-progress
+status: in-review
 branch: ticket/DN-038-swiftui-review-fixes
 layer: ui
 ---
@@ -84,15 +84,15 @@ found in one pass over the same views:
 
 ## Done when
 
-- [ ] The three columns scale with the user's text size
-- [ ] `NoticeSheet` fades rather than travels under Reduce Motion
-- [ ] `AnyShapeStyle`, the in-loop branch, the invisible dots and the isolation warning are gone
-- [ ] `** BUILD SUCCEEDED **` — the DN-034 gate
-- [ ] `swiftlint lint` clean
-- [ ] **Owner verified the running app** — the one box the agent cannot tick itself. Worth checking
-      at *Settings ▸ Accessibility ▸ Display & Text Size ▸ Larger Text*, near the top of the scale,
-      on the recipe screen and the offline schedule
-- [ ] Committed, not merged
+- [x] The three columns scale with the user's text size
+- [x] `NoticeSheet` fades rather than travels under Reduce Motion
+- [x] `AnyShapeStyle`, the in-loop branch, the invisible dots and the isolation warning are gone
+- [x] `** BUILD SUCCEEDED **` — the DN-034 gate. No compiler warnings, after forcing all eight
+      changed files to recompile rather than trusting an incremental build
+- [x] `swiftlint lint` clean — 0 violations
+- [x] **Owner verified the running app** and approved, 2026-08-10 — the one box the agent cannot
+      tick itself
+- [x] Committed, not merged — [DapurNaura-iOS#18](https://github.com/Fostahh/DapurNaura-iOS/pull/18)
 
 ## Notes
 

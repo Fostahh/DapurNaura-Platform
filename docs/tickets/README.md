@@ -175,7 +175,7 @@ public again, `0.8.0` was released and the app repinned. That repin is what prod
 | [DN-032](DN-032-technical-repin-checklist-stale.md) | The repin checklist tells you to hand-edit project.pbxproj, which DN-030 made wrong | `done` | tooling |
 | [DN-034](DN-034-technical-ios-build-gate.md) | Every iOS change must build before it is offered for review | `done` | docs |
 | [DN-037](DN-037-technical-repin-verification.md) | A repin can silently land on the old version — verify the resolved version instead of trusting it | `done` | tooling |
-| [DN-038](DN-038-technical-swiftui-review-fixes.md) | Dynamic Type, Reduce Motion and four view-level findings from the SwiftUI review | `in-progress` | ui |
+| [DN-038](DN-038-technical-swiftui-review-fixes.md) | Dynamic Type, Reduce Motion and four view-level findings from the SwiftUI review | `in-review` | ui |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
