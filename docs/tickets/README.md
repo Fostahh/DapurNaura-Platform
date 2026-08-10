@@ -73,6 +73,8 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-024](DN-024-product-cooking-class-category.md) | Data layer — class category, and filtering GET /classes by it | `done` | data |
 | [DN-025](DN-025-product-cooking-class-category-filter-ui.md) | iOS — category filter chips on the cooking-class list | `done` | ui |
 | [DN-033](DN-033-product-cooking-class-selection-entry.md) | iOS — open on a choice between Kelas Online and Kelas Offline, with a reusable "not built yet" sheet | `done` | ui |
+| [DN-035](DN-035-product-offline-class-schedule-data.md) | Data layer — the offline class schedule, its date window and its availability rule | `in-review` | data |
+| [DN-036](DN-036-product-offline-class-schedule-ui.md) | iOS — the offline class schedule, with collapsible month sections and a materials sheet | `in-review` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -120,6 +122,30 @@ Two things about it are worth knowing before reading it:
   re-argued at review.
 - **It takes no data-layer work at all** — no use case, no publish, no version bump, no repin. The
   first product ticket to go straight to `ios/DapurNaura/`.
+
+**DN-035 and DN-036 are the offline classes**, from
+[`../requirements/2026-08-09-offline-class-schedule.md`](../requirements/2026-08-09-offline-class-schedule.md)
+— the other half of the choice DN-033 introduced, and the first product work that is not about
+recipes. Three things are worth knowing before reading either:
+
+- **DN-035 is the first ticket to add a dependency to the data layer** (`kotlinx-datetime`) and the
+  first to put a third-party type in the public API. The window rule needs real calendar arithmetic,
+  and hand-rolling month boundaries in a library shipping to two platforms is the wrong trade.
+- **The clock is injected.** A use case reading the system date can only be tested on the day the
+  test happens to run — *"30 September is inside the window"* is true in August and false in October.
+  It is the same seam DN-006 cut for the HTTP engine, for the same reason.
+- **The availability state is derived from the remaining quota, never stored**, and the quota itself
+  is never rendered. The rule and the number stay in the library; the screen only ever sees the state.
+
+**Merge [DNLibrary#19](https://github.com/Fostahh/DNLibrary/pull/19) before
+[DapurNaura-iOS#15](https://github.com/Fostahh/DapurNaura-iOS/pull/15)**, and publish `0.8.0` in
+between — the iOS branch calls API that no published version carries, so it does not compile against
+the pinned range until the follow-up repin. That is the local package rule working as designed.
+
+**Both are blocked on the release path, not on themselves.** `SPMDNLibrary` was made private on
+2026-08-09, so its release asset 404s and the committed remote pin cannot resolve — the app builds
+only against `ios/DNLibraryLocal` until the owner makes that repository public again. Development is
+unaffected; publishing `0.8.0` and repinning are what wait.
 
 ### Technical
 
