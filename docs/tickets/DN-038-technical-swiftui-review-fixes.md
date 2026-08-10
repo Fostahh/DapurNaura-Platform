@@ -2,7 +2,7 @@
 id: DN-038
 type: technical
 title: Dynamic Type and four view-level findings from the SwiftUI review
-status: in-review
+status: done
 branch: ticket/DN-038-swiftui-review-fixes
 layer: ui
 ---
@@ -99,7 +99,11 @@ found in one pass over the same views:
 - [x] `swiftlint lint` clean — 0 violations, also re-run after the revert
 - [x] **Owner verified the running app** and approved, 2026-08-10 — the one box the agent cannot
       tick itself
-- [x] Committed, not merged — [DapurNaura-iOS#18](https://github.com/Fostahh/DapurNaura-iOS/pull/18)
+- [x] Merged as [DapurNaura-iOS#18](https://github.com/Fostahh/DapurNaura-iOS/pull/18) (`be2cff3`),
+      2026-08-10; ticket marked `done` on the owner's word. **No release**: the ticket touches no
+      DNLibrary API, so there is nothing to publish and no repin — the app half stood alone
+- [x] Merged with a merge commit rather than a squash, so `2d3ac68` and `a00f980` both survive and
+      the SHAs cited in `## Out of scope` and `## Implementation notes` stay resolvable
 
 ## Notes
 
