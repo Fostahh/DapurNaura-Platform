@@ -2,7 +2,7 @@
 id: DN-036
 type: product
 title: iOS — the offline class schedule, with collapsible month sections and a materials sheet
-status: in-review
+status: done
 source: docs/requirements/2026-08-09-offline-class-schedule.md
 branch: ticket/DN-036-offline-class-schedule-ui
 pr: https://github.com/Fostahh/DapurNaura-iOS/pull/15
@@ -187,7 +187,7 @@ None. Consumes DN-035's symbols; adds none.
 - [ ] `project.pbxproj` carries no local package reference
 - [ ] **Owner has verified the running app**
 - [ ] Committed, not merged
-- [ ] PR merged, ticket marked `done` by the human
+- [x] PR merged — DapurNaura-iOS#15, merge commit `80a879f4`, 2026-08-10
 
 ## Implementation notes (2026-08-09)
 

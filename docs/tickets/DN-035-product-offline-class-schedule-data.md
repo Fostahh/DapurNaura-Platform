@@ -2,7 +2,7 @@
 id: DN-035
 type: product
 title: Data layer — the offline class schedule, its date window and its availability rule
-status: in-review
+status: done
 source: docs/requirements/2026-08-09-offline-class-schedule.md
 branch: ticket/DN-035-offline-class-schedule
 pr: https://github.com/Fostahh/DNLibrary/pull/19
@@ -229,7 +229,7 @@ three different availability states.
 - [ ] `docs/contracts/offline-classes.json` written; stub replays it through the real decoding path
 - [ ] `./gradlew :sharedLogic:check` green on both platforms
 - [ ] Committed, not merged
-- [ ] PR merged, ticket marked `done` by the human
+- [x] PR merged — DNLibrary#19, merge commit `a1537706`, 2026-08-10
 
 ## Notes
 
