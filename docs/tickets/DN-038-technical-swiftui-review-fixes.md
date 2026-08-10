@@ -1,0 +1,109 @@
+---
+id: DN-038
+type: technical
+title: Dynamic Type, Reduce Motion and four view-level findings from the SwiftUI review
+status: in-progress
+branch: ticket/DN-038-swiftui-review-fixes
+layer: ui
+---
+
+## Rationale
+
+A SwiftUI review of `ios/DapurNaura` on 2026-08-10 found no deprecated API at all — no
+`foregroundColor`, no `cornerRadius`, no `NavigationView`, no `ObservableObject` family, no
+`AnyView`, no `GeometryReader`. §3's composition rules hold across all three screens. What it did
+find sits in two places the architecture document does not yet cover.
+
+**Two of the six respect an accessibility setting the app currently ignores.**
+
+`CODEBASE-ARCHITECTURE.md` §9 requires semantic fonts, and SwiftLint's `no_system_font` custom rule
+enforces it with `severity: error` — its message says *"a fixed size never scales with the user's
+text size."* That reasoning is right and the rule catches the case it names. But three views place
+scaling text inside a **fixed point-width frame**, which reintroduces the same failure by a route
+the regex cannot see:
+
+```swift
+// ios/DapurNaura/DapurNaura/Presentation/RecipeDetail/Components/IngredientRow.swift
+Text(ingredient.quantity)
+    .font(.subheadline.bold())
+    .frame(width: DesignConstants.quantityColumnWidth, alignment: .leading)   // 72pt, fixed
+```
+
+The font scales; the column does not. At the larger accessibility text sizes the text truncates
+inside a box that never grew. The three sites are `IngredientRow` (quantity, 72pt),
+`RecipeComponentSection` (step number, 22pt) and `OfflineClassRow` (date column, 56pt) — and the
+last is the first to break, because its day number is `.title`.
+
+**This is worst where it matters most.** `DesignConstants` line 26 records why those columns are
+fixed: *"the recipe method reads as two aligned columns… so the text lines up down the page."* That
+alignment is for someone following a method with their hands busy — exactly the reader most likely
+to have raised their text size, and the step number is their place-marker.
+
+The second is Reduce Motion. `NoticeSheet` animates a full-height card up from the bottom edge with
+`.transition(.move(edge: .bottom))`, unconditionally. SwiftUI does not gate author-written
+transitions on the setting; `\.accessibilityReduceMotion` has to be read. The fix is a cross-fade,
+not the removal of the animation — an instant snap loses the continuity cue.
+
+**The other four change no behaviour a user relies on**, and are grouped here because they were
+found in one pass over the same views:
+
+- `CategoryFilterChips.background(for:)` erases two `Color` branches through `AnyShapeStyle`. Both
+  branches are already `Color`, so the erasure buys nothing and boxes an existential per chip.
+- `CookingClassDetailLoadedView` evaluates `if isPurchased` **inside** its `ForEach`, though the
+  value is constant across every row, building `_ConditionalContent` per recipe.
+- `RecipeImageCarousel` draws `.tabViewStyle(.page)` index dots as plain white circles with no
+  backing plate. Over a light recipe photo they vanish, taking with them the only signal that more
+  images exist.
+- `DapurNauraApp` initialises two `@MainActor` types in stored-property defaults, from a synthesised
+  `init()` that is nonisolated. Swift 5 permits the implicit hop; Swift 6 makes it an error.
+
+## Approach, in outline
+
+- `@ScaledMetric(relativeTo:)` in the three views, each relative to the font its column pairs with.
+  **`DesignConstants` keeps the base numbers** — §9 owns the value, the view owns how it scales.
+- `\.accessibilityReduceMotion` in `NoticeSheet`, swapping `.move(edge: .bottom)` for `.opacity`.
+  The scrim is already a fade and needs nothing.
+- `background(for:)` returns `Color`; the `AnyShapeStyle` wrappers go.
+- Hoist `if isPurchased` out of the `ForEach` in `CookingClassDetailLoadedView`.
+- `.indexViewStyle(.page(backgroundDisplayMode: .always))` on the carousel, and hide the index
+  entirely for a single-image recipe — one dot reads as a carousel that will not scroll.
+- `@MainActor` on `DapurNauraApp`.
+
+## Out of scope
+
+- **VoiceOver labels and traits.** The review also found the app carries no accessibility modifiers
+  at all — `SheetCloseButton` is an unlabelled icon-only button, `NoticeSheet` is a hand-built modal
+  without `.isModal`, `RecipeRow`'s lock icon is the sole carrier of "you cannot open this", and
+  `CategoryFilterChips` encodes selection in colour alone. **Owner's decision, 2026-08-10: not now.**
+  Deliberately recorded here rather than dropped, because the finding is real and the next reader of
+  this ticket should not have to rediscover it.
+- The `RecipeDetail` divergences — no `LoadedView` split, `.navigationTitle` only in `.loaded`,
+  preview fixtures at file scope where the offline feature has `OfflineClassPreviewSamples`. Also
+  found in the same review, also left.
+- Any wording change, any colour change, any layout change at the default text size.
+
+## Done when
+
+- [ ] The three columns scale with the user's text size
+- [ ] `NoticeSheet` fades rather than travels under Reduce Motion
+- [ ] `AnyShapeStyle`, the in-loop branch, the invisible dots and the isolation warning are gone
+- [ ] `** BUILD SUCCEEDED **` — the DN-034 gate
+- [ ] `swiftlint lint` clean
+- [ ] **Owner verified the running app** — the one box the agent cannot tick itself. Worth checking
+      at *Settings ▸ Accessibility ▸ Display & Text Size ▸ Larger Text*, near the top of the scale,
+      on the recipe screen and the offline schedule
+- [ ] Committed, not merged
+
+## Notes
+
+**Filed and started in one step on the owner's instruction, 2026-08-10.** The autonomy table makes
+filing autonomous and scheduling the owner's; here the owner asked for the work directly, having
+been shown each change as a code sample first.
+
+**One ticket rather than two, deliberately.** The accessibility pair and the four corrections were
+first split into DN-038/DN-039. They were merged back because the agent cannot commit: two branches
+would have left the second ticket's untracked files riding in the first ticket's working tree for
+the owner to untangle at commit time. One review event, one verification pass, one branch.
+
+**No DNLibrary change**, therefore no tests, no `publish-spm.sh` run, no version bump and no
+`Package.resolved` movement. The UI-only path in `CLAUDE.md` step 3.
