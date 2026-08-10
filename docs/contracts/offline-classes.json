@@ -1,0 +1,177 @@
+{
+  "offlineClasses": [
+    {
+      "id": "off-2026-08-05-pizza",
+      "name": "Kelas Pizza",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Pizza",
+      "price": 150000,
+      "date": "2026-08-05",
+      "materials": [
+        "Black Pizza",
+        "Original Pizza",
+        "Pizza mini",
+        "Pizza gulung",
+        "Pizza sosis bite",
+        "Saus Pizza"
+      ],
+      "remainingQuota": 6
+    },
+    {
+      "id": "off-2026-08-12-pizza",
+      "name": "Kelas Pizza",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Pizza",
+      "price": 150000,
+      "date": "2026-08-12",
+      "materials": [
+        "Black Pizza",
+        "Original Pizza",
+        "Pizza mini",
+        "Pizza gulung",
+        "Pizza sosis bite",
+        "Saus Pizza"
+      ],
+      "remainingQuota": 18
+    },
+    {
+      "id": "off-2026-08-15-pie",
+      "name": "Kelas Aneka Pie",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Aneka+Pie",
+      "price": 250000,
+      "date": "2026-08-15",
+      "materials": [
+        "Pie Susu",
+        "Pie buah",
+        "Pie keju",
+        "Pie brownies",
+        "Pie vegetable"
+      ],
+      "remainingQuota": 4
+    },
+    {
+      "id": "off-2026-08-19-cake",
+      "name": "Kelas Cake & Brownies",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Cake+dan+Brownies",
+      "price": 250000,
+      "date": "2026-08-19",
+      "materials": [
+        "Neapolitan cake 3 warna",
+        "Marmer cake",
+        "Banana buttercake",
+        "Cup cake tape",
+        "Brownies hias",
+        "Brownies Sekat"
+      ],
+      "remainingQuota": 0
+    },
+    {
+      "id": "off-2026-08-22-pizza",
+      "name": "Kelas Pizza",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Pizza",
+      "price": 150000,
+      "date": "2026-08-22",
+      "materials": [
+        "Black Pizza",
+        "Original Pizza",
+        "Pizza mini",
+        "Pizza gulung",
+        "Pizza sosis bite",
+        "Saus Pizza"
+      ],
+      "remainingQuota": 12
+    },
+    {
+      "id": "off-2026-08-26-pie",
+      "name": "Kelas Aneka Pie",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Aneka+Pie",
+      "price": 250000,
+      "date": "2026-08-26",
+      "materials": [
+        "Pie Susu",
+        "Pie buah",
+        "Pie keju",
+        "Pie brownies",
+        "Pie vegetable"
+      ],
+      "remainingQuota": 10
+    },
+    {
+      "id": "off-2026-08-29-cake",
+      "name": "Kelas Cake & Brownies",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Cake+dan+Brownies",
+      "price": 250000,
+      "date": "2026-08-29",
+      "materials": [
+        "Neapolitan cake 3 warna",
+        "Marmer cake",
+        "Banana buttercake",
+        "Cup cake tape",
+        "Brownies hias",
+        "Brownies Sekat"
+      ],
+      "remainingQuota": 20
+    },
+    {
+      "id": "off-2026-09-02-pizza",
+      "name": "Kelas Pizza",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Pizza",
+      "price": 150000,
+      "date": "2026-09-02",
+      "materials": [
+        "Black Pizza",
+        "Original Pizza",
+        "Pizza mini",
+        "Pizza gulung",
+        "Pizza sosis bite",
+        "Saus Pizza"
+      ],
+      "remainingQuota": 25
+    },
+    {
+      "id": "off-2026-09-05-pie",
+      "name": "Kelas Aneka Pie",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Aneka+Pie",
+      "price": 250000,
+      "date": "2026-09-05",
+      "materials": [
+        "Pie Susu",
+        "Pie buah",
+        "Pie keju",
+        "Pie brownies",
+        "Pie vegetable"
+      ],
+      "remainingQuota": 8
+    },
+    {
+      "id": "off-2026-09-09-cake",
+      "name": "Kelas Cake & Brownies",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Cake+dan+Brownies",
+      "price": 250000,
+      "date": "2026-09-09",
+      "materials": [
+        "Neapolitan cake 3 warna",
+        "Marmer cake",
+        "Banana buttercake",
+        "Cup cake tape",
+        "Brownies hias",
+        "Brownies Sekat"
+      ],
+      "remainingQuota": 0
+    },
+    {
+      "id": "off-2026-10-07-pizza",
+      "name": "Kelas Pizza",
+      "imageUrl": "https://placehold.co/600x400/png?text=Kelas+Pizza",
+      "price": 150000,
+      "date": "2026-10-07",
+      "materials": [
+        "Black Pizza",
+        "Original Pizza",
+        "Pizza mini",
+        "Pizza gulung",
+        "Pizza sosis bite",
+        "Saus Pizza"
+      ],
+      "remainingQuota": 30
+    }
+  ]
+}
