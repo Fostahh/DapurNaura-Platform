@@ -73,8 +73,8 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-024](DN-024-product-cooking-class-category.md) | Data layer — class category, and filtering GET /classes by it | `done` | data |
 | [DN-025](DN-025-product-cooking-class-category-filter-ui.md) | iOS — category filter chips on the cooking-class list | `done` | ui |
 | [DN-033](DN-033-product-cooking-class-selection-entry.md) | iOS — open on a choice between Kelas Online and Kelas Offline, with a reusable "not built yet" sheet | `done` | ui |
-| [DN-035](DN-035-product-offline-class-schedule-data.md) | Data layer — the offline class schedule, its date window and its availability rule | `in-review` | data |
-| [DN-036](DN-036-product-offline-class-schedule-ui.md) | iOS — the offline class schedule, with collapsible month sections and a materials sheet | `in-review` | ui |
+| [DN-035](DN-035-product-offline-class-schedule-data.md) | Data layer — the offline class schedule, its date window and its availability rule | `done` | data |
+| [DN-036](DN-036-product-offline-class-schedule-ui.md) | iOS — the offline class schedule, with collapsible month sections and a materials sheet | `done` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -142,10 +142,8 @@ recipes. Three things are worth knowing before reading either:
 between — the iOS branch calls API that no published version carries, so it does not compile against
 the pinned range until the follow-up repin. That is the local package rule working as designed.
 
-**Both are blocked on the release path, not on themselves.** `SPMDNLibrary` was made private on
-2026-08-09, so its release asset 404s and the committed remote pin cannot resolve — the app builds
-only against `ios/DNLibraryLocal` until the owner makes that repository public again. Development is
-unaffected; publishing `0.8.0` and repinning are what wait.
+~~**Both are blocked on the release path.**~~ **Cleared 2026-08-10** — the owner made `SPMDNLibrary`
+public again, `0.8.0` was released and the app repinned. That repin is what produced DN-037.
 
 ### Technical
 
@@ -176,6 +174,7 @@ unaffected; publishing `0.8.0` and repinning are what wait.
 | [DN-031](DN-031-technical-remove-poc-local-storage.md) | Delete the POC local storage — four public types, zero consumers | `done` | data |
 | [DN-032](DN-032-technical-repin-checklist-stale.md) | The repin checklist tells you to hand-edit project.pbxproj, which DN-030 made wrong | `done` | tooling |
 | [DN-034](DN-034-technical-ios-build-gate.md) | Every iOS change must build before it is offered for review | `done` | docs |
+| [DN-037](DN-037-technical-repin-verification.md) | A repin can silently land on the old version — verify the resolved version instead of trusting it | `done` | tooling |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -204,6 +203,19 @@ finished. It is documentation, not code, and it corrects a sentence in §6 that 
 it could check. SwiftLint compiles nothing, so *"0 violations"* was equally true of code that did not
 build. **It shares DN-033's branch in both repos** — the rule arrived mid-ticket and DN-033 is its
 first application; the commits are separate and each carries its own id.
+
+**DN-037 is the second time the repin checklist has been behind reality**, after DN-032. Found while
+repinning to `0.8.0` on 2026-08-10: the resolve landed on `0.7.0` and reported success, because the
+cached SPM clone had never fetched the new tag. **When that happens `Package.resolved` does not
+change at all**, so `git status` is clean — which reads as *nothing to do*, one short inference away
+from DN-030's true statement that a repin needs no project edit.
+
+What caught it was luck: `0.8.0` added API the new screen calls, so a stale `0.7.0` failed to
+compile. A behaviour-only release has no such net and would ship green while never reaching anyone.
+Scheduled by the owner the same day. **Its first run caught a mistake in itself** — it cleared three
+caches, asked for `0.8.0` and resolved to `0.7.0`, because a *fourth* location nobody had recorded,
+`DerivedData/SourcePackages/workspace-state.json`, also stores the resolved version. The script
+would have shipped doing the wrong thing; the assertion it exists to perform is what stopped it.
 
 **A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
 is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by
