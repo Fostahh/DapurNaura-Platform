@@ -109,8 +109,8 @@ None. Documentation only.
 - **Editing DN-039 or DN-040.** Both are `done` and record what was true when they were written.
 - **Resolving the signed-in-user gap**, or designing around it. Still the owner's deferral of
   2026-08-06.
-- **A wider audit of every document.** This corrects what DN-040 falsified plus the two screen
-  counts found beside it. DN-029 already did the sweep; this is not a second one.
+- **Re-auditing what DN-029 already settled.** Every tracked `.md` is enumerated and read, but only
+  statements this ticket can show are false get changed. A document that is merely old is left alone.
 
 ## Test plan
 
@@ -131,7 +131,7 @@ Not code. What the owner is asked to check in the diff:
 - [x] `ios/DapurNaura/README.md` and `docs/CODEBASE-ARCHITECTURE.md` corrected — the miss the owner
       caught, recorded under *Notes*
 - [x] **All eleven tracked `.md` files enumerated and read**, not grepped
-- [x] The four documents agree with each other and with DN-040
+- [x] The six corrected documents agree with each other and with DN-040
 - [x] Ticket index regenerated
 - [ ] Diff reviewed by the owner
 - [x] Committed, not merged — iOS `7fd6da5` and `3ffb06a`; the umbrella half is in this branch
