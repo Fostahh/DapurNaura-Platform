@@ -45,6 +45,11 @@ consumed in-app, App Store Guideline 3.1.1 does not force In-App Purchase.
 > **Three things the domain assumes and nothing provides**, all deliberate: no backend (everything
 > runs on `DNDataLayer.stub()`), no signed-in user, and no purchase path. Android does not exist.
 >
+> **DN-040 put a login screen in front of all of it, and it changes none of the three.** It
+> authenticates nobody: any email and any password get in, the only gate is that both boxes are
+> filled, and the flag behind it is called `hasPassedLogin` rather than `isLoggedIn` precisely so
+> nothing later mistakes it for a session. **Do not wire anything to it.**
+>
 > **For current state — which tickets are `done`, which library version is published, what is in
 > flight — read [`docs/tickets/README.md`](docs/tickets/README.md) and `git log`. Do not restate it
 > here.** This file is loaded into every session, so a status block that nobody is forced to update
@@ -384,12 +389,16 @@ PR that created it.
   repositories — on `ios/DapurNaura` it is still the single stock-template `Initial Commit`, so none
   of the app exists there, not even the build variants from DN-003.
 - **There is no notion of a signed-in user, and the domain needs one.** `purchaseStatus` is per-user
-  data by definition, but nothing anywhere carries identity: no login, no session, no user model,
-  and `NetworkManager` holds a static `apiKey` only. There is also **no local storage to put a token
-  in** — DN-031 deleted the POC `SecureStorage`, since it had no consumer and no requirement. Two
-  screens already render state that cannot yet exist. **Owner's decision, 2026-08-06: deferred, to be
-  ticketed later.** Do not design around it in the meantime — and when it does land, DN-001's
-  AES-GCM Keystore implementation is in git history rather than gone.
+  data by definition, but nothing anywhere carries identity: **a login screen that checks nothing**
+  (DN-040), no session, no user model, and `NetworkManager` holds a static `apiKey` only. There is
+  also **no local storage to put a token in** — DN-031 deleted the POC `SecureStorage`, since it had
+  no consumer and no requirement. Two screens already render state that cannot yet exist. **Owner's
+  decision, 2026-08-06: deferred, to be ticketed later.** Do not design around it in the meantime —
+  and when it does land, DN-001's AES-GCM Keystore implementation is in git history rather than gone.
+
+  > **The screen makes this gap easier to miss, not smaller.** `hasPassedLogin` is a `@State`
+  > boolean at the composition root meaning *this launch has been past a screen*. It is not a
+  > session, it survives nothing, and it must not become the thing a user id is hung on.
 - **Paid classes have no purchase path, manual or automated.** Midtrans is deliberately deferred,
   but `PENDING_VERIFICATION` describes a transfer-and-verify flow that is the *current* business
   process, and nothing implements that either — the buy button says *"Pembelian lewat aplikasi belum

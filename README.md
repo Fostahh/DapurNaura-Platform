@@ -24,9 +24,19 @@ Guideline 3.1.1 does not force In-App Purchase.
 
 ## Where the project actually is
 
-Two screens run — the class list and the class detail — against **stub data**. There is no backend,
-no payment path of any kind, and no notion of a signed-in user. The recipe screen, which is the
-point of the product, is still a placeholder. Android has not been created.
+The app runs against **stub data** and covers the domain end to end: login (DN-040), the Kelas
+Online / Kelas Offline choice it opens onto (DN-033), the class list with its category filter
+(DN-009, DN-025), the class detail (DN-012), the recipe screen the product actually sells (DN-021)
+and the offline class schedule (DN-036).
+
+**What is missing is everything behind them.** There is no backend, no payment path of any kind, and
+**no signed-in user — the login screen checks nothing.** Any email and any password get in; no
+credential is verified, no session is kept, and nothing survives a relaunch. Android has not been
+created.
+
+*The list above names tickets rather than a count, deliberately — a number here goes stale on the
+next merge and nothing forces anyone to notice. For current state, read
+[`docs/tickets/README.md`](docs/tickets/README.md).*
 
 Expect to build, not to read.
 
