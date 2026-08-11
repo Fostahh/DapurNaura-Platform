@@ -195,6 +195,7 @@ reading it:
 | [DN-037](DN-037-technical-repin-verification.md) | A repin can silently land on the old version — verify the resolved version instead of trusting it | `done` | tooling |
 | [DN-038](DN-038-technical-swiftui-review-fixes.md) | Dynamic Type and four view-level findings from the SwiftUI review | `done` | ui |
 | [DN-039](DN-039-technical-light-mode-portrait-lock.md) | Lock the app to light mode and portrait — the owner believes both are already enforced, and neither is | `done` | ios |
+| [DN-041](DN-041-technical-docs-login-drift.md) | The workspace documents say there is no login screen, and that the recipe screen is a placeholder | `in-review` | docs |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -249,6 +250,18 @@ The fix has to go in the four app-target build configurations, and the two obvio
 overridden because these keys are set at target level. `UIUserInterfaceStyle` is used rather than
 `.preferredColorScheme(.light)` because the keyboard — which DN-040 introduces — lives outside the
 SwiftUI view tree.
+
+**DN-041 is DN-029's finding recurring, and the recurrence is the point.** DN-040 made one sentence
+false in three documents — *"nothing anywhere carries identity: no login, no session, no user
+model"* — inside the paragraph a cold session reads to learn what the app lacks. A reader who meets
+that and then opens `Presentation/Login/` cannot tell which half is stale, and the natural inference
+is the wrong one: that login works. Beside it sat two older drifts, `README.md`'s *"two screens run"*
+and the iOS document's *"three screens exist"*, both wrong by four merged tickets.
+
+The fix is not only the numbers. **The screen inventories now name tickets and give no count**,
+because a count is a fact with no owner and nothing forces anyone to update it — which is precisely
+what DN-029 concluded when it found the rules holding wherever they were encoded and drifting
+wherever they were prose.
 
 **A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
 is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by

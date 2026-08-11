@@ -64,8 +64,10 @@ path, with SwiftLint reporting zero violations.
 
 - **No backend.** Everything runs on `DNDataLayer.stub()`, which replays the approved contract
   fixtures through the real decoding path. The wire shape has never met a server.
-- **No signed-in user**, although `purchaseStatus` is per-user data by definition. No login, no
-  session, no user model. Deferred by the owner on 2026-08-06, to be ticketed later.
+- **No signed-in user**, although `purchaseStatus` is per-user data by definition. There is a login
+  screen (DN-040) and **it authenticates nobody** — any email and any password get in, and the only
+  gate is that both boxes are filled. Behind it there is no session, no user model and nowhere to
+  keep a token. Deferred by the owner on 2026-08-06, to be ticketed later.
 - **No purchase path at all** — not Midtrans, and not the manual transfer-and-verify flow that
   `PENDING_VERIFICATION` describes and that is the *current* business process. Also deferred.
 
@@ -698,4 +700,5 @@ mattered. What remains open is tracked as tickets, not here.
 - **DN-026** — status labels still live in Swift rather than the shared layer.
 - **Backfill requirement documents for DN-008 and DN-009**, which trace to verbal instructions.
 - **The two deferred domain gaps** — no signed-in user and no purchase path — both the owner's
-  explicit decision of 2026-08-06, to be ticketed when they are wanted.
+  explicit decision of 2026-08-06, to be ticketed when they are wanted. DN-040's login screen is the
+  visible half of the first one and closes none of it.
