@@ -2,7 +2,7 @@
 id: DN-039
 type: technical
 title: Lock the app to light mode and portrait — the owner believes both are already enforced, and neither is
-status: in-review
+status: done
 source: —
 branch: ticket/DN-039-light-mode-portrait-lock
 commit: 4869dca
@@ -153,7 +153,8 @@ What the owner is asked to check on the running app:
 - [x] Owner has verified the running app in dark mode and rotated it — approved 2026-08-11
 - [x] Committed, not merged — `4869dca`
 - [x] PR opened — [DapurNaura-iOS#19](https://github.com/Fostahh/DapurNaura-iOS/pull/19)
-- [ ] PR merged, ticket marked `done` by the owner
+- [x] PR merged — [DapurNaura-iOS#19](https://github.com/Fostahh/DapurNaura-iOS/pull/19),
+      merge commit `8105423`, 2026-08-11
 
 ## Notes
 

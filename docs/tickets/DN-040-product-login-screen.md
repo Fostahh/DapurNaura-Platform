@@ -2,7 +2,7 @@
 id: DN-040
 type: product
 title: iOS — the login screen, a reusable toast, and a hex colour palette
-status: in-review
+status: done
 source: docs/requirements/2026-08-10-login.md
 branch: ticket/DN-040-login-screen
 commit: 70ed003
@@ -330,7 +330,8 @@ build with no simulator run.
       recorded under *Revisions during review*
 - [x] Committed, not merged — `70ed003`
 - [x] PR opened — [DapurNaura-iOS#20](https://github.com/Fostahh/DapurNaura-iOS/pull/20)
-- [ ] PR merged, ticket marked `done` by the owner
+- [x] PR merged — [DapurNaura-iOS#20](https://github.com/Fostahh/DapurNaura-iOS/pull/20),
+      merge commit `12dacac`, 2026-08-11
 
 ## Decisions taken during implementation (2026-08-10)
 
