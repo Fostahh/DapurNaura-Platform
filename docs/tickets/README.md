@@ -75,6 +75,7 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-033](DN-033-product-cooking-class-selection-entry.md) | iOS — open on a choice between Kelas Online and Kelas Offline, with a reusable "not built yet" sheet | `done` | ui |
 | [DN-035](DN-035-product-offline-class-schedule-data.md) | Data layer — the offline class schedule, its date window and its availability rule | `done` | data |
 | [DN-036](DN-036-product-offline-class-schedule-ui.md) | iOS — the offline class schedule, with collapsible month sections and a materials sheet | `done` | ui |
+| [DN-040](DN-040-product-login-screen.md) | iOS — the login screen, a reusable toast, and a hex colour palette | `in-review` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -145,6 +146,23 @@ the pinned range until the follow-up repin. That is the local package rule worki
 ~~**Both are blocked on the release path.**~~ **Cleared 2026-08-10** — the owner made `SPMDNLibrary`
 public again, `0.8.0` was released and the app repinned. That repin is what produced DN-037.
 
+**DN-040 is the login screen**, from
+[`../requirements/2026-08-10-login.md`](../requirements/2026-08-10-login.md) — the first requirement
+drafted from an image rather than from spoken instructions. Four things are worth knowing before
+reading it:
+
+- **It authenticates nobody, by instruction** — *"a screen, no API call."* Any email and any password
+  get in; the only gate is that both boxes are non-empty. The standing blocker of 2026-08-06 is
+  untouched: still no session, no user, no token, no backend. The flag at the composition root is
+  called `hasPassedLogin` rather than `isLoggedIn` precisely so nothing later mistakes it for one.
+- **It runs behind DN-039**, which the owner scheduled first. This is the first screen built from
+  fixed hex colours instead of adaptive system ones, so without the light-mode lock it renders
+  white-on-white in dark mode.
+- **It is the first screen in the app to take keyboard input.** Focus, field styling, autofill and
+  keyboard avoidance have no precedent here.
+- **The toast is reusable with three kinds and only one caller**, the same shape `NoticeSheet` took
+  in DN-033 — the owner asked for reuse and named two kinds this screen cannot show.
+
 ### Technical
 
 | Id | Title | Status | Layer |
@@ -176,6 +194,7 @@ public again, `0.8.0` was released and the app repinned. That repin is what prod
 | [DN-034](DN-034-technical-ios-build-gate.md) | Every iOS change must build before it is offered for review | `done` | docs |
 | [DN-037](DN-037-technical-repin-verification.md) | A repin can silently land on the old version — verify the resolved version instead of trusting it | `done` | tooling |
 | [DN-038](DN-038-technical-swiftui-review-fixes.md) | Dynamic Type and four view-level findings from the SwiftUI review | `done` | ui |
+| [DN-039](DN-039-technical-light-mode-portrait-lock.md) | Lock the app to light mode and portrait — the owner believes both are already enforced, and neither is | `in-review` | ios |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -217,6 +236,19 @@ Scheduled by the owner the same day. **Its first run caught a mistake in itself*
 caches, asked for `0.8.0` and resolved to `0.7.0`, because a *fourth* location nobody had recorded,
 `DerivedData/SourcePackages/workspace-state.json`, also stores the resolved version. The script
 would have shipped doing the wrong thing; the assertion it exists to perform is what stopped it.
+
+**DN-039 is a belief checked against the code, and the code won.** The owner stated on 2026-08-10
+that the app forces light mode and is portrait only. Neither was true: nothing sets a colour scheme
+anywhere, and orientation was still Xcode's default — iPhone portrait plus both landscapes, iPad all
+four. It survived unnoticed because every screen so far draws from **adaptive** system colours, so
+all four look right in dark mode by construction rather than by decision. DN-040 is what ends that,
+which is why the owner scheduled this ahead of it.
+
+The fix has to go in the four app-target build configurations, and the two obvious homes both lose:
+`Info.plist` is overwritten because Xcode merges its generated keys on top of it, and an xcconfig is
+overridden because these keys are set at target level. `UIUserInterfaceStyle` is used rather than
+`.preferredColorScheme(.light)` because the keyboard — which DN-040 introduces — lives outside the
+SwiftUI view tree.
 
 **A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
 is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by
