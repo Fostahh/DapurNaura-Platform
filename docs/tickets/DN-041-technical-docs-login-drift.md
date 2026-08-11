@@ -5,7 +5,7 @@ title: The workspace documents say there is no login screen, and that the recipe
 status: in-review
 source: —
 branch: ticket/DN-041-docs-login-drift
-commit: 7fd6da5
+commit: 7fd6da5, 3ffb06a
 pr: https://github.com/Fostahh/DapurNaura-iOS/pull/21
 layer: docs
 ---
@@ -71,6 +71,16 @@ of all of it.
 | `CLAUDE.md` | *Three things the domain assumes* keeps all three; the signed-in-user entry gains the clause that a login screen exists and authenticates nobody. The blocker's *"no login"* becomes *"a login screen that checks nothing"* |
 | `docs/ARCHITECTURE-AND-WORKFLOW.md` | Same correction, in both places it states the gap |
 | `ios/DapurNaura/CLAUDE.md` | *"Three screens exist"* → the current set, without a number. Gains the light-mode and portrait lock from DN-039, which changes how any new screen is built |
+| `ios/DapurNaura/README.md` | Its feature list covered two screens and still called the recipe screen a placeholder. Also carried a build command with a bare simulator name, which known issue 2 and DN-034 both forbid |
+| `ios/DapurNaura/docs/CODEBASE-ARCHITECTURE.md` | §5 records that the composition root also chooses which screen is the root, and that `hasPassedLogin` is not a session. §3's layout shows `DesignConstants` can span files |
+
+**Every other tracked `.md` was checked and is correct.** `docs/AGENT-PLAYBOOK.md`'s screen count is
+inside an explicitly labelled historical snapshot that points readers at the ticket index;
+`docs/contracts/README.md` describes wire shapes; `CLAUDE.md`'s *"two screens already render state
+that cannot yet exist"* counts the screens showing `purchaseStatus`, not the app's screens; and all
+three `DNLibrary` documents plus `ios/SPMDNLibrary/README.md` say nothing about iOS screens or
+identity. **Leaving a correct sentence alone is part of the job** — rewriting the playbook's snapshot
+would have destroyed the evidence it exists to preserve.
 
 **Two rules for the wording, both learned from DN-029:**
 
@@ -118,17 +128,31 @@ Not code. What the owner is asked to check in the diff:
 
 - [x] `README.md`, `CLAUDE.md` and `docs/ARCHITECTURE-AND-WORKFLOW.md` corrected
 - [x] `ios/DapurNaura/CLAUDE.md` corrected, including DN-039's lock
+- [x] `ios/DapurNaura/README.md` and `docs/CODEBASE-ARCHITECTURE.md` corrected — the miss the owner
+      caught, recorded under *Notes*
+- [x] **All eleven tracked `.md` files enumerated and read**, not grepped
 - [x] The four documents agree with each other and with DN-040
 - [x] Ticket index regenerated
 - [ ] Diff reviewed by the owner
-- [x] Committed, not merged — iOS `7fd6da5`; the umbrella half is in this branch
+- [x] Committed, not merged — iOS `7fd6da5` and `3ffb06a`; the umbrella half is in this branch
 - [x] iOS PR opened — [DapurNaura-iOS#21](https://github.com/Fostahh/DapurNaura-iOS/pull/21); the umbrella takes none by policy
 - [ ] PR merged, ticket marked `done` by the owner
 
 ## Notes
 
-**The umbrella half needs no PR and the iOS half does**, because `ios/DapurNaura/CLAUDE.md` lives in
-a separate repository. One ticket, two commits, one pull request.
+**The umbrella half needs no PR and the iOS half does**, because the iOS documents live in a separate
+repository. One ticket, three commits, one pull request.
+
+**The first pass swept four documents and stopped, and the owner caught it.** `ios/DapurNaura/README.md`
+was left saying the recipe screen was a placeholder and listing two features, and its build command
+still named a bare simulator — a contradiction with this repo's own known issue 2 that had survived
+since DN-034. The agent had grepped for the phrases it already knew were wrong rather than
+enumerating every tracked `.md` and reading it.
+
+**That is the failure worth keeping:** a search finds what you thought of, an inventory finds what you
+did not. The second pass listed all eleven tracked documents first, then checked each — which is what
+turned up the README and the two architecture sections. **Enumerate, then check. Do not grep and
+call it a sweep.**
 
 **This is the second time a document has been wrong in the direction of understating what exists.**
 DN-029 found the same shape: `CLAUDE.md` claimed DN-024/DN-025 were uncommitted for a day after they
