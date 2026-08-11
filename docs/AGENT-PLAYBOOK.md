@@ -143,19 +143,43 @@ unprompted.
 
 ## 6. The doc sweep — after every change
 
-Documentation is a set of caches over the code; every change invalidates some of them. After each
-ticket, check and fix, in the same commit where possible:
+Documentation is a set of caches over the code; every change invalidates some of them. **This is a
+gate, not a reminder** — §6 of `ARCHITECTURE-AND-WORKFLOW.md` says a ticket is unfinished until it is
+done, in the same commit where possible.
+
+**Start by enumerating, not by remembering.** In every repository the ticket touched:
+
+```sh
+git ls-files '*.md'
+```
+
+Read the ones that could state a fact the ticket changed. **The list below is a prompt for what kind
+of thing goes stale — it is not the set of files to check.** Treating it as the set is exactly how
+`ios/DapurNaura/README.md` was missed in DN-041: it named CLAUDE.md files and no READMEs, so nobody
+opened one, and it had been telling readers to build with a bare simulator name — the thing that
+repo's own known issue 2 says fails — since DN-034.
 
 | Mirror | Lives in |
 |---|---|
 | Ticket status + notes | the ticket file (the **only** source of truth for status) |
 | The ticket index | `docs/tickets/README.md` — regenerate it, it does not regenerate itself |
-| Known-violations table | `DNLibrary/CODEBASE-ARCHITECTURE.md` |
-| "What exists" descriptions | each repo's `CLAUDE.md` |
+| Known-violations table | `DNLibrary/docs/CODEBASE-ARCHITECTURE.md` |
+| "What exists" descriptions | each repo's `CLAUDE.md` **and its `README.md`** |
+| Architecture rules the change alters | each repo's `docs/CODEBASE-ARCHITECTURE.md` |
 | Blockers / §8 constraints / §9 drift | `docs/ARCHITECTURE-AND-WORKFLOW.md`, umbrella `CLAUDE.md` |
 
-A resolved item is **struck through with the resolving ticket named**, never silently deleted —
-the trail is the point.
+**Never edited:** requirement documents, and tickets already `done`. Both record what was true when
+they were written; the correction goes in the *current* ticket. A resolved item elsewhere is
+**struck through with the resolving ticket named**, never silently deleted — the trail is the point.
+
+**Leaving a correct sentence alone is part of the sweep.** The worked example at the end of this
+document carries a screen count inside a labelled historical snapshot; rewriting it would destroy the
+evidence the playbook is drawn from. A document that is merely *old* is not wrong.
+
+**Do not write a count, a status or a version into prose.** Those are facts with no owner — nothing
+forces anyone to update them, so they go stale between one merge and the next. Name the ticket and
+let the derived index carry the state. `README.md` said *"two screens run"* for four merged product
+tickets; the ticket index was correct the whole time.
 
 ## 7. Stop conditions — the habit, not the list
 

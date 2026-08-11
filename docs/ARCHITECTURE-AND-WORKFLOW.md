@@ -389,6 +389,40 @@ DN-034 the strongest thing an agent could say about iOS work was *"0 violations"
 equally true of code that does not build. **It does not replace the human's verification of the
 running app.** The agent proves it compiles; the owner proves it behaves.
 
+### The documentation gate **[DECIDED]** — DN-042
+
+**Applies to every layer above, not to `docs` tickets alone.** Owner's instruction, 2026-08-11, given
+twice in one day: *"you need synchronize all of the .md before commit and push."*
+
+> **A ticket is not finished until the documents match what it did.** Before offering work for
+> review, **enumerate** every tracked `.md` in every repository the ticket touched —
+> `git ls-files '*.md'` — and read the ones that could state a fact the ticket changed. Correct what
+> is now false.
+
+**Requirement documents and `done` tickets are excluded and are never edited.** Both record what was
+true when they were written; a correction goes in the *current* ticket. That rule is older than this
+gate and this gate does not weaken it.
+
+Three rules the sweep itself follows, all learned in DN-041:
+
+- **Enumerate, then read. Never grep and call it a sweep.** A search finds the sentence you already
+  knew was wrong. `ios/DapurNaura/README.md` was missed entirely because nobody had thought of it —
+  it had been telling readers to build with a bare simulator name, the exact thing that repository's
+  own known issue 2 says fails, since DN-034.
+- **Leaving a correct sentence alone is part of the job.** `AGENT-PLAYBOOK.md` carries a screen count
+  inside an explicitly labelled historical snapshot; rewriting it would destroy the evidence it
+  exists to preserve. A document that is merely *old* is not wrong.
+- **Do not write a count, a status or a version into prose.** Those are facts with no owner: nothing
+  forces anyone to update them, so they go stale between one merge and the next. Name the ticket and
+  let the derived index carry the state.
+
+**Why a gate rather than a reminder.** This is DN-034's argument repeated. The agent could always
+have run `xcodebuild`, and did not, until the Definition of Done said the work was unfinished without
+it. Documentation was in that position: `README.md` claimed the recipe screen was a placeholder for
+four merged product tickets, and `ios/DapurNaura/CLAUDE.md` miscounted the screens across three.
+Every one shipped through a review, a PR and a merge — **nobody was careless; there was no step at
+which anyone was asked.**
+
 ### Tooling (scripts, build config, CI)
 
 Neither layer applies — the `publish-spm.sh` preflight fix is the worked example. Done when:

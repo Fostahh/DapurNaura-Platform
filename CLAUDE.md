@@ -177,16 +177,22 @@ The loop:
      every platform that exists (iOS now, Android later).
    - **No (UI only)** → straight to `ios/DapurNaura/`. No tests, no publish, no version bump —
      **but always build it** (DN-034). Building is not one of the steps a UI-only ticket skips.
-4. Stop. The human **verifies the running app** and reviews the diff — still on the local package,
+4. **Synchronise the documents before offering anything for review.** Owner's instruction,
+   2026-08-11 — *"you need synchronize all of the .md before commit and push."* **Enumerate** every
+   tracked `.md` in each repository the ticket touched (`git ls-files '*.md'`) and read the ones that
+   could state a fact the ticket changed; correct what is now false. **Requirement documents and
+   `done` tickets are never edited** — both record what was true when written.
+   **Enumerate, then read. Never grep and call it a sweep** (DN-042).
+5. Stop. The human **verifies the running app** and reviews the diff — still on the local package,
    **nothing committed yet**.
-5. On approval the human triggers commit in every repo, then push → PR. On rejection, feedback is
+6. On approval the human triggers commit in every repo, then push → PR. On rejection, feedback is
    verbal — fix and return to step 3. *If the same feedback comes up twice, write it into the
    ticket or the relevant `CLAUDE.md` so it survives the next session.*
-6. After the PR merges the human says so; only then does the release step happen.
-7. **The publish is not finished until the app is repinned.** See *Publishing the iOS binary* — the
+7. After the PR merges the human says so; only then does the release step happen.
+8. **The publish is not finished until the app is repinned.** See *Publishing the iOS binary* — the
    release and the app's bump are one step, not two.
 
-**Steps 1–4 are one loop with a single approval gate.** Do not wait for a DNLibrary merge before
+**Steps 1–5 are one loop with a single approval gate.** Do not wait for a DNLibrary merge before
 building the app against it — that is what `publish-spm.sh local` is for. The library change and
 the app change are proven together, locally, before anything is committed.
 

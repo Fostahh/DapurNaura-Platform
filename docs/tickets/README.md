@@ -196,6 +196,7 @@ reading it:
 | [DN-038](DN-038-technical-swiftui-review-fixes.md) | Dynamic Type and four view-level findings from the SwiftUI review | `done` | ui |
 | [DN-039](DN-039-technical-light-mode-portrait-lock.md) | Lock the app to light mode and portrait — the owner believes both are already enforced, and neither is | `done` | ios |
 | [DN-041](DN-041-technical-docs-login-drift.md) | The workspace documents say there is no login screen, and that the recipe screen is a placeholder | `in-review` | docs |
+| [DN-042](DN-042-technical-documentation-gate.md) | The doc sweep is a list of remembered places rather than an enumeration, and it is not a gate | `in-review` | docs |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -250,6 +251,18 @@ The fix has to go in the four app-target build configurations, and the two obvio
 overridden because these keys are set at target level. `UIUserInterfaceStyle` is used rather than
 `.preferredColorScheme(.light)` because the keyboard — which DN-040 introduces — lives outside the
 SwiftUI view tree.
+
+**DN-042 is why DN-041 was possible.** A doc sweep rule already existed — `AGENT-PLAYBOOK.md` §6 —
+and it was followed badly because it is built so that following it badly is the path of least
+resistance: a **table of remembered locations** rather than an instruction to enumerate, naming
+`CLAUDE.md` files and **no READMEs**, with one path (`DNLibrary/CODEBASE-ARCHITECTURE.md`) left stale
+by DN-017's move into `docs/`. The doc sweep section was itself a casualty of doc drift.
+
+**The load-bearing fault was that it is not a gate.** The Definition of Done had never mentioned
+documentation, so nothing made a ticket unfinished without it — while DN-034's build gate, one
+section away, has not been skipped once since it was written. That contrast is the whole argument.
+The gate now sits beside it, the playbook leads with `git ls-files '*.md'`, and all four
+`## Done when` templates carry the line.
 
 **DN-041 is DN-029's finding recurring, and the recurrence is the point.** DN-040 made one sentence
 false in three documents — *"nothing anywhere carries identity: no login, no session, no user
@@ -473,20 +486,24 @@ Data layer only — UI is verified manually by the human.
 Data-layer work:
 - [ ] Code implemented on `ticket/DN-XXX-short-slug`
 - [ ] Unit tests written and passing — `./gradlew :sharedLogic:check` from `DNLibrary/`
+- [ ] **Doc sweep done** — every tracked `.md` enumerated, not grepped (DN-042)
 - [ ] Committed, not merged
 
 UI work:
 - [ ] Code implemented on `ticket/DN-XXX-short-slug`
 - [ ] Verified manually by the human
+- [ ] **Doc sweep done** — every tracked `.md` enumerated, not grepped (DN-042)
 - [ ] Committed, not merged
 
 Tooling work (scripts, build config):
 - [ ] Change implemented
 - [ ] Behaviour demonstrated, including the failure paths it should catch
+- [ ] **Doc sweep done** — every tracked `.md` enumerated, not grepped (DN-042)
 - [ ] Committed, not merged
 
 Docs work (the workflow standard itself):
 - [ ] Every document stating the rule updated — they must agree with each other
+- [ ] **Doc sweep done** — every tracked `.md` enumerated, not grepped (DN-042)
 - [ ] Ticket index regenerated
 - [ ] Diff reviewed by the human
 - [ ] Committed, not merged
