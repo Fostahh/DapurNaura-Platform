@@ -5,6 +5,8 @@ title: iOS — choosing a bank account and sending proof of payment
 status: in-review
 source: ../requirements/2026-09-11-payment-flow.md
 branch: ticket/DN-048-payment-flow-ui
+commit: bb5c67e
+pr: https://github.com/Fostahh/DapurNaura-iOS/pull/26
 layer: ui
 ---
 
@@ -297,8 +299,8 @@ correct build as broken; nothing records a payment, so nothing may claim one was
 - [x] **`ToastCenter` is injected, not a singleton** — owned by `DapurNauraApp`, reached with `@Environment`, `#Preview` of `LoginView` injects one
 - [x] **`ToastCenter` owns the clock**, so the stale-timer race cannot occur rather than being guarded — `Toast` takes a value and draws it
 - [x] Diff reviewed by the owner — approved 2026-09-12, after the toast alignment and height rounds
-- [ ] Committed
-- [ ] PR opened
+- [x] Committed — iOS `bb5c67e`, umbrella `b7fc3ff`
+- [x] PR opened — [DapurNaura-iOS#26](https://github.com/Fostahh/DapurNaura-iOS/pull/26); the umbrella takes none by policy
 - [ ] PR merged
 
 ## What the sweep found
