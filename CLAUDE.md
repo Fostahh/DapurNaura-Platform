@@ -395,8 +395,15 @@ Why the defect existed.
   > arrives with.** A tool's house style is not a reason to deviate from the repository's — if the
   > two disagree, this file is what ships.
   >
-  > This governs the **PR body only**. The `Co-Authored-By:` trailer on commit messages is a
-  > different thing and is untouched.
+  > **Extended the same day to everything the agent writes.** Owner's instruction: *"always remove
+  > all Claude Code generated, Co authored by claude code on every single thing or files."* No
+  > generated-by footer, **no `Co-Authored-By:` trailer on any commit**, and no attribution line in
+  > any file the agent produces. The agent's tooling supplies both by default; neither is used here.
+  >
+  > **This applies to what is written from now on.** The 113 commits already carrying the trailer are
+  > spread across all four repositories and almost all of them are merged — removing them means
+  > rewriting history, which is a force-push and is on the `Never` list above. That is the owner's
+  > call to make explicitly, not a consequence of this rule.
 
 **Which PRs name a dependency.** Only the ticket whose work *required* that library change — the two
 halves of one delivery. A ticket using API that already existed names nothing, however heavily it
