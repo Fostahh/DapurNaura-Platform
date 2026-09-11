@@ -199,6 +199,7 @@ reading it:
 | [DN-042](DN-042-technical-documentation-gate.md) | The doc sweep is a list of remembered places rather than an enumeration, and it is not a gate | `done` | docs |
 | [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `done` | ui |
 | [DN-044](DN-044-technical-strip-prose-comments.md) | Strip prose comments, and restore Xcode's header template across every file | `done` | ios |
+| [DN-045](DN-045-technical-done-without-a-pr.md) | A ticket with no PR can never be marked done, because the rule only names a merged PR | `in-review` | docs |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -310,6 +311,18 @@ file is` summary, which is the same failure one level up — a description writt
 keeps true. Dates are each file's real creation date, recovered from history rather than invented.
 **Headers were corrected inside `Components/` too**, since that exclusion was about comments.
 **It must be committed after DN-043**, whose working tree it shares.
+
+**DN-045 is DN-042's own closure failing.** DN-042 made the doc sweep a gate; it then sat at
+`in-review` for a month with its work merged since `4755790`, because the rule that closes a ticket
+names a **merged PR** and the umbrella takes none by policy. The condition could never be met, so the
+ticket had no reachable end state — and a stuck ticket looks exactly like one still under review,
+which is why 44 tickets passed before anyone asked.
+
+Three earlier umbrella tickets missed it by luck: **DN-029** had a real PR back when the umbrella took
+them, **DN-034** rode DN-033's iOS PR, and **DN-010** was closed with the box left unticked. The fix
+is one clause in four places — where there is no PR, the owner confirming the merge closes it — plus a
+`## Done when` variant so the next umbrella-only ticket writes a checklist it can finish. **The agent
+gains no authority: the owner's word is still the trigger.**
 
 **A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
 is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by
@@ -428,7 +441,11 @@ Its branch is cut from `main` — the umbrella repo has no `development` — ind
 | `todo` | Written up, not started | Agent, at creation |
 | `in-progress` | Being implemented | Agent |
 | `in-review` | Implemented, data-layer tests green, awaiting review | Agent |
-| `done` | PR merged | Agent, **only after the owner says the PR is approved and merged** |
+| `done` | PR merged, **or the branch merged where there is no PR** | Agent, **only after the owner says so** |
+
+**A ticket with no PR is closed by the owner confirming the merge** (DN-045). Umbrella-only work
+has no pull request — the umbrella takes none by policy — so the PR condition can never be met
+and the ticket would otherwise have no reachable end state. That is what stranded DN-042.
 
 Rejections are verbal — flip back to `in-progress` and fix. If the same feedback arrives twice,
 write it into the ticket so it survives the next session.
@@ -543,9 +560,15 @@ Docs work (the workflow standard itself):
 - [ ] Diff reviewed by the human
 - [ ] Committed, not merged
 
-Always:
+Always, and pick the line that matches where the work lives:
 - [ ] PR merged, ticket marked `done` by the human
+- [ ] **No PR — every changed file is in the umbrella, which takes none by policy**
+- [ ] **Merged into `development`, and the human confirms it** — umbrella-only tickets close on this
 ```
+
+**Use the second pair instead of the first when the ticket touches no project repo** (DN-045). The
+umbrella takes no pull requests, so a `PR merged` line there can never be ticked — DN-042 carried one
+and stalled at `in-review` for a month with its work already merged.
 
 ---
 

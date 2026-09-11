@@ -125,7 +125,8 @@ stays autonomous, because there is no instruction there to misread.
 `status: todo`** when you notice a problem; create the ticket branch; write code and tests on that
 branch; run Gradle tasks; run `publish-spm.sh` in `local` mode; move a ticket between `todo` →
 `in-progress` → `in-review`; **push a `ticket/*` branch**; **open a pull request** (DN-022);
-**mark a ticket `done` once the owner has said its PR is approved and merged** (DN-022).
+**mark a ticket `done` once the owner has said its PR is approved and merged — or, where there is
+no PR, that the branch is merged** (DN-022, DN-045).
 
 **Stop and wait for the human** — **acting on a request before the owner has confirmed your
 restatement of it** (see Language above); **starting** a technical ticket you filed yourself (filing
