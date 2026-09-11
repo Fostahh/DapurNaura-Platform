@@ -76,6 +76,8 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-035](DN-035-product-offline-class-schedule-data.md) | Data layer — the offline class schedule, its date window and its availability rule | `done` | data |
 | [DN-036](DN-036-product-offline-class-schedule-ui.md) | iOS — the offline class schedule, with collapsible month sections and a materials sheet | `done` | ui |
 | [DN-040](DN-040-product-login-screen.md) | iOS — the login screen, a reusable toast, and a hex colour palette | `done` | ui |
+| [DN-047](DN-047-product-payment-destinations-data.md) | Data layer — the bank accounts a class is paid into | `todo` | data |
+| [DN-048](DN-048-product-payment-flow-ui.md) | iOS — choosing a bank account and sending proof of payment | `todo` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -200,6 +202,7 @@ reading it:
 | [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `done` | ui |
 | [DN-044](DN-044-technical-strip-prose-comments.md) | Strip prose comments, and restore Xcode's header template across every file | `done` | ios |
 | [DN-045](DN-045-technical-done-without-a-pr.md) | A ticket with no PR can never be marked done, because the rule only names a merged PR | `done` | docs |
+| [DN-046](DN-046-technical-camera-usage-description.md) | The app has no camera usage description, and opening the camera without one terminates it | `todo` | ios |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -323,6 +326,28 @@ them, **DN-034** rode DN-033's iOS PR, and **DN-010** was closed with the box le
 is one clause in four places — where there is no PR, the owner confirming the merge closes it — plus a
 `## Done when` variant so the next umbrella-only ticket writes a checklist it can finish. **The agent
 gains no authority: the owner's word is still the trigger.**
+
+**DN-046, DN-047 and DN-048 are the payment flow**, from
+[`../requirements/2026-09-11-payment-flow.md`](../requirements/2026-09-11-payment-flow.md) — the
+first work against the purchase gap the owner deferred on 2026-08-06, and the first requirement
+drafted through a visual mockup before a word of it was written. Four things are worth knowing before
+reading any of them:
+
+- **Nothing is sent anywhere.** Owner's instruction: the send button makes no API call yet, it pops
+  back. The class therefore still reads *Belum Dibeli* afterwards, and **the tickets forbid faking a
+  status to hide that.** A toast tells the user their proof was taken; that is all.
+- **The bank accounts live in DNLibrary, against the agent's recommendation.** The agent argued for
+  Swift constants on §4's "no structure without a caller"; the owner overruled it because Android may
+  come before the backend, and a Swift constant would then have to be written twice. **The owner's
+  reasoning was better and DN-047 records why.**
+- **Colour and logo stay in Swift** (DN-026's rule — a colour is view context), so the library models
+  the bank as an enum rather than a display string. The consequence is stated rather than
+  discovered: a third bank needs an app release either way, because its logo is an asset.
+- **DN-046 is split out for DN-039's reason.** A pull request titled *the payment flow* must not
+  quietly add a camera permission to all four build variants.
+
+**Order: DN-046, then DN-047 — published and repinned — then DN-048.** DN-048 calls API that no
+released library version carries, so it cannot start until DN-047 ships.
 
 **A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
 is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by
