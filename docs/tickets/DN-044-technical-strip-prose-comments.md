@@ -5,6 +5,8 @@ title: Strip prose comments, and restore Xcode's header template across every fi
 status: in-review
 source: —
 branch: ticket/DN-044-strip-prose-comments
+commit: 959780c
+pr: https://github.com/Fostahh/DapurNaura-iOS/pull/23
 layer: ios
 ---
 
@@ -182,23 +184,23 @@ change behaviour, and the build is the whole gate here.
 - [x] `xcodebuild … build` reports `** BUILD SUCCEEDED **` (DN-034), 2026-09-11
 - [x] `swiftlint lint` reports 0 violations, 2026-09-11
 - [x] The tripwires recorded above, with where each rule still lives
-- [ ] Owner has reviewed the diff
-- [ ] Committed, not merged
-- [ ] PR opened
+- [x] Owner has reviewed the diff — approved 2026-09-11
+- [x] Committed, not merged — iOS `959780c`, umbrella `09fb9e5`
+- [x] PR opened — [DapurNaura-iOS#23](https://github.com/Fostahh/DapurNaura-iOS/pull/23), stacked on #22
 - [ ] PR merged
 
 ## Blocked
 
-**Not blocked on anything technical. Blocked on DN-043's commit, for a mechanical reason.**
+~~**Blocked on DN-043's commit.**~~ **Cleared 2026-09-11.**
 
 DN-043 is still uncommitted — the owner has not yet verified its transition on the running app — and
 both sets of changes therefore share one working tree. Roughly 31 of the 35 stripped files are also
 renamed or edited by DN-043, so a clean two-commit split is not available by staging alone.
 
-**The resolution is cheap because the strip is reproducible.** Once DN-043 is verified and committed,
-re-running the script on a branch cut from it produces DN-044's diff in seconds. The alternative —
-one commit carrying both — was offered and declined: the owner chose two tickets so that DN-043's
-navigation change stays reviewable.
+**It resolved without reproducing anything.** The index still held the moved files at their *original*
+content, so DN-043 committed as 34 genuine renames and the strip fell out cleanly as this ticket's own
+commit. No intermediate state had to be fabricated, and DN-043's commit was built in isolation to
+confirm it stands alone. **Merge #22 before #23.**
 
 ## Notes
 
