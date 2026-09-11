@@ -5,6 +5,8 @@ title: The login transition never animates, because the flag it animates lives o
 status: in-review
 source: —
 branch: ticket/DN-043-root-view-transition
+commit: 5c03cca
+pr: https://github.com/Fostahh/DapurNaura-iOS/pull/22
 layer: ios
 ---
 
@@ -255,9 +257,9 @@ it simply does nothing when tapped:
 - [x] `project.pbxproj` carries no local package reference — and is not modified at all
 - [x] Documentation sweep (DN-042) — enumerated with `git ls-files '*.md'` in both repositories,
       five documents corrected, 2026-09-11 — re-applied after DN-041 merged, then again after the restructure
-- [ ] Owner has verified the transition on the running app
-- [ ] Committed, not merged
-- [ ] PR opened
+- [x] Owner has verified the transition on the running app — approved 2026-09-11
+- [x] Committed, not merged — iOS `5c03cca`, umbrella `92c9a9d`
+- [x] PR opened — [DapurNaura-iOS#22](https://github.com/Fostahh/DapurNaura-iOS/pull/22); the umbrella takes none by policy
 - [ ] PR merged
 
 ## The restructure, and the migrating stack it exposed
