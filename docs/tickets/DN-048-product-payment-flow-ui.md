@@ -2,11 +2,12 @@
 id: DN-048
 type: product
 title: iOS — choosing a bank account and sending proof of payment
-status: in-review
+status: done
 source: ../requirements/2026-09-11-payment-flow.md
 branch: ticket/DN-048-payment-flow-ui
 commit: bb5c67e
 pr: https://github.com/Fostahh/DapurNaura-iOS/pull/26
+merge-commit: cf719dc
 layer: ui
 ---
 
@@ -301,7 +302,7 @@ correct build as broken; nothing records a payment, so nothing may claim one was
 - [x] Diff reviewed by the owner — approved 2026-09-12, after the toast alignment and height rounds
 - [x] Committed — iOS `bb5c67e`, umbrella `b7fc3ff`
 - [x] PR opened — [DapurNaura-iOS#26](https://github.com/Fostahh/DapurNaura-iOS/pull/26); the umbrella takes none by policy
-- [ ] PR merged
+- [x] PR merged — [DapurNaura-iOS#26](https://github.com/Fostahh/DapurNaura-iOS/pull/26), merge commit `cf719dc`, owner confirmed 2026-09-12
 
 ## What the sweep found
 
