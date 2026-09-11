@@ -2,9 +2,10 @@
 id: DN-042
 type: technical
 title: The doc sweep is a list of remembered places rather than an enumeration, and it is not a gate
-status: in-review
+status: done
 source: —
 branch: ticket/DN-042-documentation-gate
+merge-commit: 4755790
 layer: docs
 ---
 
@@ -134,10 +135,12 @@ Not code. What the owner is asked to check in the diff:
 - [x] All four `## Done when` templates in `docs/tickets/README.md` carry the line
 - [x] The four documents agree with each other
 - [x] Ticket index regenerated
-- [ ] Diff reviewed by the owner
-- [x] Committed, not merged
+- [x] Diff reviewed by the owner
+- [x] Committed — `9254f0a`
 - [x] No PR — every changed file is in the umbrella, which takes none by policy
-- [ ] Ticket marked `done` by the owner
+- [x] Merged into `development` by the owner — `4755790`, 2026-08-11
+- [x] Ticket marked `done` by the owner — 2026-09-11, on the grounds that the gate has since
+      held: DN-043 and DN-044 each ran the enumeration and corrected five documents between them
 
 ## Notes
 
