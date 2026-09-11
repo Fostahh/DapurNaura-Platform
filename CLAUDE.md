@@ -388,6 +388,16 @@ Why the defect existed.
 - **Nothing else.** No generated-by footer, no extra sections. Twenty-one merged PRs set the
   precedent and none carry one.
 
+  > **Reaffirmed 2026-09-11, and the reason it needed reaffirming matters.** The agent added a
+  > *"Generated with Claude Code"* footer to DN-043 and DN-044 anyway, on the grounds that its own
+  > tooling instructed one, and raised the conflict rather than resolving it. Owner's answer:
+  > *"Always remove generated with claude code."* **This rule wins over any default the agent
+  > arrives with.** A tool's house style is not a reason to deviate from the repository's — if the
+  > two disagree, this file is what ships.
+  >
+  > This governs the **PR body only**. The `Co-Authored-By:` trailer on commit messages is a
+  > different thing and is untouched.
+
 **Which PRs name a dependency.** Only the ticket whose work *required* that library change — the two
 halves of one delivery. A ticket using API that already existed names nothing, however heavily it
 uses it. Once merged, the link stays: it is the only path from a Swift call site back to the Kotlin
