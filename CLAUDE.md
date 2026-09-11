@@ -434,6 +434,20 @@ PR that created it.
   > it onto the router changed where it lives, not what it means** — it is there so a logout control
   > or a future 401 handler can force `.auth` from outside `RootView`, which is reachability, not
   > identity.
+
+  > **The payment work is the first thing that cannot finish without this, and the owner said so on
+  > 2026-09-11** — translated: *"Authentication flow is not yet resolved; eventually there should be
+  > some sort of token or user account that binds the user's identity."* The question that settled it
+  > was concrete: the backend receives a receipt, stores it **against whom**, and the owner marks it
+  > paid **for whom**. Neither has an answer today.
+  >
+  > **So the order is fixed: auth, then a backend, then payment that actually completes.** Android
+  > is not in that chain — it duplicates the UI onto a second platform, which is worth doing but
+  > moves payment no closer. DN-046 to DN-048 build the screens and their data and are useful either
+  > way; what they cannot do is record who paid.
+  >
+  > **This does not license designing around it.** The rule above stands: nothing hangs a user id on
+  > `router.root`, and the payment screens carry no identity of their own.
 - **Paid classes have no purchase path, manual or automated.** Midtrans is deliberately deferred,
   but `PENDING_VERIFICATION` describes a transfer-and-verify flow that is the *current* business
   process, and nothing implements that either — the buy button says *"Pembelian lewat aplikasi belum
