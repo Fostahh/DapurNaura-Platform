@@ -1,0 +1,14 @@
+{
+  "paymentDestinations": [
+    {
+      "bank": "MANDIRI",
+      "accountNumber": "1370012345678",
+      "accountHolderName": "Dapur Naura"
+    },
+    {
+      "bank": "BSI",
+      "accountNumber": "7201234567",
+      "accountHolderName": "Dapur Naura"
+    }
+  ]
+}

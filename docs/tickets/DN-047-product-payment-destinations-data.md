@@ -2,9 +2,12 @@
 id: DN-047
 type: product
 title: Data layer — the bank accounts a class is paid into
-status: todo
+status: done
 source: ../requirements/2026-09-11-payment-flow.md
 branch: ticket/DN-047-payment-destinations-data
+commit: 08119f4
+pr: https://github.com/Fostahh/DNLibrary/pull/21
+merge-commit: f5835c1
 layer: data
 ---
 
@@ -91,13 +94,26 @@ formatting of the account number. All four are the app's, per §10 and DN-026's 
 ### The use case
 
 ```kotlin
-public class GetPaymentDestinationsUseCase {
-    public suspend fun invoke(): DNResult<List<PaymentDestination>>
+public sealed interface PaymentDestinationsResult {
+    public data class Success(val destinations: List<PaymentDestination>) : PaymentDestinationsResult
+    public data class Failure(val error: DNError) : PaymentDestinationsResult
+}
+
+public class GetPaymentDestinationsUseCase internal constructor(
+    private val repository: IPaymentRepository
+) {
+    public suspend operator fun invoke(): PaymentDestinationsResult
 }
 ```
 
-Same sealed-result shape as every other use case; nothing throws across the boundary. Entered through
-`DNDataLayer` like the rest.
+**Corrected while reading the code, 2026-09-11.** This ticket first wrote the return type as
+`DNResult<List<PaymentDestination>>`. **There is no such type and there must not be** —
+CODEBASE-STANDARD §2 keeps generics out of the public API because they are the roughest corner of
+Swift interop, so every use case declares its own concrete sealed result. `OfflineClassScheduleResult`
+is the shape to copy. Nothing throws across the boundary either way.
+
+Entered through `DNDataLayer` like the rest, and the repository is `internal` so the constructor
+cannot be called from outside.
 
 **Order is the server's and is preserved.** The requirement draws Mandiri first and BSI second; the
 list arrives in that order and the app does not sort it.
@@ -146,19 +162,38 @@ content change to the fixture and, later, a server concern; it is not a code cha
 
 ## Done when
 
-- [ ] `PaymentDestination`, `Bank` and the use case exist, `explicitApi()` clean
-- [ ] Reachable through `DNDataLayer`
-- [ ] `docs/contracts/payment-destinations.json` added, and described in `docs/contracts/README.md`
-- [ ] The stub replays it through the real decoding path
-- [ ] Tests written **and run** — `:sharedLogic:check` green on both platforms
-- [ ] The account number is a `String`, and a test proves a leading zero survives
-- [ ] No colour, logo or display name anywhere in the library
-- [ ] Documentation sweep (DN-042) — enumerated with `git ls-files '*.md'` in both repositories
-- [ ] Diff reviewed by the owner
-- [ ] Committed
-- [ ] PR opened
-- [ ] PR merged
-- [ ] Published, and the app repinned — **DN-048 cannot start until this is released**
+- [x] `PaymentDestination`, `Bank` and the use case exist, `explicitApi()` clean
+- [x] Reachable through `DNDataLayer` — `getPaymentDestinations`
+- [x] `docs/contracts/payment-destinations.json` added, and described in `docs/contracts/README.md`
+- [x] The stub replays it through the real decoding path
+- [x] Tests written **and run** — `:sharedLogic:check` green, **85 tests on each platform, 0 failures** (up from 77), 2026-09-11
+- [x] The account number is a `String`, and `aLeadingZeroInAnAccountNumberSurvives` proves it
+- [x] No colour, logo or display name anywhere in the library
+- [x] Documentation sweep (DN-042) — enumerated in both repositories. **Four documents corrected, three of them stale before this ticket**: see *What the sweep found*
+- [x] Diff reviewed by the owner — 2026-09-11
+- [x] Committed — DNLibrary `08119f4`, umbrella `447d84f`
+- [x] PR opened — [DNLibrary#21](https://github.com/Fostahh/DNLibrary/pull/21); the umbrella takes none by policy
+- [x] PR merged — [DNLibrary#21](https://github.com/Fostahh/DNLibrary/pull/21), merge commit `f5835c1`, owner confirmed 2026-09-11
+- [ ] Published, and the app repinned — **DN-048 cannot start until this is released.** Merged 2026-09-11; the release is the owner's to trigger
+
+## What the sweep found
+
+**Three of the four documents corrected were already wrong before DN-047 touched them**, and that is
+the part worth recording:
+
+| Document | What was stale | Since |
+|---|---|---|
+| `DNLibrary/CLAUDE.md` | the `domain/model/` and `domain/usecase/` lists omitted everything DN-035 added | 2026-08-10 |
+| `DNLibrary/README.md` | *What it provides* listed neither the offline schedule nor recipes | 2026-08-10 |
+| `DNLibrary/README.md` | described `@Ignore`d Keychain tests in `src/iosTest/` — **that folder has not existed since DN-031** | 2026-08-08 |
+| `docs/contracts/README.md` | the endpoint table never listed `offline-classes.json` | 2026-08-10 |
+
+**Corrected in full rather than only where DN-047 touched them**, for DN-041's reason: a reader
+meeting a half-stale list cannot tell which half, and the natural inference is the wrong one.
+
+**An incomplete inventory reads exactly like a complete one**, which is why a month passed without
+anyone seeing it. The lists now say the folder is the source of truth, in the same move DN-041 made
+when it removed screen counts.
 
 ## Notes
 

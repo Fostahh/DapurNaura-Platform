@@ -31,6 +31,19 @@ approved, and this will change repeatedly while the UI takes shape.
 | `GET /classes` | list of cooking classes; `?category=` narrows it to one category | `classes.json` |
 | `GET /classes/{id}` | one class + its recipes | `class-detail-purchased.json` / `class-detail-pending.json` / `class-detail-locked.json` |
 | `GET /recipes/{id}` | one recipe in full | `recipe.json` |
+| `GET /offline-classes` | every scheduled in-person class, unnarrowed — the window is the client's rule (DN-035) | `offline-classes.json` |
+| `GET /payment-destinations` | the bank accounts a class is paid into; no parameters (DN-047) | `payment-destinations.json` |
+
+> **`offline-classes.json` was added by DN-035 and never listed here** — found and corrected during
+> DN-047's sweep. The table is the index; a fixture missing from it is a fixture nobody knows to
+> keep in step with the code.
+
+**On `payment-destinations.json`:** the accounts are the business's, identical for every class and
+every buyer, so the endpoint takes no parameters. **The numbers are dummy** by the owner's
+instruction (requirement 2026-09-11) and follow each bank's real shape — Mandiri 13 digits, BSI 10.
+Replacing them with the real accounts is a change to this file, not to any code. `bank` is a closed
+set on the wire (`MANDIRI`, `BSI`): an unrecognised value fails the payload, because a bank the app
+has no colour or logo for cannot be drawn at all.
 
 ## The rule that makes payment tamper-proof
 
