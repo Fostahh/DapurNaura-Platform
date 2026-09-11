@@ -2,7 +2,7 @@
 id: DN-046
 type: technical
 title: The app has no camera usage description, and opening the camera without one terminates it
-status: todo
+status: in-review
 source: —
 branch: ticket/DN-046-camera-usage-description
 layer: ios
@@ -106,14 +106,14 @@ That is expected, and it is why this ticket ships ahead of the screen rather tha
 
 ## Done when
 
-- [ ] All four app-target configurations carry `INFOPLIST_KEY_NSCameraUsageDescription`
-- [ ] The string is Bahasa Indonesia and states the purpose
-- [ ] The test targets are untouched
-- [ ] No Swift file changed
-- [ ] `-showBuildSettings` verified for all four, and the built `Info.plist` inspected
-- [ ] `xcodebuild … build` reports `** BUILD SUCCEEDED **` (DN-034)
-- [ ] `project.pbxproj` carries no local package reference
-- [ ] Documentation sweep (DN-042) — enumerated with `git ls-files '*.md'`
+- [x] All four app-target configurations carry `INFOPLIST_KEY_NSCameraUsageDescription` — Development, Alpha, Beta, Release
+- [x] The string is Bahasa Indonesia and states the purpose
+- [x] The test targets are untouched — the four blocks were located by `INFOPLIST_KEY_UIApplicationSceneManifest_Generation`, which only the app target carries (`GENERATE_INFOPLIST_FILE` appears 12 times and would have hit them)
+- [x] No Swift file changed
+- [x] `-showBuildSettings` verified for all four configurations, and the built `Info.plist` inspected with `plutil` — the key ships, and **no other `UsageDescription` is present**
+- [x] `xcodebuild … build` reports `** BUILD SUCCEEDED **` (DN-034) — `DapurNaura Dev`, simulator `4C82AD15-1365-4200-977C-C5DF10E11B1B`, 2026-09-11
+- [x] `project.pbxproj` carries no local package reference
+- [x] Documentation sweep (DN-042) — enumerated in both repositories. **Nothing was false**; `ios/DapurNaura/CLAUDE.md` gained a *Permissions* note instead, recording that this is the only one and that `NSPhotoLibraryUsageDescription` must not be added
 - [ ] Diff reviewed by the owner
 - [ ] Committed
 - [ ] PR opened
