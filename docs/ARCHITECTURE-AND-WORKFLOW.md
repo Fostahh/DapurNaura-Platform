@@ -279,7 +279,12 @@ if it drifts from the files, the files win).
 | `todo` | Written from a requirement, not started | Agent, at creation |
 | `in-progress` | Being implemented | Agent |
 | `in-review` | Implemented, data-layer tests green, awaiting human review | Agent |
-| `done` | PR merged | Agent — **only once the human says the PR is approved and merged** (DN-022) |
+| `done` | PR merged, **or the branch merged where there is no PR** | Agent — **only once the human says so** (DN-022, DN-045) |
+
+Where a ticket produces **no pull request** — every changed file in the umbrella, which takes
+none by policy — **the owner confirming the branch is merged closes it instead** (DN-045). The
+owner's word stays the trigger either way; the agent never infers `done` from a merge commit, a
+green page or its own judgement.
 
 **`done` is the human's decision, set by the agent's hand.** The agent never infers it from a green
 PR page or from the merge appearing on GitHub; the owner saying so is what authorises it.
@@ -434,6 +439,11 @@ Neither layer applies — the `publish-spm.sh` preflight fix is the worked examp
 ### The ticket
 
 Done when the **PR is merged**, marked manually by the human.
+
+**Where there is no PR, the owner confirming the branch is merged closes it** (DN-045). The
+umbrella takes no pull requests by policy, so a ticket whose every changed file lives there has
+none to wait on — **DN-042 sat at `in-review` for a month** with its work already merged,
+because the rule named only a PR and it did not have one.
 
 ### Why tests are not optional in the data layer
 
