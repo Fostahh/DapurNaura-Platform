@@ -46,9 +46,11 @@ consumed in-app, App Store Guideline 3.1.1 does not force In-App Purchase.
 > runs on `DNDataLayer.stub()`), no signed-in user, and no purchase path. Android does not exist.
 >
 > **DN-040 put a login screen in front of all of it, and it changes none of the three.** It
-> authenticates nobody: any email and any password get in, the only gate is that both boxes are
-> filled, and the flag behind it is called `hasPassedLogin` rather than `isLoggedIn` precisely so
-> nothing later mistakes it for a session. **Do not wire anything to it.**
+> authenticates nobody: any email and any password get in, and the only gate is that both boxes are
+> filled. What sits behind it is `router.root`, a `RootRoute` of `.auth` / `.main` naming **which
+> screens are on show and nothing about who is using them** — DN-043 replaced DN-040's
+> `hasPassedLogin` boolean with it, and kept the caution the old name carried. **Do not wire
+> anything to it.**
 >
 > **For current state — which tickets are `done`, which library version is published, what is in
 > flight — read [`docs/tickets/README.md`](docs/tickets/README.md) and `git log`. Do not restate it
@@ -402,9 +404,12 @@ PR that created it.
   decision, 2026-08-06: deferred, to be ticketed later.** Do not design around it in the meantime —
   and when it does land, DN-001's AES-GCM Keystore implementation is in git history rather than gone.
 
-  > **The screen makes this gap easier to miss, not smaller.** `hasPassedLogin` is a `@State`
-  > boolean at the composition root meaning *this launch has been past a screen*. It is not a
-  > session, it survives nothing, and it must not become the thing a user id is hung on.
+  > **The screen makes this gap easier to miss, not smaller.** `router.root` (DN-043, replacing
+  > DN-040's `hasPassedLogin`) is a two-case `RootRoute` meaning *which flow is on screen*. It is not
+  > a session, it is not persisted, and it must not become the thing a user id is hung on. **Moving
+  > it onto the router changed where it lives, not what it means** — it is there so a logout control
+  > or a future 401 handler can force `.auth` from outside `RootView`, which is reachability, not
+  > identity.
 - **Paid classes have no purchase path, manual or automated.** Midtrans is deliberately deferred,
   but `PENDING_VERIFICATION` describes a transfer-and-verify flow that is the *current* business
   process, and nothing implements that either — the buy button says *"Pembelian lewat aplikasi belum

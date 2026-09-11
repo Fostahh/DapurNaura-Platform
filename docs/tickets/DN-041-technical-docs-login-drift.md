@@ -2,11 +2,12 @@
 id: DN-041
 type: technical
 title: The workspace documents say there is no login screen, and that the recipe screen is a placeholder
-status: in-review
+status: done
 source: —
 branch: ticket/DN-041-docs-login-drift
 commit: 7fd6da5, 3ffb06a
 pr: https://github.com/Fostahh/DapurNaura-iOS/pull/21
+merge-commit: cc88dec
 layer: docs
 ---
 
@@ -133,10 +134,10 @@ Not code. What the owner is asked to check in the diff:
 - [x] **All eleven tracked `.md` files enumerated and read**, not grepped
 - [x] The six corrected documents agree with each other and with DN-040
 - [x] Ticket index regenerated
-- [ ] Diff reviewed by the owner
+- [x] Diff reviewed by the owner
 - [x] Committed, not merged — iOS `7fd6da5` and `3ffb06a`; the umbrella half is in this branch
 - [x] iOS PR opened — [DapurNaura-iOS#21](https://github.com/Fostahh/DapurNaura-iOS/pull/21); the umbrella takes none by policy
-- [ ] PR merged, ticket marked `done` by the owner
+- [x] PR merged — [DapurNaura-iOS#21](https://github.com/Fostahh/DapurNaura-iOS/pull/21), merge commit `cc88dec`; owner confirmed 2026-09-11
 
 ## Notes
 
