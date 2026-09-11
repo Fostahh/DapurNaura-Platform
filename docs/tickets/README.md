@@ -77,7 +77,7 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-036](DN-036-product-offline-class-schedule-ui.md) | iOS — the offline class schedule, with collapsible month sections and a materials sheet | `done` | ui |
 | [DN-040](DN-040-product-login-screen.md) | iOS — the login screen, a reusable toast, and a hex colour palette | `done` | ui |
 | [DN-047](DN-047-product-payment-destinations-data.md) | Data layer — the bank accounts a class is paid into | `done` | data |
-| [DN-048](DN-048-product-payment-flow-ui.md) | iOS — choosing a bank account and sending proof of payment | `todo` | ui |
+| [DN-048](DN-048-product-payment-flow-ui.md) | iOS — choosing a bank account and sending proof of payment | `done` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
 documents are deliberately deferred and should be backfilled when the requirements path is
@@ -162,8 +162,9 @@ reading it:
   white-on-white in dark mode.
 - **It is the first screen in the app to take keyboard input.** Focus, field styling, autofill and
   keyboard avoidance have no precedent here.
-- **The toast is reusable with three kinds and only one caller**, the same shape `NoticeSheet` took
-  in DN-033 — the owner asked for reuse and named two kinds this screen cannot show.
+- **The toast is reusable with three kinds and, at the time, one caller** — the same shape
+  `NoticeSheet` took in DN-033, because the owner asked for reuse and named two kinds this screen
+  cannot show. *DN-048 finally gave it the other two kinds.*
 
 ### Technical
 

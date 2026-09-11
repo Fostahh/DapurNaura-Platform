@@ -68,7 +68,8 @@ and the recipe screen the product actually sells — on `@Observable` MVVM over 
   screen (DN-040) and **it authenticates nobody** — any email and any password get in, and the only
   gate is that both boxes are filled. Behind it there is no session, no user model and nowhere to
   keep a token. Deferred by the owner on 2026-08-06, to be ticketed later.
-- **No purchase path at all** — not Midtrans, and not the manual transfer-and-verify flow that
+- **Screens for paying, and nothing that records a payment** (DN-048). Not Midtrans, and not yet the
+  API call behind the manual transfer-and-verify flow that
   `PENDING_VERIFICATION` describes and that is the *current* business process. Also deferred.
 
 Android has not been created.
