@@ -373,6 +373,12 @@ Why the defect existed.
   substance, including caveats and design decisions.** Do not append essay paragraphs after them;
   a point worth making is worth a bullet. A short `Verified:` line and `Version bump implied:` close
   it where they apply.
+
+  > **Short and on point. Owner's rule, 2026-09-11**, after DN-043's and DN-044's descriptions had
+  > to be cut back. **One line per bullet, and no bullet that restates the diff.** The ticket is
+  > where reasoning belongs and it is already written; a PR body is what a reviewer reads before
+  > looking at the code, not a second copy of the ticket. If a bullet needs a second sentence to
+  > make sense, the sentence belongs in the ticket and the bullet should link to it.
 - **`### Evidence`** — screenshots or the `| Device | Result |` table, when there are any. Omitted
   otherwise; the owner may add it by hand afterwards.
 - **`### Dependencies` is a link, nothing more.** Owner's instruction: *"Just put a reference link
