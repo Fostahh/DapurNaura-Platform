@@ -5,6 +5,8 @@ title: The app has no camera usage description, and opening the camera without o
 status: in-review
 source: —
 branch: ticket/DN-046-camera-usage-description
+commit: fcebaa9
+pr: https://github.com/Fostahh/DapurNaura-iOS/pull/24
 layer: ios
 ---
 
@@ -114,9 +116,9 @@ That is expected, and it is why this ticket ships ahead of the screen rather tha
 - [x] `xcodebuild … build` reports `** BUILD SUCCEEDED **` (DN-034) — `DapurNaura Dev`, simulator `4C82AD15-1365-4200-977C-C5DF10E11B1B`, 2026-09-11
 - [x] `project.pbxproj` carries no local package reference
 - [x] Documentation sweep (DN-042) — enumerated in both repositories. **Nothing was false**; `ios/DapurNaura/CLAUDE.md` gained a *Permissions* note instead, recording that this is the only one and that `NSPhotoLibraryUsageDescription` must not be added
-- [ ] Diff reviewed by the owner
-- [ ] Committed
-- [ ] PR opened
+- [x] Diff reviewed by the owner — LGTM, 2026-09-11
+- [x] Committed — iOS `fcebaa9`, umbrella `9bb9825`
+- [x] PR opened — [DapurNaura-iOS#24](https://github.com/Fostahh/DapurNaura-iOS/pull/24); the umbrella takes none by policy
 - [ ] PR merged
 
 ## Notes
