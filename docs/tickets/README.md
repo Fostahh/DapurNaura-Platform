@@ -398,6 +398,21 @@ stay valid, and every downstream branch stayed correctly based, so none needed r
 would rewrite `development`, orphan every branch above it, and turn ~20 recorded SHAs into dead
 references. See [DN-022](DN-022-technical-agent-opens-prs.md).
 
+> **Always `--no-ff`. A fast-forward is not a merge commit either.** Owner's rule, 2026-09-11, added
+> after a fast-forward happened on the umbrella and nothing in the rules forbade it — the sentence
+> above was written against *squash*, back when branches were stacked and a fast-forward was not
+> even possible. It is the same shape of gap DN-045 closed: the rule named one thing and reality had
+> three.
+>
+> **The reason is that ticket branches are deleted after merging**, so the merge commit is the only
+> surviving record that a set of commits was one unit of work — cut together, reviewed together,
+> landed together. A fast-forward loses that boundary permanently, and the `DN-XXX` prefixes do not
+> recover it: `13aa4e0` is prefixed DN-046 and carries three tickets.
+>
+> It also keeps the umbrella reading like the other three repositories, where GitHub writes a merge
+> commit for every PR — and it makes `git log --merges` an accurate list of what has landed.
+> `git log --first-parent` gives the linear view when that is what you want.
+
 **Work the lowest open id first.** Owner's instruction, 2026-08-06: tickets are reviewed and executed
 in ascending order, and a higher id must not run ahead of a lower one. DN-016 already did — see
 below — and that is the exception the rule exists to prevent, not a precedent.
