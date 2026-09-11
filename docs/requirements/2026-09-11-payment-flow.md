@@ -4,6 +4,10 @@ date: 2026-09-11
 author: owner
 drafted-by: agent
 approved: 2026-09-11
+# The "bank's logo, in a white chip" bullet and the whole "The bank logos" section are SUPERSEDED.
+# On 2026-09-12 the owner removed the placeholder: there is no logo and no chip holding space for
+# one. The bank is identified by its name in text. The prose below is left exactly as approved.
+corrected-by: DN-048
 ---
 
 # Paying for a class by bank transfer

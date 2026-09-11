@@ -43,7 +43,8 @@ consumed in-app, App Store Guideline 3.1.1 does not force In-App Purchase.
 > *Versioning*.
 >
 > **Three things the domain assumes and nothing provides**, all deliberate: no backend (everything
-> runs on `DNDataLayer.stub()`), no signed-in user, and no purchase path. Android does not exist.
+> runs on `DNDataLayer.stub()`), no signed-in user, and **no way to record a payment** — DN-048
+> built the screens, nothing behind them. Android does not exist.
 >
 > **DN-040 put a login screen in front of all of it, and it changes none of the three.** It
 > authenticates nobody: any email and any password get in, and the only gate is that both boxes are
@@ -448,10 +449,21 @@ PR that created it.
   >
   > **This does not license designing around it.** The rule above stands: nothing hangs a user id on
   > `router.root`, and the payment screens carry no identity of their own.
-- **Paid classes have no purchase path, manual or automated.** Midtrans is deliberately deferred,
-  but `PENDING_VERIFICATION` describes a transfer-and-verify flow that is the *current* business
-  process, and nothing implements that either — the buy button says *"Pembelian lewat aplikasi belum
-  tersedia."* **Owner's decision, 2026-08-06: deferred, to be ticketed later.**
+- **Paid classes have screens for paying and no way to record a payment.** DN-048 built the
+  transfer-and-verify flow the business already runs: the buy button opens a choice of bank accounts,
+  copying one moves to an upload screen, and sending proof returns to the class. **What it cannot do
+  is record anything** — there is no API call, so the class still reads *Belum Dibeli* afterwards and
+  a toast is what tells the user their proof was taken. That gap is the owner's instruction of
+  2026-09-11, not an oversight, and **the screens must not fake a status to hide it.**
+
+  **Midtrans stays deferred.** `PENDING_VERIFICATION` describes the transfer-and-verify flow DN-048
+  now draws; an automated gateway is a separate decision. **Owner's decision, 2026-08-06, unchanged.**
+
+  > *"Pembelian lewat aplikasi belum tersedia."* did not disappear — **it moved.** The class detail's
+  > buy button opens the payment flow now; the **offline** schedule's button still answers with that
+  > line. The requirement of 2026-09-11 says nothing about offline classes, so DN-048 did not touch
+  > them, and the two buy buttons now behave differently. **Whether offline classes get the same flow
+  > is the owner's call, not an oversight to fix quietly.**
 - ~~**`docs/requirements/2026-08-06-recipe-detail.md` is approved and unticketed.**~~ **Cleared
   2026-08-08 by DN-020 and DN-021** — the recipe is modelled as a list of components and the screen
   is real. The requirement carries `corrected-by:` pointers because its description of the ingredient

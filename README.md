@@ -26,13 +26,17 @@ Guideline 3.1.1 does not force In-App Purchase.
 
 The app runs against **stub data** and covers the domain end to end: login (DN-040), the Kelas
 Online / Kelas Offline choice it opens onto (DN-033), the class list with its category filter
-(DN-009, DN-025), the class detail (DN-012), the recipe screen the product actually sells (DN-021)
-and the offline class schedule (DN-036).
+(DN-009, DN-025), the class detail (DN-012), the recipe screen the product actually sells (DN-021),
+the offline class schedule (DN-036) and the payment flow (DN-048).
 
-**What is missing is everything behind them.** There is no backend, no payment path of any kind, and
-**no signed-in user — the login screen checks nothing.** Any email and any password get in; no
-credential is verified, no session is kept, and nothing survives a relaunch. Android has not been
-created.
+**What is missing is everything behind them.** There is no backend. **Payment has screens and no way
+to record a payment** — DN-048 built the bank accounts and the proof upload, but nothing is sent, so a
+class still reads *Belum Dibeli* afterwards. And there is **no signed-in user — the login screen
+checks nothing.** Any email and any password get in; no credential is verified, no session is kept,
+and nothing survives a relaunch. Android has not been created.
+
+*Those two gaps are one gap.* A payment cannot be recorded until something identifies who paid, which
+is why the order is auth, then a backend, then payment that completes.
 
 *The list above names tickets rather than a count, deliberately — a number here goes stale on the
 next merge and nothing forces anyone to notice. For current state, read

@@ -174,7 +174,12 @@ content change to the fixture and, later, a server concern; it is not a code cha
 - [x] Committed — DNLibrary `08119f4`, umbrella `447d84f`
 - [x] PR opened — [DNLibrary#21](https://github.com/Fostahh/DNLibrary/pull/21); the umbrella takes none by policy
 - [x] PR merged — [DNLibrary#21](https://github.com/Fostahh/DNLibrary/pull/21), merge commit `f5835c1`, owner confirmed 2026-09-11
-- [ ] Published, and the app repinned — **DN-048 cannot start until this is released.** Merged 2026-09-11; the release is the owner's to trigger
+- [x] Published, and the app repinned — **`0.9.0`**, tag `dab47fc`, released 2026-09-11.
+      App repinned and merged as [DapurNaura-iOS#25](https://github.com/Fostahh/DapurNaura-iOS/pull/25),
+      merge commit `70f08c8`. Verified three ways rather than one (DN-037): the resolve landed on
+      `0.9.0`, its revision matches the commit the tag points at, and the resolved binary's header
+      carries `PaymentDestination`, `Bank` and `getPaymentDestinations` — so the app sees the API,
+      not just a new version number
 
 ## What the sweep found
 
