@@ -2,7 +2,7 @@
 id: DN-043
 type: technical
 title: The login transition never animates, because the flag it animates lives on an App rather than a View
-status: in-review
+status: done
 source: —
 branch: ticket/DN-043-root-view-transition
 layer: ios
@@ -258,7 +258,7 @@ it simply does nothing when tapped:
 - [ ] Owner has verified the transition on the running app
 - [ ] Committed, not merged
 - [ ] PR opened
-- [ ] PR merged
+- [x] PR merged — [DapurNaura-iOS#22](https://github.com/Fostahh/DapurNaura-iOS/pull/22), merge commit `5b1c6f2`, owner confirmed 2026-09-11
 
 ## The restructure, and the migrating stack it exposed
 

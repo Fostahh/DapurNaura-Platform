@@ -2,11 +2,12 @@
 id: DN-044
 type: technical
 title: Strip prose comments, and restore Xcode's header template across every file
-status: in-review
+status: done
 source: —
 branch: ticket/DN-044-strip-prose-comments
-commit: 959780c
+commit: d534f6c
 pr: https://github.com/Fostahh/DapurNaura-iOS/pull/23
+merge-commit: c93c17f
 layer: ios
 ---
 
@@ -187,7 +188,7 @@ change behaviour, and the build is the whole gate here.
 - [x] Owner has reviewed the diff — approved 2026-09-11
 - [x] Committed, not merged — iOS `959780c`, umbrella `09fb9e5`
 - [x] PR opened — [DapurNaura-iOS#23](https://github.com/Fostahh/DapurNaura-iOS/pull/23), stacked on #22
-- [ ] PR merged
+- [x] PR merged — [DapurNaura-iOS#23](https://github.com/Fostahh/DapurNaura-iOS/pull/23), merge commit `c93c17f`, owner confirmed 2026-09-11. **Rebased onto `5b1c6f2` on merge, landing as `d534f6c`** — content verified identical to what was reviewed
 
 ## Blocked
 

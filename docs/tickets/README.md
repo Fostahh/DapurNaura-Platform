@@ -197,8 +197,8 @@ reading it:
 | [DN-039](DN-039-technical-light-mode-portrait-lock.md) | Lock the app to light mode and portrait — the owner believes both are already enforced, and neither is | `done` | ios |
 | [DN-041](DN-041-technical-docs-login-drift.md) | The workspace documents say there is no login screen, and that the recipe screen is a placeholder | `done` | docs |
 | [DN-042](DN-042-technical-documentation-gate.md) | The doc sweep is a list of remembered places rather than an enumeration, and it is not a gate | `in-review` | docs |
-| [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `in-review` | ui |
-| [DN-044](DN-044-technical-strip-prose-comments.md) | Strip prose comments, and restore Xcode's header template across every file | `in-review` | ios |
+| [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `done` | ui |
+| [DN-044](DN-044-technical-strip-prose-comments.md) | Strip prose comments, and restore Xcode's header template across every file | `done` | ios |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
