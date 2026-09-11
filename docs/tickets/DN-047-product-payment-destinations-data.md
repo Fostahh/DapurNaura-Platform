@@ -5,6 +5,8 @@ title: Data layer — the bank accounts a class is paid into
 status: in-review
 source: ../requirements/2026-09-11-payment-flow.md
 branch: ticket/DN-047-payment-destinations-data
+commit: 08119f4
+pr: https://github.com/Fostahh/DNLibrary/pull/21
 layer: data
 ---
 
@@ -167,9 +169,9 @@ content change to the fixture and, later, a server concern; it is not a code cha
 - [x] The account number is a `String`, and `aLeadingZeroInAnAccountNumberSurvives` proves it
 - [x] No colour, logo or display name anywhere in the library
 - [x] Documentation sweep (DN-042) — enumerated in both repositories. **Four documents corrected, three of them stale before this ticket**: see *What the sweep found*
-- [ ] Diff reviewed by the owner
-- [ ] Committed
-- [ ] PR opened
+- [x] Diff reviewed by the owner — 2026-09-11
+- [x] Committed — DNLibrary `08119f4`, umbrella `447d84f`
+- [x] PR opened — [DNLibrary#21](https://github.com/Fostahh/DNLibrary/pull/21); the umbrella takes none by policy
 - [ ] PR merged
 - [ ] Published, and the app repinned — **DN-048 cannot start until this is released**
 
