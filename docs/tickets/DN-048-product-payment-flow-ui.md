@@ -93,9 +93,18 @@ What the ViewModel holds: the chosen image, the compressed bytes, and whether a 
 **The picker offers the library and the camera** (requirement). `PhotosPicker` for the library,
 which needs no permission; a camera sheet for the other, which needs DN-046.
 
-> **What happens when the camera is refused is not in the requirement and needs deciding.** The
-> honest options are to fall back to the library silently, or to say why the camera cannot open and
-> offer Settings. **Raised in `## Blocked` rather than chosen here.**
+**Refusing camera access is not a failure.** Owner's decision, 2026-09-11, translated: *"If the user
+refuses camera permission that is fine, as long as there is still the option to upload from the
+gallery. Maybe just make it informative."*
+
+So the screen says why the camera did not open and **leaves the gallery exactly where it was.** The
+user is not blocked, not sent to Settings, and not asked again — they have another way through and
+the message points at it.
+
+> **This is the first caller `ToastKind.information` has ever had.** DN-040 built three kinds because
+> the component was meant to serve the app rather than that screen, and recorded that only `.error`
+> was exercised. A refused permission is information, not an error — the user chose it — so this is
+> the kind that fits, and it stops being untested code.
 
 **Compression happens when the image is picked, in the background.** Agent's recommendation, agreed
 by the owner 2026-09-11. The preview appears immediately from the original while compression runs
@@ -168,45 +177,4 @@ What the owner is asked to check on the running app:
 | Screen two's destination line | Names the bank just copied, not the other one |
 | Pick from the library | Preview appears; send becomes available |
 | Take a photo | Camera opens **without the app closing** — the DN-046 check |
-| Refuse camera access | Whatever `## Blocked` settles |
-| Tap *Ganti* | Lets a different image be chosen |
-| Send | Returns to the class detail; toast *Bukti pembayaran terkirim. Menunggu verifikasi.* |
-| The class after sending | Still *Belum Dibeli*, still offering *Beli Kelas* — **correct, not a bug** |
-| Back from screen two | Returns to screen one; any chosen image is gone |
-| A class already bought, or awaiting verification | No *Beli Kelas* button; these screens unreachable |
-| A very large photograph | Compresses without a visible stall |
-
-## Done when
-
-- [ ] Both screens exist under `Cookings/`, following §3's layout
-- [ ] Screen one renders `GetPaymentDestinationsUseCase` with all three states, not hard-coded cards
-- [ ] Colour and logo chosen in Swift by switching on `Bank`; nothing about appearance in the library
-- [ ] Copy writes the clipboard, shows the toast, and pushes screen two with that destination
-- [ ] Library and camera both offered; camera does not terminate the app
-- [ ] Compression runs at pick time, off the main thread; the preview is immediate
-- [ ] Send pops two levels and the class detail shows the toast once
-- [ ] **No status is changed anywhere** — grep the diff for it before offering review
-- [ ] Back from screen two discards the image
-- [ ] `xcodebuild … build` reports `** BUILD SUCCEEDED **` (DN-034)
-- [ ] `swiftlint lint` reports 0 violations
-- [ ] `project.pbxproj` and `Package.resolved` carry no local package reference
-- [ ] Documentation sweep (DN-042)
-- [ ] Owner has verified the flow on the running app
-- [ ] Committed
-- [ ] PR opened, naming [DN-047's PR](../tickets/DN-047-product-payment-destinations-data.md) under `### Dependencies`
-- [ ] PR merged
-
-## Blocked
-
-**One decision is missing and it is small: what happens when the user refuses camera access.**
-
-The requirement does not cover it because the question did not come up. The options:
-
-- **Fall back to the library silently.** Simplest; the user gets a picker either way. But someone who
-  meant to photograph a paper receipt is left without an explanation.
-- **Say why, and offer Settings.** Honest and standard, and the only route back for someone who
-  refused by accident. Costs a message and a link.
-
-**The agent would take the second**, because the paper-receipt case is the whole reason the camera is
-there, and a silent fallback strands exactly the user it was added for. **The owner decides before
-this ticket starts.**
+| Refuse camera access | Whatever `
