@@ -197,7 +197,8 @@ reading it:
 | [DN-039](DN-039-technical-light-mode-portrait-lock.md) | Lock the app to light mode and portrait — the owner believes both are already enforced, and neither is | `done` | ios |
 | [DN-041](DN-041-technical-docs-login-drift.md) | The workspace documents say there is no login screen, and that the recipe screen is a placeholder | `done` | docs |
 | [DN-042](DN-042-technical-documentation-gate.md) | The doc sweep is a list of remembered places rather than an enumeration, and it is not a gate | `in-review` | docs |
-| [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `in-review` | ui |
+| [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `done` | ui |
+| [DN-044](DN-044-technical-strip-prose-comments.md) | Strip prose comments, and restore Xcode's header template across every file | `done` | ios |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -293,6 +294,22 @@ never by nesting** — and the rule for where a path lives: on the router only i
 something or be reached from outside the view that draws it. **Merge
 [DapurNaura-iOS#21](https://github.com/Fostahh/DapurNaura-iOS/pull/21) (DN-041) first** — it is the
 lower open id and corrects the same three documents.
+
+**DN-044 strips the prose comments the agent had been accumulating** — roughly a third of every
+non-component file, ~507 lines across 35 files, with `Components/` folders excluded on the owner's
+instruction. It is safe for one structural reason worth stating: this project runs Document Driven
+Development, so **every decision those comments restated already lives in the ticket that made it.**
+The comments were a second copy nothing kept in sync, which is what DN-029, DN-041 and DN-042 were
+each filed about. What is given up is proximity — the rationale no longer sits where the mistake gets
+made — so the six load-bearing warnings are catalogued in the ticket alongside the rule that still
+enforces each.
+
+It carries a second instruction given the same day: **every file header returns to Xcode's creation
+template.** Fifty-three of fifty-five had replaced the attribution line with a `DN-XXX — what this
+file is` summary, which is the same failure one level up — a description written once that nothing
+keeps true. Dates are each file's real creation date, recovered from history rather than invented.
+**Headers were corrected inside `Components/` too**, since that exclusion was about comments.
+**It must be committed after DN-043**, whose working tree it shares.
 
 **A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
 is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by

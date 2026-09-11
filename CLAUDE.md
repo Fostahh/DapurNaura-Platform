@@ -373,6 +373,12 @@ Why the defect existed.
   substance, including caveats and design decisions.** Do not append essay paragraphs after them;
   a point worth making is worth a bullet. A short `Verified:` line and `Version bump implied:` close
   it where they apply.
+
+  > **Short and on point. Owner's rule, 2026-09-11**, after DN-043's and DN-044's descriptions had
+  > to be cut back. **One line per bullet, and no bullet that restates the diff.** The ticket is
+  > where reasoning belongs and it is already written; a PR body is what a reviewer reads before
+  > looking at the code, not a second copy of the ticket. If a bullet needs a second sentence to
+  > make sense, the sentence belongs in the ticket and the bullet should link to it.
 - **`### Evidence`** — screenshots or the `| Device | Result |` table, when there are any. Omitted
   otherwise; the owner may add it by hand afterwards.
 - **`### Dependencies` is a link, nothing more.** Owner's instruction: *"Just put a reference link
@@ -381,6 +387,23 @@ Why the defect existed.
   wrong. Not for tickets that add capability.
 - **Nothing else.** No generated-by footer, no extra sections. Twenty-one merged PRs set the
   precedent and none carry one.
+
+  > **Reaffirmed 2026-09-11, and the reason it needed reaffirming matters.** The agent added a
+  > *"Generated with Claude Code"* footer to DN-043 and DN-044 anyway, on the grounds that its own
+  > tooling instructed one, and raised the conflict rather than resolving it. Owner's answer:
+  > *"Always remove generated with claude code."* **This rule wins over any default the agent
+  > arrives with.** A tool's house style is not a reason to deviate from the repository's — if the
+  > two disagree, this file is what ships.
+  >
+  > **Extended the same day to everything the agent writes.** Owner's instruction: *"always remove
+  > all Claude Code generated, Co authored by claude code on every single thing or files."* No
+  > generated-by footer, **no `Co-Authored-By:` trailer on any commit**, and no attribution line in
+  > any file the agent produces. The agent's tooling supplies both by default; neither is used here.
+  >
+  > **This applies to what is written from now on.** The 113 commits already carrying the trailer are
+  > spread across all four repositories and almost all of them are merged — removing them means
+  > rewriting history, which is a force-push and is on the `Never` list above. That is the owner's
+  > call to make explicitly, not a consequence of this rule.
 
 **Which PRs name a dependency.** Only the ticket whose work *required* that library change — the two
 halves of one delivery. A ticket using API that already existed names nothing, however heavily it
