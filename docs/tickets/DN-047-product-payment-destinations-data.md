@@ -2,11 +2,12 @@
 id: DN-047
 type: product
 title: Data layer — the bank accounts a class is paid into
-status: in-review
+status: done
 source: ../requirements/2026-09-11-payment-flow.md
 branch: ticket/DN-047-payment-destinations-data
 commit: 08119f4
 pr: https://github.com/Fostahh/DNLibrary/pull/21
+merge-commit: f5835c1
 layer: data
 ---
 
@@ -172,8 +173,8 @@ content change to the fixture and, later, a server concern; it is not a code cha
 - [x] Diff reviewed by the owner — 2026-09-11
 - [x] Committed — DNLibrary `08119f4`, umbrella `447d84f`
 - [x] PR opened — [DNLibrary#21](https://github.com/Fostahh/DNLibrary/pull/21); the umbrella takes none by policy
-- [ ] PR merged
-- [ ] Published, and the app repinned — **DN-048 cannot start until this is released**
+- [x] PR merged — [DNLibrary#21](https://github.com/Fostahh/DNLibrary/pull/21), merge commit `f5835c1`, owner confirmed 2026-09-11
+- [ ] Published, and the app repinned — **DN-048 cannot start until this is released.** Merged 2026-09-11; the release is the owner's to trigger
 
 ## What the sweep found
 

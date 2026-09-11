@@ -76,7 +76,7 @@ which matters, because that id is the only thing linking work across the separat
 | [DN-035](DN-035-product-offline-class-schedule-data.md) | Data layer — the offline class schedule, its date window and its availability rule | `done` | data |
 | [DN-036](DN-036-product-offline-class-schedule-ui.md) | iOS — the offline class schedule, with collapsible month sections and a materials sheet | `done` | ui |
 | [DN-040](DN-040-product-login-screen.md) | iOS — the login screen, a reusable toast, and a hex colour palette | `done` | ui |
-| [DN-047](DN-047-product-payment-destinations-data.md) | Data layer — the bank accounts a class is paid into | `in-review` | data |
+| [DN-047](DN-047-product-payment-destinations-data.md) | Data layer — the bank accounts a class is paid into | `done` | data |
 | [DN-048](DN-048-product-payment-flow-ui.md) | iOS — choosing a bank account and sending proof of payment | `todo` | ui |
 
 DN-008 and DN-009 trace to **verbal** instructions from the owner (2026-08-06) — the requirement
@@ -202,7 +202,7 @@ reading it:
 | [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `done` | ui |
 | [DN-044](DN-044-technical-strip-prose-comments.md) | Strip prose comments, and restore Xcode's header template across every file | `done` | ios |
 | [DN-045](DN-045-technical-done-without-a-pr.md) | A ticket with no PR can never be marked done, because the rule only names a merged PR | `done` | docs |
-| [DN-046](DN-046-technical-camera-usage-description.md) | The app has no camera usage description, and opening the camera without one terminates it | `in-review` | ios |
+| [DN-046](DN-046-technical-camera-usage-description.md) | The app has no camera usage description, and opening the camera without one terminates it | `done` | ios |
 | [DN-049](DN-049-technical-lift-exception-mapping.md) | The exception-to-DNError mapping is copied in three repositories, and the second copy said when to stop | `todo` | data |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented

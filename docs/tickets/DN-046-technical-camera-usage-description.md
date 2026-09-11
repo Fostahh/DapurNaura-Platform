@@ -2,11 +2,12 @@
 id: DN-046
 type: technical
 title: The app has no camera usage description, and opening the camera without one terminates it
-status: in-review
+status: done
 source: —
 branch: ticket/DN-046-camera-usage-description
 commit: fcebaa9
 pr: https://github.com/Fostahh/DapurNaura-iOS/pull/24
+merge-commit: 257e584
 layer: ios
 ---
 
@@ -119,7 +120,7 @@ That is expected, and it is why this ticket ships ahead of the screen rather tha
 - [x] Diff reviewed by the owner — LGTM, 2026-09-11
 - [x] Committed — iOS `fcebaa9`, umbrella `9bb9825`
 - [x] PR opened — [DapurNaura-iOS#24](https://github.com/Fostahh/DapurNaura-iOS/pull/24); the umbrella takes none by policy
-- [ ] PR merged
+- [x] PR merged — [DapurNaura-iOS#24](https://github.com/Fostahh/DapurNaura-iOS/pull/24), merge commit `257e584`, owner confirmed 2026-09-11
 
 ## Notes
 
