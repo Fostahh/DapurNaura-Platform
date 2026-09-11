@@ -199,7 +199,7 @@ reading it:
 | [DN-042](DN-042-technical-documentation-gate.md) | The doc sweep is a list of remembered places rather than an enumeration, and it is not a gate | `done` | docs |
 | [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `done` | ui |
 | [DN-044](DN-044-technical-strip-prose-comments.md) | Strip prose comments, and restore Xcode's header template across every file | `done` | ios |
-| [DN-045](DN-045-technical-done-without-a-pr.md) | A ticket with no PR can never be marked done, because the rule only names a merged PR | `in-review` | docs |
+| [DN-045](DN-045-technical-done-without-a-pr.md) | A ticket with no PR can never be marked done, because the rule only names a merged PR | `done` | docs |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is

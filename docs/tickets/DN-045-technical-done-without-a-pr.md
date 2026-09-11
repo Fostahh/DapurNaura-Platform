@@ -2,9 +2,11 @@
 id: DN-045
 type: technical
 title: A ticket with no PR can never be marked done, because the rule only names a merged PR
-status: in-review
+status: done
 source: —
 branch: ticket/DN-045-done-without-a-pr
+commit: 1849e23
+merge-commit: a1ec59c
 layer: docs
 ---
 
@@ -122,11 +124,12 @@ Documentation, so there is nothing to build or run. What proves it:
 - [x] A no-PR `## Done when` variant exists in the template
 - [x] No closed ticket edited
 - [x] Documentation sweep (DN-042) — enumerated with `git ls-files '*.md'`
-- [ ] Diff reviewed by the owner
-- [ ] Committed
-- [ ] **No PR — every changed file is in the umbrella, which takes none by policy**
-- [ ] Merged into `development`, and the owner confirms it — which is the clause this ticket adds,
-      applied to itself
+- [x] Diff reviewed by the owner — 2026-09-11
+- [x] Committed — `1849e23`
+- [x] **No PR — every changed file is in the umbrella, which takes none by policy**
+- [x] Merged into `development` as `a1ec59c`, and the owner confirmed it 2026-09-11 — **closed by
+      the clause it adds, applied to itself.** The first ticket in the project to reach `done`
+      without a pull request
 
 ## Notes
 
