@@ -90,6 +90,11 @@ precedent for skipping one on a screen that fetches.**
 
 What the ViewModel holds: the chosen image, the compressed bytes, and whether a send is in progress.
 
+**The class name and the amount are repeated here**, not only on screen one. Owner's decision,
+2026-09-11 — the requirement left it open because the drawing showed it without anyone being asked.
+The user has left the app to type a transfer in between; the figure has to be checkable on the screen
+where they confirm it.
+
 **The picker offers the library and the camera** (requirement). `PhotosPicker` for the library,
 which needs no permission; a camera sheet for the other, which needs DN-046.
 
@@ -175,6 +180,7 @@ What the owner is asked to check on the running app:
 | The amount shown | Matches the class price exactly |
 | Tap copy on Mandiri | Toast *Nomor rekening tersalin*; screen two opens; paste elsewhere gives that number |
 | Screen two's destination line | Names the bank just copied, not the other one |
+| Screen two's amount | Matches screen one and the class price |
 | Pick from the library | Preview appears; send becomes available |
 | Take a photo | Camera opens **without the app closing** — the DN-046 check |
 | Refuse camera access | Whatever `
