@@ -195,8 +195,9 @@ reading it:
 | [DN-037](DN-037-technical-repin-verification.md) | A repin can silently land on the old version — verify the resolved version instead of trusting it | `done` | tooling |
 | [DN-038](DN-038-technical-swiftui-review-fixes.md) | Dynamic Type and four view-level findings from the SwiftUI review | `done` | ui |
 | [DN-039](DN-039-technical-light-mode-portrait-lock.md) | Lock the app to light mode and portrait — the owner believes both are already enforced, and neither is | `done` | ios |
-| [DN-041](DN-041-technical-docs-login-drift.md) | The workspace documents say there is no login screen, and that the recipe screen is a placeholder | `in-review` | docs |
+| [DN-041](DN-041-technical-docs-login-drift.md) | The workspace documents say there is no login screen, and that the recipe screen is a placeholder | `done` | docs |
 | [DN-042](DN-042-technical-documentation-gate.md) | The doc sweep is a list of remembered places rather than an enumeration, and it is not a gate | `in-review` | docs |
+| [DN-043](DN-043-technical-root-view-transition.md) | The login transition never animates, because the flag it animates lives on an App rather than a View | `in-review` | ui |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
@@ -275,6 +276,23 @@ The fix is not only the numbers. **The screen inventories now name tickets and g
 because a count is a fact with no owner and nothing forces anyone to update it — which is precisely
 what DN-029 concluded when it found the rules holding wherever they were encoded and drifting
 wherever they were prose.
+
+**DN-043 is a defect that passed every gate the project has.** The login transition DN-040 wrote has
+never once run: `withAnimation` was wrapped around `@State` on an `App`, and the transaction does not
+cross the `Scene` boundary into the `WindowGroup`'s content, so `.transition` degraded to an instant
+cut. The code is correct — what was wrong is *where it lived*. The build compiled it, SwiftLint
+passed it, the PR was reviewed and merged, and nothing in that chain inspects the difference between
+a `View` and an `App`. Only running the app finds it, and a missing animation reads as a design
+choice rather than a failure.
+
+It carries a second change the owner scheduled with it: **the authentication screens become a flow
+module** (`Presentation/Auth/`) owning their own `NavigationStack`, because onboarding, forgotten
+passwords and registration are all expected to push within it. That establishes the rule the app will
+grow by — **one `NavigationStack` per presentation context, flows composing by swap or by present and
+never by nesting** — and the rule for where a path lives: on the router only if it must survive
+something or be reached from outside the view that draws it. **Merge
+[DapurNaura-iOS#21](https://github.com/Fostahh/DapurNaura-iOS/pull/21) (DN-041) first** — it is the
+lower open id and corrects the same three documents.
 
 **A CI ticket was filed and then deleted on the owner's instruction the same day** — *"that process
 is very far off for me to implement."* The gap it described is real: `:sharedLogic:check` is run by

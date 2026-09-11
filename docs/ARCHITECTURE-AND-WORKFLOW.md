@@ -57,8 +57,8 @@ describes a flatter shape and is wrong about it; it carries `corrected-by:` poin
 deliberately untouched.
 
 **The iOS app renders all three levels** — the class list with its category filter, the class detail,
-and the recipe screen the product actually sells — on `@Observable` MVVM over an owned navigation
-path, with SwiftLint reporting zero violations.
+and the recipe screen the product actually sells — on `@Observable` MVVM over owned navigation paths,
+**one `NavigationStack` per flow** (DN-043), with SwiftLint reporting zero violations.
 
 **Three things the domain assumes and nothing provides:**
 
