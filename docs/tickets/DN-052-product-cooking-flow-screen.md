@@ -2,7 +2,7 @@
 id: DN-052
 type: product
 title: The cooking flow — three pages from ingredients to finished, entered from the recipe
-status: in-review
+status: done
 source: docs/requirements/2026-09-12-cooking-a-recipe.md
 branch: ticket/DN-052-cooking-flow-screen
 layer: ui
@@ -212,4 +212,5 @@ What the owner checks:
 - [ ] Diff reviewed by the owner on the running app
 - [ ] Committed
 - [ ] PR opened
-- [ ] PR merged
+- [x] PR merged — the owner confirmed, 2026-09-12. [DapurNaura-iOS#29](https://github.com/Fostahh/DapurNaura-iOS/pull/29) at `d2d25a9`.
+      The flow works end to end against DN-051, with page 2/3 waiting on DN-053.

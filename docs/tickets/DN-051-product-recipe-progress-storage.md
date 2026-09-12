@@ -2,7 +2,7 @@
 id: DN-051
 type: product
 title: Remember which ingredients are ticked, and which page the cook was on, across app restarts
-status: in-review
+status: done
 source: docs/requirements/2026-09-12-cooking-a-recipe.md
 branch: ticket/DN-051-recipe-progress-storage
 layer: data
@@ -161,7 +161,8 @@ Data layer, so unit tests are required:
 - [x] Committed — one commit in `DNLibrary`, one in the umbrella
 - [x] PR opened — [DNLibrary#24](https://github.com/Fostahh/DNLibrary/pull/24). The umbrella takes no
       PR; its branch is merged locally
-- [ ] PR merged
+- [x] PR merged — the owner confirmed, 2026-09-12. [DNLibrary#24](https://github.com/Fostahh/DNLibrary/pull/24) at `a9dd399`.
+      Storage is in the library, and nothing about it reaches the consumer app.
 
 ## What §3 settled, and why it is worth recording
 
