@@ -641,8 +641,10 @@ public, mappers between them, `explicitApi()` enforcing it all. Every next endpo
 ### 8.3 Typed errors — done on the network path (DN-008)
 
 The repository maps every exception into sealed `DNError` cases; nothing throws past it, and Swift
-gets an exhaustive `switch` — SKIE's highest-leverage feature, now in use. Still pending: the
-storage classes rethrow bare `Exception`; align them when they gain real consumers.
+gets an exhaustive `switch` — SKIE's highest-leverage feature, now in use. **Nothing is pending.**
+The storage classes that rethrew a bare `Exception` went with DN-031, and the storage DN-051 brought
+back obeys the rule from its first line: `RecipeProgressRepository` catches, rethrows
+`CancellationException`, and returns a sealed result like every other repository.
 
 ### 8.4 DI shape — decided, and it binds the next `expect`/`actual`
 
@@ -650,10 +652,22 @@ When an `expect`/`actual` pair has different constructors per platform — say a
 and nothing on iOS — **commonMain can never construct one.** Any repository in commonMain must take
 it as a constructor parameter injected from the platform edge.
 
-**No such pair exists today**: the only two, `SecureStorage` and `PreferenceStorage`, were deleted by
-DN-031. So this is not a description of current code — it is the constraint on whoever adds the next
-one, and it must be designed for from the first line rather than discovered when the compiler
-refuses.
+~~**No such pair exists today**~~ — **one does again**, added by DN-051: `platformKeyValueStore()`,
+with `NSUserDefaults` on iOS and `SharedPreferences` on Android.
+
+**It resolves the asymmetry a third way, and the rule should say so.** DN-051 first did exactly what
+this section prescribes — a public `DNStorageContext` passed into `DNDataLayer` from the platform
+edge. On iOS that parameter was **empty**, because `NSUserDefaults` needs no handle, so the app wrote
+an initializer carrying no information purely to satisfy Android. Owner's decision, 2026-09-12: *if
+the consumer app does not need to do it, it should not have to.*
+
+**So Android now supplies the `Context` to itself**, through an `androidx.startup` `Initializer` that
+runs before any app code. The platform edge still provides it — it just does not route through the
+consumer's API. **The choice this section really forbids is a singleton data layer**, and that has
+not happened: `DNDataLayer` is still caller-owned, and tests still inject the store directly. What
+became global is a `Context`, which every Android app has exactly one of.
+
+The two that DN-031 deleted, `SecureStorage` and `PreferenceStorage`, have **not** come back.
 
 ### 8.5 Smaller shape issues
 
@@ -690,8 +704,10 @@ mattered. What remains open is tracked as tickets, not here.
    substitution. ⚠️ Anything in Info.plist still ships readable inside the `.ipa` — gitignoring
    keeps keys out of git, it does not make them secret.
 6. ~~**Zero tests.**~~ **Resolved (DN-001/002/006/008, extended since).** Every test lives in
-   `commonTest` and runs on both platforms — DN-031 removed the only platform-specific source sets
-   along with the POC storage they tested. The suite grows with each data-layer ticket;
+   `commonTest` and runs on both platforms. DN-031 had removed the only platform-specific source
+   sets; **DN-051 reintroduced `androidMain` and `iosMain`** for the storage actuals, but added no
+   platform-specific *tests* — the seam above them is driven by an in-memory store, so every test is
+   still `commonTest`. The suite grows with each data-layer ticket;
    `./gradlew :sharedLogic:check` is green on both platforms and is the gate. The Keychain cases are
    `@Ignore`d — the hostless iOS test process has no keychain. **The count lives in the test-result
    XML, not in this document** — read it from a run, since a number written here is stale on the

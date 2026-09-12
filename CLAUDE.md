@@ -482,10 +482,16 @@ PR that created it.
 - **There is no notion of a signed-in user, and the domain needs one.** `purchaseStatus` is per-user
   data by definition, but nothing anywhere carries identity: **a login screen that checks nothing**
   (DN-040), no session, no user model, and `NetworkManager` holds a static `apiKey` only. There is
-  also **no local storage to put a token in** — DN-031 deleted the POC `SecureStorage`, since it had
-  no consumer and no requirement. Two screens already render state that cannot yet exist. **Owner's
-  decision, 2026-08-06: deferred, to be ticketed later.** Do not design around it in the meantime —
-  and when it does land, DN-001's AES-GCM Keystore implementation is in git history rather than gone.
+  also **no local storage to put a token in.** Two screens already render state that cannot yet exist.
+  **Owner's decision, 2026-08-06: deferred, to be ticketed later.** Do not design around it in the
+  meantime — and when it does land, DN-001's AES-GCM Keystore implementation is in git history rather
+  than gone.
+
+  > **DN-051 added storage, and it does not change this.** The library can now remember a cook's
+  > progress through a recipe — but it is **plaintext**, `SharedPreferences` and `NSUserDefaults`,
+  > which is what flags belong in and what a credential must never go near. `SecureStorage` is still
+  > deleted and nothing encrypted exists. **A token does not go in the progress store**; that would
+  > be precisely the defect DN-001 found, where a name implied encryption that was not happening.
 
   > **The screen makes this gap easier to miss, not smaller.** `router.root` (DN-043, replacing
   > DN-040's `hasPassedLogin`) is a two-case `RootRoute` meaning *which flow is on screen*. It is not

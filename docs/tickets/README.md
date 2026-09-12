@@ -206,6 +206,26 @@ reading it:
 | [DN-046](DN-046-technical-camera-usage-description.md) | The app has no camera usage description, and opening the camera without one terminates it | `done` | ios |
 | [DN-049](DN-049-technical-lift-exception-mapping.md) | The exception-to-DNError mapping is copied in three repositories, and the second copy said when to stop | `done` | data |
 | [DN-050](DN-050-technical-mockoon-serves-the-app.md) | The app runs on a local Mockoon server instead of the in-library stub | `done` | data + ui |
+| [DN-051](DN-051-product-recipe-progress-storage.md) | Remember which ingredients are ticked, and which page the cook was on, across app restarts | `done` | data |
+| [DN-052](DN-052-product-cooking-flow-screen.md) | The cooking flow — three pages from ingredients to finished, entered from the recipe | `done` | ui |
+| [DN-053](DN-053-product-recipe-video-and-timestamps.md) | Page 2/3 plays the recipe video, and tapping a step seeks it | `todo` | data + ui |
+
+**DN-051, DN-052 and DN-053 are one feature and merge in that order.** They come from
+[`2026-09-12-cooking-a-recipe.md`](../requirements/2026-09-12-cooking-a-recipe.md), approved the same
+day. **DN-052 cannot start until DN-051 is merged** — the checklist reads and writes its ticks
+through it — and **DN-053 replaces a placeholder DN-052 leaves** on page 2/3. Only DN-051 moves the
+public API, so only it implies a version bump.
+
+> **DN-051 and DN-052 were each used once before, on 2026-09-12, and reused.** Two tickets were filed
+> and deleted the same day — DN-051 for a stale `SPMDNLibrary` README, DN-052 for removing a loopback
+> exception that was reverted instead. Both deletions and their reasoning are recorded in **DN-050**,
+> and **DN-050 still refers to the numbers as they meant them then.** The numbers were reused rather
+> than left as gaps, on the owner's instruction, so the sequence has no holes.
+>
+> **What this costs, stated so nobody is caught by it:** `git log -- docs/tickets/DN-051*` shows a
+> file created and deleted whose content has nothing to do with the DN-051 that exists now. The
+> deleted ones never merged as work — they were filed and withdrawn — so nothing built or shipped
+> under either number.
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
 rule against 27 merged PRs, 6 releases and four repositories. The finding worth carrying forward is
