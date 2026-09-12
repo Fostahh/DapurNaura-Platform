@@ -359,8 +359,19 @@ ticket *changed*, not by whether something already edited it.
 
 **One document was read and deliberately not fixed here.** `ios/SPMDNLibrary/README.md` is badly
 stale — it claims the package has no tags and does not resolve, while five tags and five releases
-exist. Nothing in DN-050 touches that repository, so folding it in would drag a fourth repo and a
-fourth PR into this ticket. Filed as **DN-051** at `status: todo`.
+exist, and its install snippet names `1.0.0`, the version reserved for the App Store release.
+
+> **It was filed as DN-051, then the ticket was deleted on the owner's decision, 2026-09-12.** The
+> reasoning is worth keeping: the ticket ran to 63 lines to describe a README correction, and the
+> real cost was never the edit but the branch, commit and pull request it would need in a fourth
+> repository. The failure mode is also loud rather than silent — a copied `from: "1.0.0"` fails at
+> resolve time and ships nothing broken — and the repository, though public, has no stars and no
+> forks.
+>
+> **The fix has a natural home instead:** a publish already commits to that repository to rewrite
+> `Package.swift`, so the README is corrected in that same commit. Recorded in the platform
+> `CLAUDE.md` under *Publishing the iOS binary*, which is where whoever runs the next release is
+> already reading.
 
 ### The rules were finalised as standing instructions, 2026-09-12
 

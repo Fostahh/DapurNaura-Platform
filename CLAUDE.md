@@ -306,6 +306,15 @@ as `dirname(scripts/)`.
   decides that a release happens; the agent then runs it and derives the version. Irreversible:
   deleting a tag or release is on the `Never` list, so a wrong number cannot be cleanly undone.
 
+> **`ios/SPMDNLibrary/README.md` is stale — correct it in the release commit.** Noticed 2026-09-12
+> during DN-050's documentation sweep, and deliberately **not** ticketed: the fix is smaller than a
+> ticket describing it, and a publish is already committing to that repository to rewrite
+> `Package.swift`, so it rides along for free. What is wrong: a whole section headed *"This package
+> does not currently resolve"* claiming the repo has **no tags and no releases** — five of each exist
+> — and an install snippet reading `from: "1.0.0"`, a version **reserved for the App Store release**.
+> Correct it to the range the app actually uses, and do not write the current version into the prose
+> (DN-029 — it is stale at the next release).
+
 > **Before every publish, fetch and pull both repositories.** Owner's rule, 2026-08-08. `DNLibrary`
 > *and* `ios/SPMDNLibrary` — check out the release branch and confirm it is level with its remote
 > before running anything:
