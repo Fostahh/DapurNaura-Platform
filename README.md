@@ -29,7 +29,9 @@ Online / Kelas Offline choice it opens onto (DN-033), the class list with its ca
 (DN-009, DN-025), the class detail (DN-012), the recipe screen the product actually sells (DN-021),
 the offline class schedule (DN-036) and the payment flow (DN-048).
 
-**What is missing is everything behind them.** There is no backend. **Payment has screens and no way
+**What is missing is everything behind them.** There is no deployed backend — the Development
+build talks to a local Mockoon server on the owner's machine (DN-050), which serves the approved
+contract fixtures and is reachable from nowhere else. **Payment has screens and no way
 to record a payment** — DN-048 built the bank accounts and the proof upload, but nothing is sent, so a
 class still reads *Belum Dibeli* afterwards. And there is **no signed-in user — the login screen
 checks nothing.** Any email and any password get in; no credential is verified, no session is kept,

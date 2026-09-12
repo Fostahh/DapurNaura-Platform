@@ -72,8 +72,13 @@ Then, turning it into a ticket:
 
 ## 3. While writing code
 
-- Smallest change that satisfies the ticket. Match the surrounding code's style, comment density
-  and idiom — comments state constraints the code cannot show, never narrate the diff.
+- Smallest change that satisfies the ticket. Match the surrounding code's style and idiom.
+- **Comments: one line saying what the thing is for, and reasoning goes in the ticket.** Owner's
+  rule, 2026-09-12 (DN-050) — see *Comments* in the platform `CLAUDE.md`, `DNLibrary/CLAUDE.md` §7
+  and `ios/DapurNaura/CLAUDE.md`. **"Match the surrounding comment density" no longer licenses
+  writing prose**, because the surrounding density is now close to zero in both codebases: the data
+  layer carries 67 one-line KDoc and four `[ASSUMPTION]` lines, and the iOS Presentation layer
+  carries none outside `Presentation/Components/`.
 - **For any "X is broken" ticket: write the test first and run it against the broken code.**
   Record that it failed and how. A fix whose test never failed proves nothing. (DN-001 did this:
   the encryption check read raw file bytes and failed against the plaintext implementation before
