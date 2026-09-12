@@ -7,11 +7,14 @@ is built, and that is why they live here rather than in `docs/requirements/`. Wh
 means is that DNLibrary and the UI may now be built against this shape without further sign-off.
 A change after this point should be a deliberate, noted revision — not a silent edit.
 
-These files are the **source of truth for the JSON shape**, used twice:
+These files are the **source of truth for the JSON shape**, used three times:
 
-1. **Now** — DNLibrary's stub engine replays them, so the UI is built against the real
-   serialization path with no backend.
-2. **Later** — the backend is written to satisfy them.
+1. **Now, in the library** — DNLibrary's stub engine replays them, so the UI is built against the
+   real serialization path with no backend.
+2. **Now, over HTTPS** — a local Mockoon environment serves the same payloads to the Development
+   build (DN-050), which exercises the transport the stub skips. It lives on the owner's machine and
+   is committed nowhere, so **nothing keeps it in step with this directory but a person**.
+3. **Later** — the backend is written to satisfy them.
 
 They live here rather than in `docs/requirements/` deliberately: requirements are frozen once
 approved, and this will change repeatedly while the UI takes shape.

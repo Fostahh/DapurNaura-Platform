@@ -42,9 +42,15 @@ consumed in-app, App Store Guideline 3.1.1 does not force In-App Purchase.
 > recipe screen the product actually sells. The app depends on the library **by range** — see
 > *Versioning*.
 >
-> **Three things the domain assumes and nothing provides**, all deliberate: no backend (everything
-> runs on `DNDataLayer.stub()`), no signed-in user, and **no way to record a payment** — DN-048
-> built the screens, nothing behind them. Android does not exist.
+> **Three things the domain assumes and nothing provides**, all deliberate: no deployed backend,
+> no signed-in user, and **no way to record a payment** — DN-048 built the screens, nothing behind
+> them. Android does not exist.
+>
+> **The Development build talks to a local Mockoon server** (DN-050), not to `DNDataLayer.stub()`.
+> That is a mock on the owner's machine serving the approved contract fixtures — it is not a
+> backend, nothing is deployed, and **no other machine can reach it**: the environment file is the
+> owner's and is committed nowhere. `stub()` is still published and still the path that works with
+> nothing running. Alpha, Beta and Release are unchanged.
 >
 > **DN-040 put a login screen in front of all of it, and it changes none of the three.** It
 > authenticates nobody: any email and any password get in, and the only gate is that both boxes are
@@ -119,6 +125,49 @@ The gate is additive: the owner still verifies the running app and still trigger
 
 It does not apply to problems you notice yourself — filing a technical ticket at `status: todo`
 stays autonomous, because there is no instruction there to misread.
+
+## Comments — what the code carries, and what it does not
+
+Owner's rules, 2026-09-12 (DN-050), given as standing instructions for every agent that works here.
+**They apply to code written from now on**, not only to files a ticket happens to touch.
+
+**1. No comment that is not useful.** *"No more comments yang tidak berguna."* A comment that
+restates the code, narrates the diff, or argues for a design decision is deleted, and is not written
+again.
+
+**2. In `DNLibrary`, the only comment is KDoc, and only on the exported surface.** Short but clear
+about what the function, object, variable or enum is *for* — written **so a consumer app developer
+understands what it does**, because that is who reads it: KDoc is exported into the generated
+Objective-C header and rendered in Xcode Quick Help.
+
+- An **enum** says what it is and **lists its cases**.
+- A **data class** says what it is and **lists its properties**.
+- **Test code gets no KDoc.** Owner's point, and it is the right one: `commonTest` is never exported
+  into the library, so a KDoc there reaches nobody a plain comment would not. Tests follow rule 1
+  only — a comment survives when it says what the test's own name cannot.
+
+**3. In the iOS app, comments exist in two places and nowhere else** — the **Xcode file header** and
+**`Presentation/Components/`**. Everything else carries code and nothing else.
+
+- **`// MARK:` stays.** Owner's decision: it drives Xcode's jump bar, so it is navigation rather than
+  prose. Seven lines across four files.
+- A flow's own `Presentation/<Flow>/Components/` folder is **not** covered by the exception — only
+  the shared `Presentation/Components/` is.
+
+**Where the reasoning goes instead.** Into the ticket. That is what Document Driven Development is
+for, and a second copy in the source is one nothing keeps in sync. The rules DN-050 removed from
+KDoc — `portions` and `loyang` must never be merged, `NEARLY_FULL` still takes bookings — were all
+already written down in a ticket or in this file.
+
+**One narrow exception to rule 1.** An `[ASSUMPTION …]` marker stays. It records a decision the owner
+has not settled rather than explaining code, and an assumption is never quietly removed.
+
+**A member list is a second copy of the declaration.** Add a property or an enum case later and the
+KDoc line is silently wrong. Accepted because Quick Help has no other route to that information —
+**so adding a member means editing that line in the same change.**
+
+Per-repo detail: [`DNLibrary/CLAUDE.md`](DNLibrary/CLAUDE.md) §7 and
+[`ios/DapurNaura/CLAUDE.md`](ios/DapurNaura/CLAUDE.md).
 
 ## Autonomy — what to do without asking, what to stop for
 
@@ -256,6 +305,15 @@ as `dirname(scripts/)`.
   tags, pushes, creates the GitHub release. **Human-triggered, after the PR is merged** — the owner
   decides that a release happens; the agent then runs it and derives the version. Irreversible:
   deleting a tag or release is on the `Never` list, so a wrong number cannot be cleanly undone.
+
+> **`ios/SPMDNLibrary/README.md` is stale — correct it in the release commit.** Noticed 2026-09-12
+> during DN-050's documentation sweep, and deliberately **not** ticketed: the fix is smaller than a
+> ticket describing it, and a publish is already committing to that repository to rewrite
+> `Package.swift`, so it rides along for free. What is wrong: a whole section headed *"This package
+> does not currently resolve"* claiming the repo has **no tags and no releases** — five of each exist
+> — and an install snippet reading `from: "1.0.0"`, a version **reserved for the App Store release**.
+> Correct it to the range the app actually uses, and do not write the current version into the prose
+> (DN-029 — it is stale at the next release).
 
 > **Before every publish, fetch and pull both repositories.** Owner's rule, 2026-08-08. `DNLibrary`
 > *and* `ios/SPMDNLibrary` — check out the release branch and confirm it is level with its remote

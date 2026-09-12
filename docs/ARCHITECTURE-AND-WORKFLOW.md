@@ -62,8 +62,12 @@ and the recipe screen the product actually sells — on `@Observable` MVVM over 
 
 **Three things the domain assumes and nothing provides:**
 
-- **No backend.** Everything runs on `DNDataLayer.stub()`, which replays the approved contract
-  fixtures through the real decoding path. The wire shape has never met a server.
+- **No deployed backend.** The wire shape has never met a server anyone else can reach. Two things
+  stand in for one: `DNDataLayer.stub()` replays the approved contract fixtures through the real
+  decoding path, and since DN-050 the **Development** build talks to a local Mockoon server serving
+  the same fixtures over HTTPS — which at least exercises the transport the stub skips. The Mockoon
+  environment lives on the owner's machine and is committed nowhere, so `stub()` remains the only
+  path a second machine can run.
 - **No signed-in user**, although `purchaseStatus` is per-user data by definition. There is a login
   screen (DN-040) and **it authenticates nobody** — any email and any password get in, and the only
   gate is that both boxes are filled. Behind it there is no session, no user model and nowhere to
