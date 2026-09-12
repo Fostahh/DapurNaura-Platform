@@ -2,7 +2,7 @@
 id: DN-049
 type: technical
 title: The exception-to-DNError mapping is copied in three repositories, and the second copy said when to stop
-status: in-progress
+status: in-review
 source: —
 branch: ticket/DN-049-lift-exception-mapping
 layer: data
@@ -129,9 +129,10 @@ endpoints, so an unchanged green run is the proof the lift changed nothing.
 - [x] Documentation sweep (DN-042) — enumerated, then read. `CLAUDE.md` §3 and
       `CODEBASE-ARCHITECTURE.md` §3 both remained true; §3 of the latter **gained** the rule that
       there is now one shared mapping, since preventing a fourth copy is this ticket's whole point
-- [ ] Diff reviewed by the owner
-- [ ] Committed
-- [ ] PR opened
+- [x] Diff reviewed by the owner — approved 2026-09-12
+- [x] Committed — one commit in `DNLibrary`, one in the umbrella
+- [x] PR opened — [DNLibrary#23](https://github.com/Fostahh/DNLibrary/pull/23). **The umbrella takes
+      no PR**; its branch is merged locally
 - [ ] PR merged
 
 ## Notes
