@@ -2,7 +2,7 @@
 id: DN-049
 type: technical
 title: The exception-to-DNError mapping is copied in three repositories, and the second copy said when to stop
-status: todo
+status: done
 source: —
 branch: ticket/DN-049-lift-exception-mapping
 layer: data
@@ -89,17 +89,53 @@ endpoints, so a green run after the lift is the proof. **No new tests are needed
 added**: if the existing ones do not catch a broken mapping, that is a finding about the suite, not
 a reason to write a fourth copy of the same assertions.
 
+## What was found and done, 2026-09-12
+
+**The three copies were still byte-identical** — the drift the *Context* section told this ticket to
+check for had not happened, so there was no finding to report and the lift was a pure move.
+
+`Throwable.toDNError()` now lives once, `internal`, in
+`datasource/repository/ThrowableToDNError.kt`. **The `when` body was verified byte-identical to the
+original by diff**, not by eye, because the case order is the one thing here that can break silently.
+
+**Eighteen imports went with it — six per file**, including `DNError` itself, which none of the three
+repositories referenced once the mapping left: they name only their own sealed results. The compiler
+and ktlint would have caught these, but they are worth naming because "delete the function" reads
+like a smaller change than it is.
+
+| | Before | After |
+|---|---|---|
+| Definitions of the mapping | 3 | **1** |
+| Lines across the three repositories | — | **−48** |
+| New file | — | +18 |
+
+**`CancellationException` was left exactly as it was** — caught separately and rethrown ahead of the
+general catch, in all three repositories. It is coroutine control flow rather than a failure, and
+folding it into the mapping would swallow cancellations. Now written into
+`docs/CODEBASE-ARCHITECTURE.md` §3 so it is a rule rather than a habit.
+
+**No tests were added, deliberately**, as the *Test plan* requires. The suite stayed at 85 on both
+platforms, which is the point: the existing tests already drive every branch through all three
+endpoints, so an unchanged green run is the proof the lift changed nothing.
+
 ## Done when
 
-- [ ] One `internal` mapping exists; all three private copies are gone
-- [ ] Case order preserved exactly
-- [ ] `:sharedLogic:check` green on both platforms
-- [ ] No public API change, `explicitApi()` clean
-- [ ] Documentation sweep (DN-042)
-- [ ] Diff reviewed by the owner
-- [ ] Committed
-- [ ] PR opened
-- [ ] PR merged
+- [x] One `internal` mapping exists; all three private copies are gone
+- [x] Case order preserved exactly — verified by diffing the `when` body against `HEAD`
+- [x] `:sharedLogic:check` green on both platforms — **85 tests, 10 classes, 0 skipped, 0 failures**,
+      read from the result XML; the same count as before, since no test was added or removed
+- [x] No public API change, `explicitApi()` clean — everything involved is `internal`, and the build
+      enforces it
+- [x] Documentation sweep (DN-042) — enumerated, then read. `CLAUDE.md` §3 and
+      `CODEBASE-ARCHITECTURE.md` §3 both remained true; §3 of the latter **gained** the rule that
+      there is now one shared mapping, since preventing a fourth copy is this ticket's whole point
+- [x] Diff reviewed by the owner — approved 2026-09-12
+- [x] Committed — one commit in `DNLibrary`, one in the umbrella
+- [x] PR opened — [DNLibrary#23](https://github.com/Fostahh/DNLibrary/pull/23). **The umbrella takes
+      no PR**; its branch is merged locally
+- [x] PR merged — the owner confirmed, 2026-09-12.
+      [DNLibrary#23](https://github.com/Fostahh/DNLibrary/pull/23) at `3846a86`. The umbrella branch
+      is merged locally by the owner and takes no PR
 
 ## Notes
 
