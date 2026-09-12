@@ -2,7 +2,7 @@
 id: DN-050
 type: technical
 title: The app runs on a local Mockoon server instead of the in-library stub
-status: in-review
+status: done
 source: —
 branch: ticket/DN-050-mockoon-serves-the-app
 layer: data + ui
@@ -509,14 +509,23 @@ What the owner checks on the running app, with **Mockoon reloaded so TLS is live
       (*"HTTPS only"*) and `ios/DapurNaura/docs/CODEBASE-ARCHITECTURE.md` §3 (comments allowed in a
       feature's `Components/`). `docs/AGENT-PLAYBOOK.md` corrected too; **DN-051 filed** for a third
       that is stale but not this ticket's doing
-- [x] Final gates green after every change: `:sharedLogic:check` — **92 tests, 10 classes, 0 skipped,
+- [x] Final gates green after every change: `:sharedLogic:check` — **85 tests, 10 classes, 0 skipped,
       0 failures** on both platforms, read from the result XML rather than trusted from the exit code
-      — plus `swiftlint --strict` clean and `** BUILD SUCCEEDED **`
-- [ ] Diff reviewed by the owner, **with Mockoon reloaded** so the 404 fix is live
+      — plus `swiftlint --strict` clean and `** BUILD SUCCEEDED **`. *(Was 92 while the loopback
+      exception and its seven tests existed; the revert returned the suite to the count `0.9.0`
+      shipped.)*
+- [x] Diff reviewed by the owner, and **the app run on iPhone 17, iOS 26.3.1** against Mockoon over
+      TLS — the owner confirmed it working, 2026-09-12
 - [x] Committed — three commits, one per repository, staged explicitly; the local package
       wiring was reverted first and is absent from all three
 - [x] PR opened — [DNLibrary#22](https://github.com/Fostahh/DNLibrary/pull/22) and
       [DapurNaura-iOS#27](https://github.com/Fostahh/DapurNaura-iOS/pull/27). **The umbrella takes
       no PR** — its last six merges are local `Merge branch … into development`, unlike the other two
-- [ ] PR merged
-- [ ] Published and the app repinned
+- [x] PR merged — the owner confirmed both, 2026-09-12.
+      [DNLibrary#22](https://github.com/Fostahh/DNLibrary/pull/22) at `8bd06d6`,
+      [DapurNaura-iOS#27](https://github.com/Fostahh/DapurNaura-iOS/pull/27) at `a3a62df`.
+      **The umbrella branch is merged locally by the owner** and takes no PR
+- [ ] ~~Published and the app repinned~~ — **no longer required for this ticket.** The revert left the
+      library with a comments-only diff, so nothing here depends on a release. The KDoc rewrite is
+      still worth publishing eventually, because it is what makes Xcode Quick Help useful, but it is
+      a **PATCH** on the owner's timing rather than a step of this ticket
