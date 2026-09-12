@@ -2,7 +2,7 @@
 id: DN-051
 type: product
 title: Remember which ingredients are ticked, and which page the cook was on, across app restarts
-status: in-progress
+status: in-review
 source: docs/requirements/2026-09-12-cooking-a-recipe.md
 branch: ticket/DN-051-recipe-progress-storage
 layer: data
@@ -108,15 +108,35 @@ Data layer, so unit tests are required:
 
 ## Done when
 
-- [ ] Progress and page persist across a process restart
-- [ ] Keyed by component position plus ingredient name, per recipe
-- [ ] `expect`/`actual` implemented for both platforms; the Android actual is real, not a stub
-- [ ] The storage choice is justified in this ticket
-- [ ] `DNDataLayer`'s change is declared, and the MINOR bump stated
-- [ ] `./gradlew :sharedLogic:check` green on both platforms
-- [ ] Documentation sweep (DN-042) — `CLAUDE.md`'s local-layer section and
-      `CODEBASE-ARCHITECTURE.md` §9 both describe a library with no storage and become false
-- [ ] Diff reviewed by the owner
-- [ ] Committed
-- [ ] PR opened
+- [x] Progress and page persist across a process restart
+- [x] Keyed by component position plus ingredient name, per recipe — verified against the fixture
+      that no name repeats within a component
+- [x] `expect`/`actual` implemented for both platforms; **the Android actual is real**, using
+      `SharedPreferences`, not a stub. `androidMain` and `iosMain` had no Kotlin before this
+- [x] The storage choice is justified — **no dependency added**; §9 says plaintext preference storage
+      is what flags belong in, and `SharedPreferences` / `NSUserDefaults` are exactly that
+- [x] `DNDataLayer`'s change is declared, and the **MINOR** bump stated
+- [x] `./gradlew :sharedLogic:check` green on both platforms — **97 tests, 12 classes, 0 skipped,
+      0 failures**, read from the result XML. 85 before, +12 new
+- [x] Documentation sweep (DN-042) — enumerated, then read. **Eight corrections across five
+      documents and the build script.** The one worth naming: `CLAUDE.md` listed **DataStore 1.1.7**
+      as a dependency, which has not been in the version catalog since DN-031
+- [x] Diff reviewed by the owner — approved 2026-09-12
+- [x] Committed — one commit in `DNLibrary`, one in the umbrella
+- [x] PR opened — [DNLibrary#24](https://github.com/Fostahh/DNLibrary/pull/24). The umbrella takes no
+      PR; its branch is merged locally
 - [ ] PR merged
+
+## What §3 settled, and why it is worth recording
+
+The three use cases first returned plain values — `RecipeProgress` and `Unit` — on the agent's
+argument that local storage cannot fail. **Put to the owner rather than decided quietly**, since §3
+says every use case returns a sealed result and the *Known violations* table is empty by design.
+
+**Owner's decision: follow §3, and their reason was better than the agent's.** *"Sometimes the local
+data source can also return an error."* That is correct, and the agent had already written
+`runCatching` for undecodable stored content while arguing there were no failures. A full disk, a
+`commit()` that returns false, data protection on a locked device and corrupted content are all real.
+
+Three tests now drive the failure path, which is what makes the sealed result worth having rather
+than a one-branch switch at every Swift call site.
