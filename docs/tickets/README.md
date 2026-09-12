@@ -207,7 +207,7 @@ reading it:
 | [DN-049](DN-049-technical-lift-exception-mapping.md) | The exception-to-DNError mapping is copied in three repositories, and the second copy said when to stop | `done` | data |
 | [DN-050](DN-050-technical-mockoon-serves-the-app.md) | The app runs on a local Mockoon server instead of the in-library stub | `done` | data + ui |
 | [DN-051](DN-051-product-recipe-progress-storage.md) | Remember which ingredients are ticked, and which page the cook was on, across app restarts | `in-review` | data |
-| [DN-052](DN-052-product-cooking-flow-screen.md) | The cooking flow — three pages from ingredients to finished, entered from the recipe | `todo` | ui |
+| [DN-052](DN-052-product-cooking-flow-screen.md) | The cooking flow — three pages from ingredients to finished, entered from the recipe | `in-review` | ui |
 | [DN-053](DN-053-product-recipe-video-and-timestamps.md) | Page 2/3 plays the recipe video, and tapping a step seeks it | `todo` | data + ui |
 
 **DN-051, DN-052 and DN-053 are one feature and merge in that order.** They come from

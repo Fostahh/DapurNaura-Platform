@@ -2,7 +2,7 @@
 id: DN-052
 type: product
 title: The cooking flow — three pages from ingredients to finished, entered from the recipe
-status: todo
+status: in-review
 source: docs/requirements/2026-09-12-cooking-a-recipe.md
 branch: ticket/DN-052-cooking-flow-screen
 layer: ui
@@ -91,6 +91,87 @@ records anything anywhere.
 **User-facing strings are the owner's.** *Selamat!*, *Anda sudah selesai membuat*, *Ulangi*,
 *Selesai* and the forward/back labels for 1/3 and 2/3 are agent drafts marked `[ASSUMPTION]` in the
 requirement, and can be replaced without argument.
+
+## Corrections from the owner on the running app, 2026-09-12
+
+**1. The page transition is horizontal, not vertical.** Owner's correction while reviewing the build:
+*"my mistake sorry, the transition should be horizontally."* The requirement describes it as vertical
+in several places and **is not edited** — it records what was asked for at the time. Its frontmatter
+carries a `corrected-by: DN-052` pointer, which is the one edit an approved requirement permits.
+
+**2. The pinned bar was too tall and its button too narrow.** The button now spans the full width
+with the bar's vertical padding reduced from 16 to 12.
+
+> **The cause is worth recording, because it was wrong in four places.** `.frame(maxWidth: .infinity)`
+> was applied to the `Button` rather than to its label, so the tappable frame stretched while the
+> filled pill still hugged its text. `PurchaseSection` already had it right — `Text(…)
+> .frame(maxWidth: .infinity)` *inside* the button — and the flow's own controls and the finished
+> page's two buttons had the same defect, all now matching the existing convention.
+
+**3. The navigation title truncates, and it stays that way.** *Brownies Red Velvet Cheese & Original
+Cheese* is forty-four characters, and an inline title cuts it to *"…& Original Ch…"*.
+
+A `.principal` toolbar item with two lines was tried and **does not work**: iOS clips the navigation
+bar rather than growing it, so the second line never appears. The remaining options were to drop the
+title — the name already appears in full as a heading in the content — or shrink the text until it
+fits, which at forty-four characters is far smaller than every other title in the app.
+
+**Owner's decision: leave it truncated.** It is what iOS does by default and what Apple's own apps
+do with long titles, and the full name is readable in the content immediately below.
+
+> **So `RecipeDetailContent` changes only to gain the button**, exactly as *Out of scope* requires.
+> The earlier draft of this section recorded a deliberate exception to that rule; there is no longer
+> an exception to record.
+
+## SwiftUI review, 2026-09-12
+
+Run on the owner's instruction before committing, against the `swiftui-pro` reference set. The
+reviewer wrote the code, which is worth stating.
+
+**Acted on:**
+
+- **`loaded(_:)` became `CookingFlowPager`, its own `View` struct.** The reference states twice that
+  view bodies should not be broken up with methods returning `some View`. Extracting it left
+  `controls` as the only such helper, so that became `CookingFlowControls` too.
+- **Logic left `body`.** Navigation (`router.path.removeLast()`) and a `Task`-wrapping button action
+  were inline; both are now methods. `CookingFlowView` is a `body` plus five small methods.
+
+**Declined by the owner, and recorded rather than silently skipped:**
+
+- **Reduce Motion.** The pager slides a full screen width, which the reference says should fall back
+  to opacity when the setting is on. **Owner's decision: not needed for this project.**
+- **VoiceOver.** Two decorative images — the checkbox glyph on every ingredient row and the party
+  popper on 3/3 — are announced as *"checkmark circle fill"* and *"party popper fill"*. **Owner's
+  decision: not needed for this project.**
+
+> **These are recorded because they are real findings, not because they should be reopened.** If
+> accessibility is ever in scope, this is the list to start from, and neither fix is large.
+
+### The pager: `GeometryReader` kept over `ScrollView` paging, after trying both
+
+The reviewer suggested iOS 17's `ScrollView` + `.scrollTargetBehavior(.paging)` +
+`.scrollPosition(id:)` as the more modern shape. **It was built, run, and rejected by the owner.**
+
+**Why it was worse here, and the cause is this screen's own layout:** the *Kembali* button appears
+from page 2 onwards, so the controls bar changes height. That resizes the scroll container, which
+makes `containerRelativeFrame` recompute all three pages **mid-animation**, while `.paging` competes
+with `withAnimation` over who owns the position. The result was visibly laggy. `GeometryReader`
+absorbs the same height change as one offset shift, with no scroll machinery holding an opinion.
+
+| | `GeometryReader` | `ScrollView` paging |
+|---|---|---|
+| Animation | smooth | stutters when the controls bar resizes |
+| Arithmetic | one multiply | none |
+| Source of truth | `viewModel.pageIndex` alone | `pageIndex` **plus** a synced `scrolledPage` |
+| Swipe | off by construction | must be switched off |
+
+**The "manual calculation" is one line**, and it reads the current width from the proxy each time, so
+nothing can go stale. The `ScrollView` version needed `@State`, `.onAppear` and `.onChange` to keep a
+second copy of the current page in step — more state, not less.
+
+> **The lag is probably fixable** — pinning the controls bar to a constant height would remove the
+> resize. It was not pursued: that is added complexity to rescue an approach that was only ever a
+> stylistic preference over one that already worked.
 
 ## Out of scope
 

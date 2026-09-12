@@ -4,6 +4,9 @@ date: 2026-09-12
 author: owner
 drafted-by: agent
 approved: 2026-09-12
+# The page transition is described as vertical throughout. The owner corrected this on 2026-09-12
+# while reviewing the running app: it is horizontal. The prose below is left exactly as approved.
+corrected-by: DN-052
 ---
 
 # Cooking a recipe, step by step
