@@ -652,10 +652,20 @@ When an `expect`/`actual` pair has different constructors per platform — say a
 and nothing on iOS — **commonMain can never construct one.** Any repository in commonMain must take
 it as a constructor parameter injected from the platform edge.
 
-~~**No such pair exists today**~~ — **one does again, and it is exactly this shape.** DN-051 added
-`DNStorageContext`: the Android actual wraps a `Context`, the iOS actual takes nothing, and
-`DNDataLayer`'s constructor therefore receives it from the platform edge. The rule was designed for
-from the first line rather than discovered when the compiler refused, which is what it asks.
+~~**No such pair exists today**~~ — **one does again**, added by DN-051: `platformKeyValueStore()`,
+with `NSUserDefaults` on iOS and `SharedPreferences` on Android.
+
+**It resolves the asymmetry a third way, and the rule should say so.** DN-051 first did exactly what
+this section prescribes — a public `DNStorageContext` passed into `DNDataLayer` from the platform
+edge. On iOS that parameter was **empty**, because `NSUserDefaults` needs no handle, so the app wrote
+an initializer carrying no information purely to satisfy Android. Owner's decision, 2026-09-12: *if
+the consumer app does not need to do it, it should not have to.*
+
+**So Android now supplies the `Context` to itself**, through an `androidx.startup` `Initializer` that
+runs before any app code. The platform edge still provides it — it just does not route through the
+consumer's API. **The choice this section really forbids is a singleton data layer**, and that has
+not happened: `DNDataLayer` is still caller-owned, and tests still inject the store directly. What
+became global is a `Context`, which every Android app has exactly one of.
 
 The two that DN-031 deleted, `SecureStorage` and `PreferenceStorage`, have **not** come back.
 
