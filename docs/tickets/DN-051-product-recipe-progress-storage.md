@@ -65,8 +65,10 @@ to record it; the storage itself stays `internal`, like every data source.
 from the platform edge"*, and §4 says to **design for that from the first line, not after the
 compiler says no.**
 
-**So `DNDataLayer`'s constructor changes, and that is a public API movement** — the iOS app's
-composition root changes with it. This is the ticket's main cost and the reason it is reviewed alone.
+~~**So `DNDataLayer`'s constructor changes, and that is a public API movement.**~~ **It does not.**
+That was the first design and the owner rejected it — see *The consumer app says nothing about
+storage* below. `DNDataLayer(config)` is unchanged, and the iOS app's composition root has an empty
+diff.
 
 **`expect`/`actual` returns to the library.** DN-031 removed the only two that existed. §5 warns that
 parity is compiler-enforced: an `expect` without an `androidMain` actual **will not compile**, so the
@@ -78,11 +80,44 @@ justified in the ticket that introduces it*). DataStore 1.1.7 is already in the 
 unused; the alternative is `expect`/`actual` over each platform's native preferences. Whichever is
 chosen, the argument is written down here.
 
+## The consumer app says nothing about storage
+
+**Owner's instruction, 2026-09-12, translated:** *"I still want that if the consumer app does not
+need to do something, it should not have to. So remove it. What is the good solution?"*
+
+The first implementation exposed a public `DNStorageContext` that `DNDataLayer` took as a second
+parameter — which is what §1 prescribes. **On iOS it was empty.** `NSUserDefaults` needs no handle, so
+the app wrote an initializer carrying no information, purely so the signature could also serve
+Android.
+
+**Kotlin default arguments cannot remove it, and this was checked rather than assumed.** The library
+already has a public default argument — `invoke(category: CookingClassCategory? = null)` — and the
+generated Objective-C header exports **one** method, `invoke(category:)`, with no parameterless
+overload. Swift's own call site passes `category:` even when passing nil. Objective-C has no concept
+of default arguments, so a default on the storage parameter would have been invisible to Swift.
+
+**Every route to removing it required Android to obtain its own `Context`.** It now does, through an
+`androidx.startup` `Initializer` declared in this library's manifest, which runs from one shared
+`ContentProvider` before any app code.
+
+> **Why `androidx.startup` over a hand-written `ContentProvider`.** Two methods instead of six, and no
+> globally unique authority string to get wrong — a hardcoded one fails at *install* time with
+> `INSTALL_FAILED_CONFLICTING_PROVIDER` on a device that has two apps using the library. **Neither
+> could be tested in this repository**, since there is no Android app, no Robolectric and no
+> `androidHostTest` block, so the version with fewer ways to be silently wrong won.
+
+> **What this trades, stated plainly.** Initialization is now hidden: a `ContentProvider` the app
+> never declares and never sees. If a manifest merge ever strips it, storage fails at **runtime**
+> rather than at compile time — so the Android failure message names its own fix. **DN-006's
+> singleton has not crept back**: what became global is the `Context`, not the data layer.
+> `DNDataLayer` is still caller-owned, and tests still inject `KeyValueStore` directly.
+
 ## Public API contract
 
-- `DNDataLayer` gains whatever the platform edge must inject for storage.
-- Two use cases: read a recipe's progress, and record it.
-- **Version bump implied: MINOR** — the entry point's constructor changes.
+- **`DNDataLayer(config)` is unchanged.** Nothing about storage appears in the public surface.
+- Added: `RecipeProgress`, `RecipeIngredientRef`, two sealed results, three use cases.
+- **Version bump implied: PATCH** — public symbols were *added*, none changed or removed, and the
+  constructor change an earlier draft of this ticket declared was reverted before it shipped.
 
 ## Out of scope
 
@@ -115,7 +150,8 @@ Data layer, so unit tests are required:
       `SharedPreferences`, not a stub. `androidMain` and `iosMain` had no Kotlin before this
 - [x] The storage choice is justified — **no dependency added**; §9 says plaintext preference storage
       is what flags belong in, and `SharedPreferences` / `NSUserDefaults` are exactly that
-- [x] `DNDataLayer`'s change is declared, and the **MINOR** bump stated
+- [x] ~~`DNDataLayer`'s change is declared, and the MINOR bump stated~~ — **`DNDataLayer` does not
+      change.** The bump is **PATCH**; see *The consumer app says nothing about storage*
 - [x] `./gradlew :sharedLogic:check` green on both platforms — **97 tests, 12 classes, 0 skipped,
       0 failures**, read from the result XML. 85 before, +12 new
 - [x] Documentation sweep (DN-042) — enumerated, then read. **Eight corrections across five
