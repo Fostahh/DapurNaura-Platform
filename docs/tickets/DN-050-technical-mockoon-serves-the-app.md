@@ -2,7 +2,7 @@
 id: DN-050
 type: technical
 title: The app runs on a local Mockoon server instead of the in-library stub
-status: in-progress
+status: in-review
 source: —
 branch: ticket/DN-050-mockoon-serves-the-app
 layer: data + ui
@@ -502,7 +502,10 @@ What the owner checks on the running app, with **Mockoon reloaded so TLS is live
       0 failures** on both platforms, read from the result XML rather than trusted from the exit code
       — plus `swiftlint --strict` clean and `** BUILD SUCCEEDED **`
 - [ ] Diff reviewed by the owner, **with Mockoon reloaded** so the 404 fix is live
-- [ ] Committed — **revert `project.pbxproj` and `Package.resolved` first**, stage explicitly
-- [ ] PR opened
+- [x] Committed — three commits, one per repository, staged explicitly; the local package
+      wiring was reverted first and is absent from all three
+- [x] PR opened — [DNLibrary#22](https://github.com/Fostahh/DNLibrary/pull/22) and
+      [DapurNaura-iOS#27](https://github.com/Fostahh/DapurNaura-iOS/pull/27). **The umbrella takes
+      no PR** — its last six merges are local `Merge branch … into development`, unlike the other two
 - [ ] PR merged
 - [ ] Published and the app repinned
