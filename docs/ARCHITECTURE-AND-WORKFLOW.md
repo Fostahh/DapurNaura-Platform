@@ -641,8 +641,10 @@ public, mappers between them, `explicitApi()` enforcing it all. Every next endpo
 ### 8.3 Typed errors — done on the network path (DN-008)
 
 The repository maps every exception into sealed `DNError` cases; nothing throws past it, and Swift
-gets an exhaustive `switch` — SKIE's highest-leverage feature, now in use. Still pending: the
-storage classes rethrow bare `Exception`; align them when they gain real consumers.
+gets an exhaustive `switch` — SKIE's highest-leverage feature, now in use. **Nothing is pending.**
+The storage classes that rethrew a bare `Exception` went with DN-031, and the storage DN-051 brought
+back obeys the rule from its first line: `RecipeProgressRepository` catches, rethrows
+`CancellationException`, and returns a sealed result like every other repository.
 
 ### 8.4 DI shape — decided, and it binds the next `expect`/`actual`
 
@@ -650,10 +652,12 @@ When an `expect`/`actual` pair has different constructors per platform — say a
 and nothing on iOS — **commonMain can never construct one.** Any repository in commonMain must take
 it as a constructor parameter injected from the platform edge.
 
-**No such pair exists today**: the only two, `SecureStorage` and `PreferenceStorage`, were deleted by
-DN-031. So this is not a description of current code — it is the constraint on whoever adds the next
-one, and it must be designed for from the first line rather than discovered when the compiler
-refuses.
+~~**No such pair exists today**~~ — **one does again, and it is exactly this shape.** DN-051 added
+`DNStorageContext`: the Android actual wraps a `Context`, the iOS actual takes nothing, and
+`DNDataLayer`'s constructor therefore receives it from the platform edge. The rule was designed for
+from the first line rather than discovered when the compiler refused, which is what it asks.
+
+The two that DN-031 deleted, `SecureStorage` and `PreferenceStorage`, have **not** come back.
 
 ### 8.5 Smaller shape issues
 
@@ -690,8 +694,10 @@ mattered. What remains open is tracked as tickets, not here.
    substitution. ⚠️ Anything in Info.plist still ships readable inside the `.ipa` — gitignoring
    keeps keys out of git, it does not make them secret.
 6. ~~**Zero tests.**~~ **Resolved (DN-001/002/006/008, extended since).** Every test lives in
-   `commonTest` and runs on both platforms — DN-031 removed the only platform-specific source sets
-   along with the POC storage they tested. The suite grows with each data-layer ticket;
+   `commonTest` and runs on both platforms. DN-031 had removed the only platform-specific source
+   sets; **DN-051 reintroduced `androidMain` and `iosMain`** for the storage actuals, but added no
+   platform-specific *tests* — the seam above them is driven by an in-memory store, so every test is
+   still `commonTest`. The suite grows with each data-layer ticket;
    `./gradlew :sharedLogic:check` is green on both platforms and is the gate. The Keychain cases are
    `@Ignore`d — the hostless iOS test process has no keychain. **The count lives in the test-result
    XML, not in this document** — read it from a run, since a number written here is stale on the
