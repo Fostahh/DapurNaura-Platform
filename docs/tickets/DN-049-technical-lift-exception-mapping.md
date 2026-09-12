@@ -2,7 +2,7 @@
 id: DN-049
 type: technical
 title: The exception-to-DNError mapping is copied in three repositories, and the second copy said when to stop
-status: in-review
+status: done
 source: —
 branch: ticket/DN-049-lift-exception-mapping
 layer: data
@@ -133,7 +133,9 @@ endpoints, so an unchanged green run is the proof the lift changed nothing.
 - [x] Committed — one commit in `DNLibrary`, one in the umbrella
 - [x] PR opened — [DNLibrary#23](https://github.com/Fostahh/DNLibrary/pull/23). **The umbrella takes
       no PR**; its branch is merged locally
-- [ ] PR merged
+- [x] PR merged — the owner confirmed, 2026-09-12.
+      [DNLibrary#23](https://github.com/Fostahh/DNLibrary/pull/23) at `3846a86`. The umbrella branch
+      is merged locally by the owner and takes no PR
 
 ## Notes
 

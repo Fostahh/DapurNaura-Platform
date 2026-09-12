@@ -204,7 +204,7 @@ reading it:
 | [DN-044](DN-044-technical-strip-prose-comments.md) | Strip prose comments, and restore Xcode's header template across every file | `done` | ios |
 | [DN-045](DN-045-technical-done-without-a-pr.md) | A ticket with no PR can never be marked done, because the rule only names a merged PR | `done` | docs |
 | [DN-046](DN-046-technical-camera-usage-description.md) | The app has no camera usage description, and opening the camera without one terminates it | `done` | ios |
-| [DN-049](DN-049-technical-lift-exception-mapping.md) | The exception-to-DNError mapping is copied in three repositories, and the second copy said when to stop | `in-review` | data |
+| [DN-049](DN-049-technical-lift-exception-mapping.md) | The exception-to-DNError mapping is copied in three repositories, and the second copy said when to stop | `done` | data |
 | [DN-050](DN-050-technical-mockoon-serves-the-app.md) | The app runs on a local Mockoon server instead of the in-library stub | `done` | data + ui |
 
 **DN-027 to DN-029 come from a rule-compliance audit on 2026-08-09**, which checked every documented
